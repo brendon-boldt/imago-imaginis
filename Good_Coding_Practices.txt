@@ -1,0 +1,9 @@
+Write comment before code (leads to self-documented code).
+Avoid obvious comments.
+Group related code (using spaces).
+Avoid deep nesting.
+Limit line length.
+File and folder organization.
+Consistent temporary names.
+Seperate code from data.
+Read open source code.
