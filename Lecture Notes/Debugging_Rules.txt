@@ -1,0 +1,13 @@
+Understand the system and what it's doing.
+Make it fail (try to replicate it).
+Quick thinking and look.
+Divide and conquer (systems have lots of components).
+Change one thing at a time.
+Keep audit trail (log everything you do, because will be doing a lot of it).
+Hardware or software problem?
+Get fresh view (rubber duck)
+
+Testing:
+Make test cases match requirements.
+Every requirement must have one test case.
+Integration testing (from different groups).
