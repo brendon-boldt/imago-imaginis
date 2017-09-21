@@ -9,6 +9,12 @@ import re
 
 import tensorflow as tf
 
+def get_inputs(op):
+	graph = tf.get_default_graph()
+	for t in op.inputs:
+		yield graph.get_tensor_by_name(t.name)
+
+
 model_fn = './pretrained/inception5h/tensorflow_inception_graph.pb'
 
 # creating TensorFlow session and loading the model
@@ -49,7 +55,7 @@ for op in old_graph.get_operations():
 			#opSet.add(op.op_def.name)
 		new_graph.create_op(
 			op.type,
-			[t for t in op.inputs],
+			list(get_inputs(op)),
 			[op.outputs[0].dtype],
 			name = op.name,
 			attrs = op.node_def.attr
@@ -79,10 +85,7 @@ for op in old_graph.get_operations():
 #exit()
 
 #sess.global_variables_initializer()
-
-def clone_op():
-	pass
-
+tf.global_variables_initializer().run()
 
 def strip_consts(graph_def, max_const_size=32):
 	"""Strip large constant values from graph_def."""
@@ -256,10 +259,6 @@ with lap_graph.as_default():
 def render_lapnorm(t_obj, img0=img_noise, visfunc=visstd,
 				   iter_n=10, step=1.0, octave_n=3, octave_scale=1.4, lap_n=4):
 	t_score = tf.reduce_mean(t_obj) # defining the optimization objective
-	print("old_graph: " + str(old_graph))
-	print("new_graph: " + str(new_graph))
-	print("t_score  : " + str(t_score.graph))
-	print("t_input  : " + str(t_input.graph))
 	t_grad = tf.gradients(t_score, t_input)[0] # behold the power of automatic differentiation!
 	# build the laplacian normalization graph
 	lap_norm_func = tffunc(np.float32)(partial(lap_normalize, scale_n=lap_n))
@@ -286,5 +285,5 @@ channel = 3 # picking some feature channel to visualize
 im = PIL.Image.open("test_small.jpg")
 render_lapnorm(T(layer)[:,:,:,channel],
 		np.array(im, dtype=np.float32),
-		iter_n=10,
-		octave_n=2)
+		iter_n=1,
+		octave_n=1)
