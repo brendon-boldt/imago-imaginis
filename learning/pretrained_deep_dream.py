@@ -5,21 +5,14 @@ import numpy as np
 from functools import partial
 import PIL.Image
 from IPython.display import clear_output, Image, display, HTML
-import re
 
 import tensorflow as tf
-
-def get_inputs(op):
-	graph = tf.get_default_graph()
-	for t in op.inputs:
-		yield graph.get_tensor_by_name(t.name)
-
 
 model_fn = './pretrained/inception5h/tensorflow_inception_graph.pb'
 
 # creating TensorFlow session and loading the model
-old_graph = tf.Graph()
-sess = tf.InteractiveSession(graph=old_graph)
+graph = tf.Graph()
+sess = tf.InteractiveSession(graph=graph)
 with tf.gfile.FastGFile(model_fn, 'rb') as f:
 	graph_def = tf.GraphDef()
 	graph_def.ParseFromString(f.read())
@@ -28,38 +21,15 @@ imagenet_mean = 117.0
 t_preprocessed = tf.expand_dims(t_input-imagenet_mean, 0)
 tf.import_graph_def(graph_def, {'input':t_preprocessed})
 
+#LOGDIR = 'log/'
+#writer = tf.summary.FileWriter(LOGDIR, sess.graph)
+#writer.close()
+
+# Helper functions for TF Graph visualization
+
+# start with a gray image with a little noise
 img_noise = np.random.uniform(size=(224,224,3)) + 100.0
 
-
-#old_graph = tf.get_default_graph()
-new_graph = tf.Graph()
-sess = tf.InteractiveSession(graph=new_graph)
-
-### DUPLICATED
-t_input = tf.placeholder(np.float32, name='input') # define the input tensor
-imagenet_mean = 117.0
-t_preprocessed = tf.expand_dims(t_input-imagenet_mean, 0)
-###
-
-opSet = set()
-for op in old_graph.get_operations():
-	if re.match(".*_[wb]$", op.name):
-		tf.Variable(
-			initial_value = tf.truncated_normal(op.outputs[0].shape, 0,100),
-			name = op.name,
-			#dtype = op.dtype
-		)
-	else:
-		new_graph.create_op(
-			op.type,
-			list(get_inputs(op)),
-			[op.outputs[0].dtype],
-			name = op.name,
-			attrs = op.node_def.attr
-			#op_def = op.op_def
-		)
-
-tf.global_variables_initializer().run()
 
 def strip_consts(graph_def, max_const_size=32):
 	"""Strip large constant values from graph_def."""
@@ -126,8 +96,7 @@ def visstd(a, s=0.1):
 
 def T(layer):
 	'''Helper for getting layer output tensor'''
-	#return graph.get_tensor_by_name("import/%s:0"%layer)
-	return tf.get_default_graph().get_tensor_by_name("import/%s:0"%layer)
+	return graph.get_tensor_by_name("import/%s:0"%layer)
 
 def render_naive(t_obj, img0=img_noise, iter_n=20, step=1.0):
 	t_score = tf.reduce_mean(t_obj) # defining the optimization objective
@@ -179,6 +148,26 @@ def calc_grad_tiled(img, t_grad, tile_size=512):
 			g = sess.run(t_grad, {t_input:sub})
 			grad[y:y+sz,x:x+sz] = g
 	return np.roll(np.roll(grad, -sx, 1), -sy, 0)
+
+def render_multiscale(t_obj, img0=img_noise, iter_n=10, step=1.0, octave_n=3, octave_scale=1.4):
+	t_score = tf.reduce_mean(t_obj) # defining the optimization objective
+	t_grad = tf.gradients(t_score, t_input)[0] # behold the power of automatic differentiation!
+	
+	img = img0.copy()
+	for octave in range(octave_n):
+		if octave>0:
+			hw = np.float32(img.shape[:2])*octave_scale
+			img = resize(img, np.int32(hw))
+		for i in range(iter_n):
+			g = calc_grad_tiled(img, t_grad)
+			# normalizing the gradient, so the same step size should work 
+			g /= g.std()+1e-8		 # for different layers and networks
+			img += g*step
+			print('.', end = ' ')
+		clear_output()
+		showarray(visstd(img))
+
+#render_multiscale(T(layer)[:,:,:,channel])
 
 k = np.float32([1,4,6,4,1])
 k = np.outer(k, k)
@@ -253,10 +242,11 @@ def render_lapnorm(t_obj, img0=img_noise, visfunc=visstd,
 # Picking some internal layer. Note that we use outputs before applying the ReLU nonlinearity
 # to have non-zero gradients for features with negative initial activations.
 layer = 'mixed4d_3x3_bottleneck_pre_relu'
-channel = 3 
+# 1:dog,2:catears,3:,139:flower,140:eyes
+channel = 3 # picking some feature channel to visualize
 
 im = PIL.Image.open("test_small.jpg")
 render_lapnorm(T(layer)[:,:,:,channel],
 		np.array(im, dtype=np.float32),
 		iter_n=30,
-		octave_n=2)
+		octave_n=3)
