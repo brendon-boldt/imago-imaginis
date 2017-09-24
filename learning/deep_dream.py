@@ -15,7 +15,9 @@ def get_inputs(op):
 		yield graph.get_tensor_by_name(t.name)
 
 
-model_fn = './pretrained/inception5h/tensorflow_inception_graph.pb'
+#model_fn = './pretrained/inception5h/tensorflow_inception_graph.pb'
+model_fn = './pretrained/frozen.pb'
+#model_fn = './pretrained/style/'
 
 # creating TensorFlow session and loading the model
 old_graph = tf.Graph()
@@ -23,24 +25,34 @@ sess = tf.InteractiveSession(graph=old_graph)
 with tf.gfile.FastGFile(model_fn, 'rb') as f:
 	graph_def = tf.GraphDef()
 	graph_def.ParseFromString(f.read())
-t_input = tf.placeholder(np.float32, name='input') # define the input tensor
+'''
+tf.saved_model.loader.load(sess, [tf.saved_model.tag_constants.SERVING], model_fn)
+'''
+#t_input = tf.placeholder(np.float32, name='input') # define the input tensor
 imagenet_mean = 117.0
-t_preprocessed = tf.expand_dims(t_input-imagenet_mean, 0)
-tf.import_graph_def(graph_def, {'input':t_preprocessed})
+#tf.import_graph_def(graph_def, {'input':t_preprocessed})
+tf.import_graph_def(graph_def)
+
+#for op in tf.get_default_graph().get_operations():
+	#print(op.name)
+
+t_input = tf.get_default_graph().get_tensor_by_name('import/input:0')
+t_preprocessed = tf.get_default_graph().get_tensor_by_name('import/ExpandDims:0')
 
 img_noise = np.random.uniform(size=(224,224,3)) + 100.0
 
 
 #old_graph = tf.get_default_graph()
-new_graph = tf.Graph()
-sess = tf.InteractiveSession(graph=new_graph)
+#new_graph = tf.Graph()
+#sess = tf.InteractiveSession(graph=new_graph)
 
 ### DUPLICATED
-t_input = tf.placeholder(np.float32, name='input') # define the input tensor
-imagenet_mean = 117.0
-t_preprocessed = tf.expand_dims(t_input-imagenet_mean, 0)
+#t_input = tf.placeholder(np.float32, name='input') # define the input tensor
+#imagenet_mean = 117.0
+#t_preprocessed = tf.expand_dims(t_input-imagenet_mean, 0)
 ###
 
+'''
 opSet = set()
 for op in old_graph.get_operations():
 	if re.match(".*_[wb]$", op.name):
@@ -58,6 +70,11 @@ for op in old_graph.get_operations():
 			attrs = op.node_def.attr
 			#op_def = op.op_def
 		)
+LOGDIR = 'log/'
+writer = tf.summary.FileWriter(LOGDIR, sess.graph)
+writer.close()
+exit()
+'''
 
 tf.global_variables_initializer().run()
 
@@ -127,7 +144,7 @@ def visstd(a, s=0.1):
 def T(layer):
 	'''Helper for getting layer output tensor'''
 	#return graph.get_tensor_by_name("import/%s:0"%layer)
-	return tf.get_default_graph().get_tensor_by_name("import/%s:0"%layer)
+	return tf.get_default_graph().get_tensor_by_name("%s"%layer)
 
 def render_naive(t_obj, img0=img_noise, iter_n=20, step=1.0):
 	t_score = tf.reduce_mean(t_obj) # defining the optimization objective
@@ -252,11 +269,11 @@ def render_lapnorm(t_obj, img0=img_noise, visfunc=visstd,
 
 # Picking some internal layer. Note that we use outputs before applying the ReLU nonlinearity
 # to have non-zero gradients for features with negative initial activations.
-layer = 'mixed4d_3x3_bottleneck_pre_relu'
+layer = 'import/import/mixed4d_3x3_bottleneck_pre_relu:0'
 channel = 3 
 
 im = PIL.Image.open("test_small.jpg")
 render_lapnorm(T(layer)[:,:,:,channel],
 		np.array(im, dtype=np.float32),
 		iter_n=30,
-		octave_n=2)
+		octave_n=1)
