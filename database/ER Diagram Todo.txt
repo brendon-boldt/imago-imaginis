@@ -1,0 +1,13 @@
+Changes to consider (let's discuss these)
+Remove paid boolean from Users; keep data in new table
+Remove admin boolean from Users; keep data in new table
+Consider renaming timestamp property in Photo as name is unclear. Timestamp of what? Perhaps creation_date?
+Consider renaming timestamp property in Videos as name is unclear. Timestamp of what? Perhaps creation_date?
+
+Changes made (please update in ER diagram)
+Is there a reason password is type CHAR? In the meantime I used type VARCHAR. If this is intended, then update db creation script instead
+Changed Filter's name to be of length 15 for uniformity
+Changed type of timestamp property in Photos to date for uniformity
+Changed type of timestamp property in Videos to date for uniformity
+Moved timestamp in Photos to bottom for uniformity
+Moved timestamp in Videos to bottom for uniformity
