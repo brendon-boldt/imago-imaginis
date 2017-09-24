@@ -11,3 +11,8 @@ Changed type of timestamp property in Photos to date for uniformity
 Changed type of timestamp property in Videos to date for uniformity
 Moved timestamp in Photos to bottom for uniformity
 Moved timestamp in Videos to bottom for uniformity
+
+Other stuff:
+We need to store the user's email. It's what they sign up with, and they don't create a username. We could change that, ofc.
+We also need to store the user's full name. So user_fname and user_lname.
+Also, for photos/videos stored, they're photos/videos with the style already transfered, right?
