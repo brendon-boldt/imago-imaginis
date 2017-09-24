@@ -12,13 +12,15 @@ import { AppComponent } from './app.component';
 import { HomeComponent } from './home.component';
 import { ProfileComponent } from './profile.component';
 import { UploadComponent } from './upload.component';
+import { LoginComponent } from './login.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     HomeComponent,
     ProfileComponent,
-    UploadComponent
+    UploadComponent,
+    LoginComponent
   ],
   imports: [
     BrowserModule,
