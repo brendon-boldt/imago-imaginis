@@ -1,0 +1,14 @@
+/**
+* This is the Cascasding Style Sheets for the web application
+*/
+
+/* This affects the styling of the top navbar */
+nav{
+  width: 100%;
+}
+/* This affects the styling of the header */
+header.masthead{
+  background: url("../assets/starrynight.jpg") no-repeat center scroll;
+  background-size: cover;
+  height: 20%;
+}
