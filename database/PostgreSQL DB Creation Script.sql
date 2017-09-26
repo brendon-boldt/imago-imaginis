@@ -4,8 +4,10 @@
 
 CREATE TABLE IF NOT EXISTS Users (
 	user_ID INT PRIMARY KEY,
-	username VARCHAR(15) NOT NULL,
-	password VARCHAR(15) NOT NULL,
+	first_name VARCHAR(50) NOT NULL,
+	last_name VARCHAR(50) NOT NULL,
+	email VARCHAR(50) NOT NULL,
+	password VARCHAR(50) NOT NULL,
 	isPaid BOOLEAN NOT NULL,
 	isAdmin BOOLEAN NOT NULL,
 	date_joined DATE NOT NULL
@@ -13,21 +15,21 @@ CREATE TABLE IF NOT EXISTS Users (
 
 CREATE TABLE IF NOT EXISTS Filters (
 	filter_ID INT PRIMARY KEY,
-	name VARCHAR(15) NOT NULL
+	name VARCHAR(50) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS Photos (
 	photo_ID INT PRIMARY KEY,
 	filter_ID INT REFERENCES Filters(filter_ID),
 	size FLOAT NOT NULL CHECK (size > 0),
-	timestamp DATE NOT NULL
+	creation_date DATE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS Videos (
 	video_ID INT PRIMARY KEY,
 	filter_ID INT REFERENCES Filters(filter_ID),
 	size FLOAT NOT NULL CHECK (size > 0),
-	timestamp DATE NOT NULL
+	creation_date DATE NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS UserPhotos (
