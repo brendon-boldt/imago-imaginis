@@ -269,11 +269,12 @@ def render_lapnorm(t_obj, img0=img_noise, visfunc=visstd,
 
 # Picking some internal layer. Note that we use outputs before applying the ReLU nonlinearity
 # to have non-zero gradients for features with negative initial activations.
-layer = 'import/import/mixed4d_3x3_bottleneck_pre_relu:0'
+#layer = 'import/mixed4d_3x3_bottleneck_pre_relu:0'
+layer = 'import/mixed4a_5x5_bottleneck_pre_relu:0'
 channel = 3 
 
-im = PIL.Image.open("test_small.jpg")
+im = PIL.Image.open("test.jpg")
 render_lapnorm(T(layer)[:,:,:,channel],
 		np.array(im, dtype=np.float32),
-		iter_n=30,
-		octave_n=1)
+		iter_n=20,
+		octave_n=2)
