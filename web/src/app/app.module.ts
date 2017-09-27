@@ -13,6 +13,7 @@ import { HomeComponent } from './home.component';
 import { ProfileComponent } from './profile.component';
 import { UploadComponent } from './upload.component';
 import { LoginComponent } from './login.component';
+import { ReportComponent } from './report.component';
 
 @NgModule({
   declarations: [
@@ -20,7 +21,8 @@ import { LoginComponent } from './login.component';
     HomeComponent,
     ProfileComponent,
     UploadComponent,
-    LoginComponent
+    LoginComponent,
+    ReportComponent
   ],
   imports: [
     BrowserModule,
