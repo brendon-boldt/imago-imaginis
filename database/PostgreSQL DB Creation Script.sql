@@ -1,6 +1,6 @@
 -- Use these commands to wipe out database (for testing)
---DROP SCHEMA Public CASCADE;
---CREATE SCHEMA Public;
+-- DROP SCHEMA Public CASCADE;
+-- CREATE SCHEMA Public;
 
 CREATE TABLE IF NOT EXISTS Users (
 	user_ID INT PRIMARY KEY,
@@ -8,9 +8,17 @@ CREATE TABLE IF NOT EXISTS Users (
 	last_name VARCHAR(50) NOT NULL,
 	email VARCHAR(50) NOT NULL,
 	password VARCHAR(50) NOT NULL,
-	isPaid BOOLEAN NOT NULL,
-	isAdmin BOOLEAN NOT NULL,
 	date_joined DATE NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS PaidUsers (
+    user_ID INT REFERENCES Users(user_ID),
+    PRIMARY KEY (user_ID)
+);
+
+CREATE TABLE IF NOT EXISTS Admins (
+    user_ID INT REFERENCES Users(user_ID),
+    PRIMARY KEY (user_ID)
 );
 
 CREATE TABLE IF NOT EXISTS Filters (
