@@ -271,10 +271,12 @@ def render_lapnorm(t_obj, img0=img_noise, visfunc=visstd,
 # to have non-zero gradients for features with negative initial activations.
 #layer = 'import/mixed4d_3x3_bottleneck_pre_relu:0'
 layer = 'import/mixed4a_5x5_bottleneck_pre_relu:0'
+layer_w = 'import/mixed4a_5x5_w:0'
 channel = 3 
+print([t.eval() for t in tf.nn.moments(T(layer_w), [0,1,2,3])])
 
-im = PIL.Image.open("test.jpg")
+im = PIL.Image.open("test_small.jpg")
 render_lapnorm(T(layer)[:,:,:,channel],
 		np.array(im, dtype=np.float32),
-		iter_n=20,
-		octave_n=2)
+		iter_n=30,
+		octave_n=1)
