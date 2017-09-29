@@ -41,41 +41,6 @@ t_preprocessed = tf.get_default_graph().get_tensor_by_name('import/ExpandDims:0'
 
 img_noise = np.random.uniform(size=(224,224,3)) + 100.0
 
-
-#old_graph = tf.get_default_graph()
-#new_graph = tf.Graph()
-#sess = tf.InteractiveSession(graph=new_graph)
-
-### DUPLICATED
-#t_input = tf.placeholder(np.float32, name='input') # define the input tensor
-#imagenet_mean = 117.0
-#t_preprocessed = tf.expand_dims(t_input-imagenet_mean, 0)
-###
-
-'''
-opSet = set()
-for op in old_graph.get_operations():
-	if re.match(".*_[wb]$", op.name):
-		tf.Variable(
-			initial_value = tf.truncated_normal(op.outputs[0].shape, 0,100),
-			name = op.name,
-			#dtype = op.dtype
-		)
-	else:
-		new_graph.create_op(
-			op.type,
-			list(get_inputs(op)),
-			[op.outputs[0].dtype],
-			name = op.name,
-			attrs = op.node_def.attr
-			#op_def = op.op_def
-		)
-LOGDIR = 'log/'
-writer = tf.summary.FileWriter(LOGDIR, sess.graph)
-writer.close()
-exit()
-'''
-
 tf.global_variables_initializer().run()
 
 def strip_consts(graph_def, max_const_size=32):
@@ -129,11 +94,11 @@ def show_graph(graph_def, max_const_size=32):
 #show_graph(tmp_def)
 
 
-def showarray(a, fmt='jpeg'):
+def save_image(a, name='out.jpg', fmt='jpeg'):
 	a = np.uint8(np.clip(a, 0, 1)*255)
 	f = BytesIO()
 	im = PIL.Image.fromarray(a)
-	im.save('out.jpg')
+	im.save(name)
 	#im.save(f, fmt)
 	#display(Image(data=f.getvalue()))
 	
@@ -158,7 +123,7 @@ def render_naive(t_obj, img0=img_noise, iter_n=20, step=1.0):
 		img += g*step
 		print(score, end = ' ')
 	clear_output()
-	showarray(visstd(img))
+	save_image(visstd(img))
 
 #render_naive(T(layer)[:,:,:,channel])
 
@@ -265,18 +230,22 @@ def render_lapnorm(t_obj, img0=img_noise, visfunc=visstd,
 			img += g*step
 			print('.', end = ' ')
 		clear_output()
-	showarray(visfunc(img))
+	return visfunc(img)
 
 # Picking some internal layer. Note that we use outputs before applying the ReLU nonlinearity
 # to have non-zero gradients for features with negative initial activations.
-#layer = 'import/mixed4d_3x3_bottleneck_pre_relu:0'
-layer = 'import/mixed4a_5x5_bottleneck_pre_relu:0'
-layer_w = 'import/mixed4a_5x5_w:0'
-channel = 3 
-print([t.eval() for t in tf.nn.moments(T(layer_w), [0,1,2,3])])
+layer = 'import/mixed4d_3x3_bottleneck_pre_relu:0'
+#layer = 'import/mixed4a_5x5_bottleneck_pre_relu:0'
+#layer_w = 'import/mixed4a_5x5_w:0'
+#print([t.eval() for t in tf.nn.moments(T(layer_w), [0,1,2,3])])
 
-im = PIL.Image.open("test_small.jpg")
-render_lapnorm(T(layer)[:,:,:,channel],
-		np.array(im, dtype=np.float32),
-		iter_n=30,
-		octave_n=1)
+#in_im = PIL.Image.open("test_small.jpg")
+in_im = img_noise
+channel_range = 3
+for channel in range(channel_range):
+	print("Rendering %d / %d" % (channel+1, channel_range))
+	out_im = render_lapnorm(T(layer)[:,:,:,channel],
+			np.array(in_im, dtype=np.float32),
+			iter_n=30,
+			octave_n=1)
+	save_image(out_im, name="channel" + str(channel) + ".jpg")

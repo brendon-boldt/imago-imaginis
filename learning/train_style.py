@@ -53,7 +53,7 @@ for op in old_graph.get_operations():
 	name = strip_prefix(op.name)
 	if re.match(".*_[wb]$", op.name):
 		var = tf.Variable(
-			initial_value = tf.truncated_normal(op.outputs[0].shape, 0,100),
+			initial_value = tf.truncated_normal(op.outputs[0].shape, 0,0.1),
 			name = name,
 			#dtype = op.dtype
 		)
@@ -80,26 +80,34 @@ with tf.variable_scope('weights_norm') as scope:
 	)
 '''
 WEIGHT_DECAY_FACTOR = 1e-9
-weights_loss = tf.reduce_sum( [WEIGHT_DECAY_FACTOR *
+weights_loss = WEIGHT_DECAY_FACTOR *tf.reduce_sum( [
 	tf.nn.l2_loss(t) for t in tf.get_collection('variables')])
 
 label_ph = tf.placeholder(tf.float32, (1,))
-target_tensor = tf.get_default_graph().get_tensor_by_name("head0_pool:0")
-target_loss = tf.log(-1. * label_ph * tf.reduce_mean(target_tensor))
+target_tensor = tf.get_default_graph().get_tensor_by_name("avgpool0:0")
+#target_tensor = tf.get_default_graph().get_tensor_by_name("head0_pool:0")
+target_loss = -1. * label_ph * tf.log(tf.reduce_mean(target_tensor))
 
 total_loss = target_loss + weights_loss
-train_step = tf.train.AdamOptimizer(1e1).minimize(total_loss)
+train_step = tf.train.AdamOptimizer(1e-1).minimize(total_loss)
 
 tf.global_variables_initializer().run()
-im = np.array(PIL.Image.open("out.jpg"), dtype=np.float32)
+#im = np.array(PIL.Image.open("out.jpg"), dtype=np.float32)
 #im = np.array(PIL.Image.open("style_small.jpg"), dtype=np.float32)
+im = np.array(PIL.Image.open("style_starry.jpg"), dtype=np.float32)
 
-layer_w = 'mixed4a_5x5_w:0'
-steps = 5
+#print(total_loss.eval(feed_dict = {'input:0':im, label_ph: (1.0,)}))
+#exit()
+
+layer = 'mixed4d_3x3_bottleneck_pre_relu:0'
+layer_w = 'mixed4d_3x3_w:0'
+#layer_w = 'mixed4a_5x5_w:0'
+steps = 10
 for i in range(steps):
 	#train_step.run({'input:0':np.array(im, dtype=np.float32)})
 	train_step.run({'input:0':im, label_ph: (1.0,)})
-	noise_im = np.random.uniform(0.0, 255.0, im.shape)
+	#noise_im = np.random.uniform(0.0, 255.0, im.shape)
+	noise_im = np.array(PIL.Image.open("test_small.jpg"), dtype=np.float32)
 	train_step.run({'input:0':noise_im, label_ph: (-1.0,)})
 	#if i % 100 == 0:
 	print("%d / %d" % (i, steps))
@@ -117,7 +125,7 @@ export_collection = tf.get_collection('export')
 output_graph_def = tf.graph_util.convert_variables_to_constants(
 		sess,
 		tf.get_default_graph().as_graph_def(),
-		["output"]
+		["output2"]
 )
 
 with tf.gfile.GFile('pretrained/frozen.pb', "wb") as f:
