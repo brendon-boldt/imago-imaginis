@@ -18,7 +18,22 @@ components, such as the home page and the profile page, while keeping the top he
               <a class="nav-link" routerLink="/app-upload" routerLinkActive="active">Upload</a>
           </li>
           <li class="nav-item">
+            <a class="nav-link" routerLink="/app-search" routerLinkActive="active">Search</a>
+          </li>
+          <!-- <li class="nav-item">
               <a class="nav-link" routerLink="/app-profile" routerLinkActive="active">Profile</a>
+          </li> -->
+          <li class="nav-item dropdown">
+            <a data-toggle="dropdown" class="nav-link dropdown" href="#">Profile <b class="caret"></b></a>
+            <ul class="dropdown-menu bg-dark">
+              <div class="dropdown-content">
+                <li class="link"><a href="#">View</a></li>
+                <li class="link"><a href="#">Settings</a></li>
+              </div>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/app-login" routerLinkActive="active">Log In</a>
           </li>
         </ul>
       </div>
