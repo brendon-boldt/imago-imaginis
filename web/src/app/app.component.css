@@ -13,6 +13,7 @@ header.masthead{
   height: 20%;
 }
 
+<<<<<<< HEAD
 /* For Profile navbar hover */
 @media (min-width: 979px) {
   li.dropdown:hover > ul.dropdown-menu {
@@ -34,4 +35,29 @@ header.masthead{
 
 .link > a:hover{
   color: lightgray;
+=======
+label{
+  margin-right: 30%;
+}
+
+.center{
+  margin-left: 50%;
+  margin-right: 50%;
+}
+
+.center-block {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.grid-center {
+  position: relative;
+  padding: 30px 0;
+}
+
+.img-border {
+  border: 2px; 
+  border-radius: 25px;
+>>>>>>> homepage
 }
