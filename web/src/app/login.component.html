@@ -1,33 +1,84 @@
 <!--This is the upload component, which is displayed underneath the app component.
   Allows for the user to upload photos to the platform.
 It is routed to when the user clicks on a router link-->
-<div class="container-fluid center-text">
-  <h3>Please Enter Your Email and Password</h3>
-  <h4>Don't have an account? <a href="register">Create account</a></h4>
-  <br>
-  <input class="input-box" name="user-email" placeholder="Email"><br><br>
+<div class="container-fluid">
+	<div class="center-text">
+		<div class="page-header">
+			<h1 class="display-2">Login</h1>
+		</div>
+		<hr>
+		<h4>Please Enter Your Email and Password<br>
+			<small>Don't have an account? <a href="register">Create account</a></small>
+		</h4>
+	</div>
+	<br>
+	<br>
+	<div class="container-fluid">
+		<div class="row">
+				<div class="col"></div>
+				<div class="col-md-4">
+						<form class="form-horizontal" role="form" data-toggle="validator">
+							<div class="form-group">
+								<label class="control-label" name="user-email">Email</label>
+								<input type="text" class="form-control">
+							</div>
+							<div class="form-group">
+								<label class="control-label" name="user-password">Password</label>
+								<input type="text" class="form-control">
+							</div>
+							<button type="button" class="button btn btn-primary btn-lg center-block" type="submit">Login</button>
+						</form>
+				</div>
+				<div class="col"></div>
+		</div>
+			
+	</div>
+	
+  <!-- <input class="input-box" name="user-email" placeholder="Email"><br><br>
   <input class="input-box" name="user-password" placeholder="Password"><br><br>
-  <input class="button" type="submit" value="Login">
+  <input class="button" type="submit" value="Login"> -->
   <br><br>
 
-  <div style="width:500px; margin:0 auto;">
+	<div class="container-fluid">
+		<div class="row justify-content-center">
+				<div class="col-md-4 center-text">
+					<img src="../assets/monalisa.jpg" class="img-border" alt="The Mona Lisa" height="150" width="100">
+					<br>
+					<p class="lead">Upload an image</p>
+				</div>
+				<div class="col-md-4 center-text">
+					<img src="../assets/starrynight.jpg" class="img-border" alt="Starry Night" height="150" width="210">
+					<br>
+					<p class="lead">Choose a style</p>
+				</div>
+				<div class="col-md-4 center-text">
+					<img src="../assets/styledmonalisa.jpg" class="img-border" alt="Style transfers of the Mona Lisa" height="150" width="250">
+					<br>
+					<p class="lead">Share!</p>
+				</div>
+		</div>
+	</div>
+
+
+  <!-- <div style="width:500px; margin:0 auto;">
 	<div style="float:left; width:200px;">
-		<img src="http://cumbrianrun.co.uk/wp-content/uploads/2014/02/default-placeholder-300x300.png" alt="Image caption" height="100" width="100">
+		<img src="../assets/monalisa.jpg" class="center-block img-border" alt="The Mona Lisa" height="150" width="100">
 		<br>
 		Upload an image
 	</div>
+	
 	<div style="float:left; width:100px;">
-		<img src="http://cumbrianrun.co.uk/wp-content/uploads/2014/02/default-placeholder-300x300.png" alt="Image caption" height="100" width="100">
+		<img src="../assets/starrynight.jpg" class="center-block img-border" alt="Starry Night" height="150" width="210">
 		<br>
 		Choose a style
 	</div>
 	<div style="float:left; width:200px;">
-		<img src="http://cumbrianrun.co.uk/wp-content/uploads/2014/02/default-placeholder-300x300.png" alt="Image caption" height="100" width="100">
+		<img src="../assets/styledmonalisa.jpg" class="center-block img-border" alt="Style transfers of the Mona Lisa" height="100" width="180">
 		<br>
 		Share!
-	</div>
+	</div> -->
 	<br style="clear: left;"/>
-  </div>
+  <!-- </div> -->
   <br>  
 
 </div>
