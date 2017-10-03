@@ -51,6 +51,11 @@ label{
   margin-right: auto;
 }
 
+.center-row-contents {
+  float: none; 
+  margin: 0 auto;
+}
+
 .grid-center {
   position: relative;
   padding: 30px 0;
@@ -59,4 +64,14 @@ label{
 .img-border {
   border: 2px; 
   border-radius: 25px;
+}
+
+.content {
+  min-height: calc(100vh);
+}
+.footer {
+  line-height: 100px;
+  background-color: grey; 
+  text-align: center;
+  min-height: 50px;
 }

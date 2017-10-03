@@ -17,6 +17,7 @@ import { ReportComponent } from './report.component';
 import { SelectStyleComponent } from './select-style.component';
 import { RegisterComponent } from './register.component';
 import { SystemStatsComponent } from './system-stats.component';
+import { SearchComponent } from './search.component';
 
 @NgModule({
   declarations: [
@@ -26,9 +27,10 @@ import { SystemStatsComponent } from './system-stats.component';
     UploadComponent,
     LoginComponent,
     ReportComponent,
-	SelectStyleComponent,
-	RegisterComponent,
-	SystemStatsComponent
+    SelectStyleComponent,
+    RegisterComponent,
+    SystemStatsComponent,
+    SearchComponent
   ],
   imports: [
     BrowserModule,
