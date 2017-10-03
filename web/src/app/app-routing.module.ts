@@ -15,7 +15,7 @@ import { SystemStatsComponent } from './system-stats.component';
 
 //The different routes correspond to different components to load based on the route selected
 const appRoutes: Routes = [
-  { path: '', redirectTo: '/app-home', pathMatch: 'full' },
+  { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'home', component: HomeComponent },
   { path: 'profile', component: ProfileComponent },
   { path: 'upload', component: UploadComponent },
