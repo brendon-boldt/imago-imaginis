@@ -3,7 +3,7 @@
  * Here, we reference app.component.html as the HTML for this component, as well as the css
  */
 import { Component } from '@angular/core';
-import { RouterModule, Routes, Router } from '@angular/router';
+import { RouterModule, Routes, Router, NavigationEnd } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -13,4 +13,16 @@ import { RouterModule, Routes, Router } from '@angular/router';
 export class AppComponent {
   //The title that is displayed in the header. Example of two-way data binding.
   title = 'Artistic Stylizer Platform';
+  constructor(private router: Router) { }
+  
+  ngOnInit() {
+      // This will make the window scroll to the top of the page
+      // whenever the user is router to another page
+      this.router.events.subscribe((evt) => {
+          if (!(evt instanceof NavigationEnd)) {
+              return;
+          }
+          window.scrollTo(0, 0)
+      });
+  }
 }
