@@ -6,7 +6,7 @@ import { Component } from '@angular/core';
 import { RouterModule, Routes, Router } from '@angular/router';
 
 @Component({
-  selector: 'app-upload',
+  selector: 'upload',
   templateUrl: './upload.component.html',
   styleUrls: ['./app.component.css']
 })

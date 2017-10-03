@@ -6,9 +6,9 @@ import { Component } from '@angular/core';
 import { RouterModule, Routes, Router } from '@angular/router';
 
 @Component({
-  selector: 'login',
-  templateUrl: './login.component.html',
+  selector: 'system-stats',
+  templateUrl: './system-stats.component.html',
   styleUrls: ['./app.component.css']
 })
-export class LoginComponent {
+export class SystemStatsComponent {
 }

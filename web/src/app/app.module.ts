@@ -14,6 +14,9 @@ import { ProfileComponent } from './profile.component';
 import { UploadComponent } from './upload.component';
 import { LoginComponent } from './login.component';
 import { ReportComponent } from './report.component';
+import { SelectStyleComponent } from './select-style.component';
+import { RegisterComponent } from './register.component';
+import { SystemStatsComponent } from './system-stats.component';
 
 @NgModule({
   declarations: [
@@ -22,7 +25,10 @@ import { ReportComponent } from './report.component';
     ProfileComponent,
     UploadComponent,
     LoginComponent,
-    ReportComponent
+    ReportComponent,
+	SelectStyleComponent,
+	RegisterComponent,
+	SystemStatsComponent
   ],
   imports: [
     BrowserModule,

@@ -9,15 +9,21 @@ import { ProfileComponent } from './profile.component';
 import { UploadComponent } from './upload.component';
 import { LoginComponent } from './login.component';
 import { ReportComponent } from './report.component';
+import { SelectStyleComponent } from './select-style.component';
+import { RegisterComponent } from './register.component';
+import { SystemStatsComponent } from './system-stats.component';
 
 //The different routes correspond to different components to load based on the route selected
 const appRoutes: Routes = [
   { path: '', redirectTo: '/app-home', pathMatch: 'full' },
-  { path: 'app-home', component: HomeComponent },
-  { path: 'app-profile', component: ProfileComponent },
-  { path: 'app-upload', component: UploadComponent },
-  { path: 'app-login', component: LoginComponent },
-  { path: 'app-report', component: ReportComponent }
+  { path: 'home', component: HomeComponent },
+  { path: 'profile', component: ProfileComponent },
+  { path: 'upload', component: UploadComponent },
+  { path: 'login', component: LoginComponent },
+  { path: 'report', component: ReportComponent },
+  { path: 'select-style', component: SelectStyleComponent },
+  { path: 'register', component: RegisterComponent },
+  { path: 'system-stats', component: SystemStatsComponent }
 ];
 
 @NgModule({
