@@ -13,6 +13,6 @@ import { RouterModule, Routes, Router } from '@angular/router';
 export class HomeComponent {
   constructor(private router: Router){}
   btnClick = function(){
-    this.router.navigate(['/login']);
+    this.router.navigate(['login']);
   }
 }
