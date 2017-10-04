@@ -1,34 +1,64 @@
 <!--This is the upload component, which is displayed underneath the app component.
   Allows for the user to upload photos to the platform.
 It is routed to when the user clicks on a router link-->
-<div class="container-fluid center-text">
-  <h3>Stylize Image</h3>
+<div class="container-fluid">
+	<div class="center-text">
+		<div class="page-header">
+			<h1 class="display-2">Stylize Image</h1>
+		</div>
+		<hr>
+	</div>
+
+  <!-- <h3>Stylize Image</h3> -->
   <br>
-  <div style="width:900px; margin:0 auto;">
-	<div style="float:left; width:300px;">
-		Your Image:
+  <!-- <div style="width:900px; margin:0 auto;"> -->
+	<!-- <div style="float:left; width:300px;"> -->
+		<!-- Your Image: -->
 		<br>
-		<img src="http://cumbrianrun.co.uk/wp-content/uploads/2014/02/default-placeholder-300x300.png" alt="Image caption" height="100" width="100">
+<div class="container">
+	<div class="row justify-content-center align-items-center">
+		<div class="col-md-3 center-text">
+			<img src="../assets/monalisa.jpg" alt="uploaded_image" class="img-border" style="width: 200px; height: auto;">
+			<p class="lead">Choose a style</p>
+		</div>
+		<div class="col-md-3 center-text">
+			<div class="dropdown">
+				<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 200px;">
+					{{selectedStyle.style}}
+				</button>
+				<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="width: 200px;">
+					<li *ngFor="let style of styles"><a class="dropdown-item" (click)="update(style)">{{style.style}}</a></li>
+				</ul>
+			</div>
+		</div>
+		<div class="col-md-3 center-text">
+			<img [src]="selectedStyle.example" class="img-border" alt="style_image" style="width: 200px; height: auto;">
+			<p class="lead">Style Example</p>
+		</div>
 	</div>
-	<div style="float:left; width:300px;">
-		Choose a style:
-		<br>
-		<select name="style">
-			<option value="cubism">Cubism</option>
-			<option value="flowers">Flowers</option>
-			<option value="starry-night">Starry Night</option>
-			<option value="oil-painting">Oil Painting</option>
-			<option value="impressionism">Impressionism</option>
-			<option value="custom" disabled>Custom</option>
-		</select>
-	</div>
-	<div style="float:left; width:300px;">
-		Generate Image:
-		<br>
-		<img src="http://cumbrianrun.co.uk/wp-content/uploads/2014/02/default-placeholder-300x300.png" alt="Image caption" height="100" width="100">
-	</div>
-	<br style="clear:left;"/>
-  </div>
-  <br>
+</div>
+		
 </div>
 
+<!-- <img src="http://cumbrianrun.co.uk/wp-content/uploads/2014/02/default-placeholder-300x300.png" alt="Image caption" height="100" width="100"> -->
+<!-- </div> -->
+<!-- <div style="float:left; width:300px;"> -->
+	<!-- Choose a style:
+	<br>
+	<select name="style">
+		<option value="cubism">Cubism</option>
+		<option value="flowers">Flowers</option>
+		<option value="starry-night">Starry Night</option>
+		<option value="oil-painting">Oil Painting</option>
+		<option value="impressionism">Impressionism</option>
+		<option value="custom" disabled>Custom</option>
+	</select> -->
+<!-- </div> -->
+<!-- <div style="float:left; width:300px;"> -->
+	<!-- Generate Image: -->
+	<!-- <br> -->
+	<!-- <img src="http://cumbrianrun.co.uk/wp-content/uploads/2014/02/default-placeholder-300x300.png" alt="Image caption" height="100" width="100"> -->
+<!-- </div> -->
+<br style="clear:left;"/>
+<!-- </div> -->
+<br>

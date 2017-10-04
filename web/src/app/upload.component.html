@@ -18,6 +18,7 @@ It is routed to when the user clicks on a router link-->
         <div class="input-group">
           <input type="text" class="form-control" name="image-url" placeholder="Enter URL"><br><br>
           <span class="input-group-btn">
+            <!-- Validate -->
             <button type="button" class="button btn btn-primary btn-lg" type="submit">Enter</button>
           </span>
         </div>
@@ -26,7 +27,9 @@ It is routed to when the user clicks on a router link-->
     <br>
     <div class="row">
       <div class="center-row-contents">
-        <button type="button" class="button btn btn-primary btn-lg" type="submit" value="Browse">Browse</button>
+        <label class="button btn btn-primary btn-lg">
+            Browse <input type="file" hidden>
+        </label>
       </div>
     </div>
     <br><br>  
