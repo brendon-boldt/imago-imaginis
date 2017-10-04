@@ -11,4 +11,8 @@ import { RouterModule, Routes, Router } from '@angular/router';
   styleUrls: ['./app.component.css']
 })
 export class UploadComponent {
+  constructor(private router: Router){}
+  btnClick = function(){
+    this.router.navigate(['select-style']);
+  }
 }

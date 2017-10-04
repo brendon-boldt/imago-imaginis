@@ -1,7 +1,7 @@
-<!--This is the upload component, which is displayed underneath the app component.
-  Allows for the user to upload photos to the platform.
+<!--This is the register component, which is displayed underneath the app component.
+  Allows for the user to register for an account to the platform.
 It is routed to when the user clicks on a router link-->
-<div class="container-fluid center-text">
+<!-- <div class="container-fluid center-text">
   <h3>Please Enter Your Details Below To</h3>
   <h3>Register For An Account</h3>
   <br>
@@ -9,27 +9,71 @@ It is routed to when the user clicks on a router link-->
   <input class="input-box" name="user-email" placeholder="Email"><br><br>
   <input class="input-box" name="user-password" placeholder="Password"><br><br>
   <input class="input-box" name="user-confirm-password" placeholder="Confirm password"><br><br>
-  <input class="button" type="submit" value="Login">
+	<input class="button" type="submit" value="Login"> -->
+	<div class="container-fluid">
+		<div class="center-text">
+			<div class="page-header">
+				<h1 class="display-2">Register</h1>
+			</div>
+			<h3 class="lead">Please enter your details below to register for an account</h3>
+			<hr>
+			<!-- <h4>Please enter your details below to register for an account</h4> -->
+		</div>
+		<br>
+		<br>
+		<div class="container-fluid">
+			<div class="row">
+					<div class="col"></div>
+					<div class="col-md-4">
+							<form class="form-horizontal" role="form" data-toggle="validator">
+								<div class="form-group">
+									<label class="control-label" name="user-fname">First Name<font color="red">*</font></label>
+									<input type="text" class="form-control">
+								</div>
+								<div class="form-group">
+									<label class="control-label" name="user-lname">Last Name<font color="red">*</font></label>
+									<input type="text" class="form-control">
+								</div>
+								<div class="form-group">
+									<label class="control-label" name="user-email">Email<font color="red">*</font></label>
+									<input type="text" class="form-control">
+								</div>
+								<div class="form-group">
+									<label class="control-label" name="user-password">Password<font color="red">*</font></label>
+									<input type="text" class="form-control">
+								</div>
+								<div class="form-group">
+									<label class="control-label" name="user-confirm">Confirm Password<font color="red">*</font></label>
+									<input type="text" class="form-control">
+								</div>
+								<button type="button" class="button btn btn-primary btn-lg center-block" type="submit">Login</button>
+							</form>
+					</div>
+					<div class="col"></div>
+			</div>
+				
+		</div>
   <br><br>
 
-  <div style="width:500px; margin:0 auto;">
-	<div style="float:left; width:200px;">
-		<img src="http://cumbrianrun.co.uk/wp-content/uploads/2014/02/default-placeholder-300x300.png" alt="Image caption" height="100" width="100">
-		<br>
-		Upload an image
+  <div class="container-fluid">
+		<div class="row">
+				<div class="col-md-4 center-text">
+					<img src="../assets/monalisa.jpg" class="img-border" alt="The Mona Lisa" height="150" width="100">
+					<br>
+					<p class="lead">Upload an image</p>
+				</div>
+				<div class="col-md-4 center-text">
+					<img src="../assets/starrynight.jpg" class="img-border" alt="Starry Night" height="150" width="210">
+					<br>
+					<p class="lead">Choose a style</p>
+				</div>
+				<div class="col-md-4 center-text">
+					<img src="../assets/styledmonalisa.jpg" class="img-border" alt="Style transfers of the Mona Lisa" height="150" width="250">
+					<br>
+					<p class="lead">Share!</p>
+				</div>
+		</div>
 	</div>
-	<div style="float:left; width:100px;">
-		<img src="http://cumbrianrun.co.uk/wp-content/uploads/2014/02/default-placeholder-300x300.png" alt="Image caption" height="100" width="100">
-		<br>
-		Choose a style
-	</div>
-	<div style="float:left; width:200px;">
-		<img src="http://cumbrianrun.co.uk/wp-content/uploads/2014/02/default-placeholder-300x300.png" alt="Image caption" height="100" width="100">
-		<br>
-		Share!
-	</div>
-	<br style="clear: left;"/>
-  </div>
   <br>  
 
 </div>
