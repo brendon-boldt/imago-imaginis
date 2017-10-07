@@ -1,0 +1,61 @@
+<!-- This is the main component of the web application.
+This component is for the top section of the web application (e.g. the header).
+Since this part stays mostly constant in site navigation, we want to keep this persistent across
+different components. Therefore, we have a router outlet at the end which will display different
+components, such as the home page and the profile page, while keeping the top header/app component. -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top" role="navigation">
+  <div class="container-fluid">
+      <a class="navbar-brand" href="#">{{title}}</a> <!-- Two-way data binding -->
+      <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarResponsive">
+        <ul class="navbar-nav ml-auto">
+          <li class="nav-item">
+              <a class="nav-link" routerLink="/home" routerLinkActive="active">Home</a>
+          </li>
+          <li class="nav-item">
+              <a class="nav-link" routerLink="/upload" routerLinkActive="active">Upload</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/search" routerLinkActive="active">Search</a>
+          </li>
+          <!-- <li class="nav-item">
+              <a class="nav-link" routerLink="/app-profile" routerLinkActive="active">Profile</a>
+          </li> -->
+          <li class="nav-item dropdown">
+            <a data-toggle="dropdown" class="nav-link dropdown" href="#">Profile <b class="caret"></b></a>
+            <ul class="dropdown-menu bg-dark">
+              <div class="dropdown-content">
+                <li class="link"><a href="#" routerLink="/profile" routerLinkActive="active">View</a></li>
+                <li class="link"><a href="#">Settings</a></li>
+              </div>
+            </ul>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" routerLink="/login" routerLinkActive="active">Log In</a>
+          </li>
+        </ul>
+      </div>
+  </div>
+</nav>
+<header class="masthead">
+  <div class="overlay">
+    <div class="container">
+      <h1 class="display-2 text-white">&nbsp;</h1>
+    </div>
+  </div>
+</header> 
+<div class="container-fluid content">
+  <!-- Here different components are displayed based on the current routed component -->
+  <router-outlet></router-outlet>
+  <br><br><br> <!--Put this in a footer file -->
+</div>
+<!-- <div class="container-fluid footer">
+    <small>2017 © Pablo Rivas, Brendon Boldt, Zachary Recolan, Leo Keefe, Antonio DelVecchio, Kai Wong</small>
+</div> -->
+<footer class="footer">
+  <div class="container-fluid">
+    <span>2017 © Pablo Rivas, Brendon Boldt, Zachary Recolan, Leo Keefe, Antonio DelVecchio, Kai Wong</span>
+  </div>
+</footer>

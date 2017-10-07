@@ -1,0 +1,1 @@
+Open UI_Mockups.html in a browser window to view the mockups.

@@ -1,0 +1,37 @@
+<!--This is the upload component, which is displayed underneath the app component.
+  Allows for the user to upload photos to the platform.
+It is routed to when the user clicks on a router link-->
+<div class="container-fluid">
+  <div class="center-text">
+    <div class="page-header">
+      <h1 class="display-2">Upload Image</h1>
+    </div>
+    <!-- <h3 class="lead">Here, we transform your images based on an art style of your choosing, to create something new and totally cool.</h3> -->
+    <hr>
+    <h4>Enter URL or click browse to upload</h4>
+    <br>
+    <!-- <input class="input-box" name="image-url" placeholder="Enter URL"><br><br>
+    <button type="button" class="button btn btn-primary btn-lg" type="submit" value="Browse">Browse</button> -->
+  </div>
+  <div class="row">
+      <div class="col-md-4 center-row-contents">
+        <div class="input-group">
+          <input type="text" class="form-control" name="image-url" placeholder="Enter URL"><br><br>
+          <span class="input-group-btn">
+            <!-- Validate -->
+            <button type="button" class="button btn btn-primary btn-lg" type="submit" (click)="this.btnClick();">Enter</button>
+          </span>
+        </div>
+      </div>
+    </div>
+    <br>
+    <div class="row">
+      <div class="center-row-contents">
+        <label class="button btn btn-primary btn-lg">
+            Browse <input type="file" hidden>
+        </label>
+      </div>
+    </div>
+    <br><br>  
+</div>
+

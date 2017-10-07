@@ -1,0 +1,77 @@
+/**
+* This is the Cascasding Style Sheets for the web application
+*/
+
+/* This affects the styling of the top navbar */
+nav{
+  width: 100%;
+}
+/* This affects the styling of the header */
+header.masthead{
+  background: url("../assets/starrynight.jpg") no-repeat center scroll;
+  background-size: cover;
+  height: 20%;
+}
+
+/* For Profile navbar hover */
+@media (min-width: 979px) {
+  li.dropdown:hover > ul.dropdown-menu {
+    display: block;
+  }
+}
+
+.dropdown-menu{
+  min-width: 20px !important;
+  margin-top: -1px;
+}
+
+.dropdown-content a {
+  color: grey;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+.link > a:hover{
+  color: lightgray;
+}
+
+label{
+  margin-right: 30%;
+}
+
+.center{
+  margin-left: 50%;
+  margin-right: 50%;
+}
+
+.center-block {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.center-row-contents {
+  float: none; 
+  margin: 0 auto;
+}
+
+.grid-center {
+  position: relative;
+  padding: 30px 0;
+}
+
+.img-border {
+  border: 2px; 
+  border-radius: 25px;
+}
+
+.content {
+  min-height: calc(100vh);
+}
+.footer {
+  line-height: 100px;
+  background-color: grey; 
+  text-align: center;
+  min-height: 50px;
+}
