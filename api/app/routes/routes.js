@@ -13,7 +13,20 @@ module.exports = function(app) {
     }
     res.json({ message: response });
     */
-    return stylizer.startStyle()
+	  
+        //const contentPath = '/tmp/style/cornell.jpg';
+        //const contentPath = '/tmp/style/cornell.jpg';
+        //const contentSize = 32;
+        //const stylePath = '/tmp/style/woman_in_peasant_dress.jpg';
+        //const stylePath = '/tmp/style/woman_with_hat_matisse.jpg';
+        //const styleSize = 32;
+	let runParams = {
+		contentPath : '/tmp/style/cornell.jpg',
+		contentSize : 32,
+		stylePath : '/tmp/style/woman_in_peasant_dress.jpg',
+		styleSize : 32
+	};
+    return stylizer.startStyle(runParams)
       .catch((err) => {
         throw err;
       })
