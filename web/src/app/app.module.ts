@@ -19,6 +19,9 @@ import { RegisterComponent } from './register.component';
 import { SystemStatsComponent } from './system-stats.component';
 import { SearchComponent } from './search.component';
 
+//References to all the services in the application
+import { DBService } from './services/db.service';
+
 @NgModule({
   declarations: [
     AppComponent,
@@ -36,7 +39,9 @@ import { SearchComponent } from './search.component';
     BrowserModule,
     AppRoutingModule
   ],
-  providers: [],
+  providers: [
+    DBService
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
