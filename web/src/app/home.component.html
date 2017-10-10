@@ -6,32 +6,36 @@
           <p>Here, we transform your images based on an art style of your choosing, to create something new and totally cool.</p>
           <a class="btn btn-primary btn-xl js-scroll-trigger" href="#about">Get Started</a>
           <br><br>
-          <div class="card-group">
-              <div class="card">
-                <img class="card-img-top" src="..." alt="Card image cap">
-                <div class="card-block">
-                  <h4 class="card-title">Card title</h4>
-                  <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This content is a little bit longer.</p>
-                  <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                </div>
+          <div class="card-deck" id="card-deck">
+            <div class="card">
+              <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->
+              <div class="card-block">
+                <!-- <h4 class="card-title">Create an Account</h4> -->
+                <img [src]="this.keyboard" id="card-img">
+                <!-- <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> -->
               </div>
-              <div class="card">
-                <img class="card-img-top" src="..." alt="Card image cap">
-                <div class="card-block">
-                  <h4 class="card-title">Card title</h4>
-                  <p class="card-text">This card has supporting text below as a natural lead-in to additional content.</p>
-                  <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                </div>
-              </div>
-              <div class="card">
-                <img class="card-img-top" src="..." alt="Card image cap">
-                <div class="card-block">
-                  <h4 class="card-title">Card title</h4>
-                  <p class="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.</p>
-                  <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p>
-                </div>
-              </div>
+              Sign Up
             </div>
+            <div class="card">
+              <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->
+              <div class="card-block">
+                <!-- <h4 class="card-title">Upload</h4> -->
+                <img [src]="this.upload" id="card-img">
+                <!-- <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> -->
+              </div>
+              Upload
+            </div>
+            <div class="card">
+              <!-- <img class="card-img-top" src="..." alt="Card image cap"> -->
+              <div class="card-block">
+                <!-- <h4 class="card-title">Style and Share!</h4> -->
+                <img [src]="this.style" id="card-img">
+                <!-- <p class="card-text" id="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.</p> -->
+                <!-- <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> -->
+              </div>
+              Style and Share!
+            </div>
+          </div>
         </div>
       </div>
     </header>

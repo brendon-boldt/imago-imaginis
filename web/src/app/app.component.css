@@ -85,8 +85,10 @@ body {
   -moz-transition: all 0.2s;
   transition: all 0.2s; }
   #mainNav .navbar-brand {
-    font-size: 2vh;
+    /* font-size: 2vh; */
     font-weight: 700;
+    white-space: normal;
+    width: 500px;
     text-transform: uppercase;
     color: lightskyblue;
     font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif; }
@@ -169,9 +171,9 @@ header.masthead:before{
   left: 0;
   top: 0;
   width: 100%;
-  /* height: 100vh; */
-  min-height: calc(100vh);
-  height: calc(100vh);
+  height: 100%;
+  /* min-height: calc(100vh);
+  height: calc(100vh); */
   z-index: 1;
   background-position: 50% 0;
   -ms-background-size: cover;
@@ -196,11 +198,12 @@ header.masthead .header-content {
   header.masthead .header-content .header-content-inner p {
     font-size: 16px;
     font-weight: 300;
-    margin-bottom: 50px;
+    /* margin-bottom: 50px; */
     color: rgba(255, 255, 255, 0.7); }
-@media (min-width: 768px) {
+@media (min-width: 992px) {
   header.masthead {
-    height: 100vh;
+    /* height: 100vh; */
+    height: 1000px;
     min-height: 600px; }
     header.masthead .header-content {
       position: absolute;
@@ -379,3 +382,22 @@ margin: 50px auto 0; }
   background-color: grey; 
   text-align: center;
   min-height: 50px; }
+
+#card-deck {
+  color: black;
+}
+
+#card-text {
+  color: black;
+}
+
+#card-img {
+  object-fit: cover;
+  width: 100%;
+  height: 255px;
+}
+
+.card {
+  background-color: lightskyblue;
+  color: white;
+}

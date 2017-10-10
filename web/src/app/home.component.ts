@@ -12,6 +12,13 @@ import { RouterModule, Routes, Router } from '@angular/router';
 })
 export class HomeComponent {
   constructor(private router: Router){}
+  public keyboard: String = "../assets/keyboard.jpg";
+  public upload: String = "../assets/upload.jpg";
+  public style: String = "../assets/style.jpg";
+  public one: String = "../assets/chicago_cropped.jpg";
+  public two: String = "../assets/sailboat_cropped.jpg";
+  public three: String = "../assets/modern_cropped.jpg";
+  public four: String = "../assets/cornell_cropped.jpg";
   btnClick = function(){
     this.router.navigate(['login']);
   }
