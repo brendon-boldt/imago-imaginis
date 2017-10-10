@@ -1,7 +1,66 @@
-<!--This is the upload component, which is displayed underneath the app component.
-  Allows for the user to upload photos to the platform.
+<!--This is the login component, which is displayed underneath the app component.
+  Allows for the user to login to the platform.
 It is routed to when the user clicks on a router link-->
-<div class="container-fluid">
+<header class="masthead">
+	<div class="header-content">
+	<div class="header-content-inner">
+		<h1 id="homeHeading">Login</h1>
+		<hr>
+		<p>Please enter your email and password<br><small>Don't have an account? <a routerLink="/register" routerLinkActive="active">Create account</a></small></p>
+		<div class="container-fluid">
+		<div class="row">
+			<div class="col"></div>
+			<div class="col-md-4">
+				<form class="form-horizontal" role="form" data-toggle="validator">
+					<div class="form-group">
+						<label class="control-label" name="user-email">Email</label>
+						<input type="email" class="form-control">
+					</div>
+					<div class="form-group">
+						<label class="control-label" name="user-password">Password</label>
+						<input type="password" class="form-control">
+					</div>
+					<button type="button" class="button btn btn-primary btn-xl js-scroll-trigger center-block" type="submit">Login</button>
+				</form>
+			</div>
+			<div class="col"></div>
+		</div>
+	</div>
+	<br><br>
+	<div class="card-deck" id="card-deck">
+		<div class="card">
+			<!-- <img class="card-img-top" src="..." alt="Card image cap"> -->
+			<div class="card-block">
+			<!-- <h4 class="card-title">Create an Account</h4> -->
+			<img [src]="this.keyboard" id="card-img">
+			<!-- <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> -->
+			</div>
+			Sign Up
+		</div>
+		<div class="card">
+			<!-- <img class="card-img-top" src="..." alt="Card image cap"> -->
+			<div class="card-block">
+			<!-- <h4 class="card-title">Upload</h4> -->
+			<img [src]="this.upload" id="card-img">
+			<!-- <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> -->
+			</div>
+			Upload
+		</div>
+		<div class="card">
+			<!-- <img class="card-img-top" src="..." alt="Card image cap"> -->
+			<div class="card-block">
+			<!-- <h4 class="card-title">Style and Share!</h4> -->
+			<img [src]="this.style" id="card-img">
+			<!-- <p class="card-text" id="card-text">This is a wider card with supporting text below as a natural lead-in to additional content. This card has even longer content than the first to show that equal height action.</p> -->
+			<!-- <p class="card-text"><small class="text-muted">Last updated 3 mins ago</small></p> -->
+			</div>
+			Style and Share!
+		</div>
+	</div>
+	</div>
+	</div>
+</header>
+<!--<div class="container-fluid">
 	<div class="center-text">
 		<div class="page-header">
 			<h1 class="display-2">Login</h1>
@@ -15,29 +74,29 @@ It is routed to when the user clicks on a router link-->
 	<br>
 	<div class="container-fluid">
 		<div class="row">
-				<div class="col"></div>
-				<div class="col-md-4">
-						<form class="form-horizontal" role="form" data-toggle="validator">
-							<div class="form-group">
-								<label class="control-label" name="user-email">Email</label>
-								<input type="text" class="form-control">
-							</div>
-							<div class="form-group">
-								<label class="control-label" name="user-password">Password</label>
-								<input type="text" class="form-control">
-							</div>
-							<button type="button" class="button btn btn-primary btn-lg center-block" type="submit">Login</button>
-						</form>
-				</div>
-				<div class="col"></div>
+			<div class="col"></div>
+			<div class="col-md-4">
+				<form class="form-horizontal" role="form" data-toggle="validator">
+					<div class="form-group">
+						<label class="control-label" name="user-email">Email</label>
+						<input type="text" class="form-control">
+					</div>
+					<div class="form-group">
+						<label class="control-label" name="user-password">Password</label>
+						<input type="text" class="form-control">
+					</div>
+					<button type="button" class="button btn btn-primary btn-lg center-block" type="submit">Login</button>
+				</form>
+			</div>
+			<div class="col"></div>
 		</div>
 			
-	</div>
+	</div>-->
 	
   <!-- <input class="input-box" name="user-email" placeholder="Email"><br><br>
   <input class="input-box" name="user-password" placeholder="Password"><br><br>
   <input class="button" type="submit" value="Login"> -->
-  <br><br>
+  <!--<br><br>
 
 	<div class="container-fluid">
 		<div class="row">
@@ -57,7 +116,7 @@ It is routed to when the user clicks on a router link-->
 					<p class="lead">Share!</p>
 				</div>
 		</div>
-	</div>
+	</div>-->
 
 
   <!-- <div style="width:500px; margin:0 auto;">
@@ -77,9 +136,9 @@ It is routed to when the user clicks on a router link-->
 		<br>
 		Share!
 	</div> -->
-	<br style="clear: left;"/>
+	<!--<br style="clear: left;"/>-->
   <!-- </div> -->
-  <br>  
+  <!--<br>  -->
 
-</div>
+<!--</div>-->
 
