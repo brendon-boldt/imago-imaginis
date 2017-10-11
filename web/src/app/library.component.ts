@@ -1,16 +1,16 @@
 /**
- * This is the TypeScript backend for the home component.
- * Here, we reference home.component.html as the HTML for this component, as well as the app's css
+ * This is the TypeScript backend for the library component.
+ * Here, we reference library.component.html as the HTML for this component, as well as the app's css
  */
 import { Component } from '@angular/core';
 import { RouterModule, Routes, Router } from '@angular/router';
 
 @Component({
-  selector: 'home',
-  templateUrl: './home.component.html',
+  selector: 'library',
+  templateUrl: './library.component.html',
   styleUrls: ['./app.component.css']
 })
-export class HomeComponent {
+export class LibraryComponent {
   constructor(private router: Router){}
   public keyboard: String = "../assets/keyboard.jpg";
   public upload: String = "../assets/upload.jpg";
