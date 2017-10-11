@@ -5,6 +5,9 @@
 import { Component } from '@angular/core';
 import { RouterModule, Routes, Router, NavigationEnd } from '@angular/router';
 
+// Importing user service so can keep track of the user
+import { UserService } from './services/user.service';
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -13,8 +16,7 @@ import { RouterModule, Routes, Router, NavigationEnd } from '@angular/router';
 export class AppComponent {
   //The title that is displayed in the header. Example of two-way data binding.
   title = 'Artistic Stylizer Platform';
-  constructor(private router: Router) { }
-  
+  constructor(private router: Router, private user: UserService) {}
   ngOnInit() {
       // This will make the window scroll to the top of the page
       // whenever the user is router to another page
@@ -24,5 +26,8 @@ export class AppComponent {
           }
           window.scrollTo(0, 0)
       });
+  }
+  logOut = function(){
+    this.user.isLoggedIn = false;
   }
 }

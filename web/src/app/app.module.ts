@@ -5,7 +5,9 @@
 //Imports for the modules
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { AppRoutingModule } from './app-routing.module';
+import { AppRoutingModule } from './app-routing.module'; // This module allows for the routing between pages
+import { HttpModule } from '@angular/http'; // This module allows us to make HTTP calls
+import { FormsModule } from '@angular/forms'; // This module allows us to have two-way data binding in forms
 
 //References to all the components in the application
 import { AppComponent } from './app.component';
@@ -22,6 +24,7 @@ import { LibraryComponent } from './library.component';
 
 //References to all the services in the application
 import { DBService } from './services/db.service';
+import { UserService } from './services/user.service';
 
 @NgModule({
   declarations: [
@@ -39,10 +42,13 @@ import { DBService } from './services/db.service';
   ],
   imports: [
     BrowserModule,
-    AppRoutingModule
+    AppRoutingModule,
+    HttpModule,
+    FormsModule
   ],
   providers: [
-    DBService
+    DBService,
+    UserService
   ],
   bootstrap: [AppComponent]
 })
