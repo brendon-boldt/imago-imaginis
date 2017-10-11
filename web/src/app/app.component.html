@@ -20,15 +20,13 @@ components, such as the home page and the profile page, while keeping the top he
           <li class="nav-item">
             <a class="nav-link" routerLink="/search" routerLinkActive="active">Search</a>
           </li>
-          <!-- <li class="nav-item">
-              <a class="nav-link" routerLink="/app-profile" routerLinkActive="active">Profile</a>
-          </li> -->
           <li class="nav-item dropdown">
-            <a data-toggle="dropdown" class="nav-link dropdown" href="#">Profile <b class="caret"></b></a>
+            <a data-toggle="dropdown" class="nav-link dropdown">Profile <b class="caret"></b></a>
             <ul class="dropdown-menu">
               <div class="dropdown-content">
-                <li class="nav-item"><a class="nav-link" href="#" routerLink="/profile" routerLinkActive="active">View</a></li>
-                <li class="nav-item"><a class="nav-link" href="#">Settings</a></li>
+                <li class="nav-item"><a class="nav-link" routerLink="/profile" routerLinkActive="active">View</a></li>
+                <li class="nav-item"><a class="nav-link" routerLink="/library" routerLinkActive="active">Library</a></li>
+                <li class="nav-item"><a class="nav-link">Settings</a></li>
               </div>
             </ul>
           </li>

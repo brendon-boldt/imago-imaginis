@@ -13,6 +13,7 @@ import { SelectStyleComponent } from './select-style.component';
 import { RegisterComponent } from './register.component';
 import { SystemStatsComponent } from './system-stats.component';
 import { SearchComponent } from './search.component';
+import { LibraryComponent } from './library.component';
 
 //The different routes correspond to different components to load based on the route selected
 const appRoutes: Routes = [
@@ -25,7 +26,8 @@ const appRoutes: Routes = [
   { path: 'select-style', component: SelectStyleComponent },
   { path: 'register', component: RegisterComponent },
   { path: 'system-stats', component: SystemStatsComponent },
-  { path: 'search', component: SearchComponent }
+  { path: 'search', component: SearchComponent },
+  { path: 'library', component: LibraryComponent }
 ];
 
 @NgModule({

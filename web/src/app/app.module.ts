@@ -18,6 +18,7 @@ import { SelectStyleComponent } from './select-style.component';
 import { RegisterComponent } from './register.component';
 import { SystemStatsComponent } from './system-stats.component';
 import { SearchComponent } from './search.component';
+import { LibraryComponent } from './library.component';
 
 //References to all the services in the application
 import { DBService } from './services/db.service';
@@ -33,7 +34,8 @@ import { DBService } from './services/db.service';
     SelectStyleComponent,
     RegisterComponent,
     SystemStatsComponent,
-    SearchComponent
+    SearchComponent,
+    LibraryComponent
   ],
   imports: [
     BrowserModule,
