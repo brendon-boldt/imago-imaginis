@@ -1,43 +1,46 @@
 const { Pool, Client } = require('pg');
 
-//Client
-// const client = new Client({
-//     user: 'Holayn',
-//     host: 'localhost',
-//     database: 'testdb',
-//     password: 'potpal12',
-//     port: 5432,
-// });
+// https://node-postgres.com/features/pooling
 
 //Pool
 const pool = new Pool({
-    user: 'Holayn',
-    host: 'localhost',
-    database: 'testdb',
-    password: 'potpal12',
+    user: 'wsadmin',
+    host: '10.10.7.189',
+    database: 'aspdb',
+    password: 'Cg17',
     port: 5432,
 });
 
-// client.connect();
-// pool.connect(0);
+pool.connect((err, client, release) => {
+  if (err) {
+    return console.error('Error acquiring client', err.stack)
+  }
+  client.query('SELECT NOW()', (err, result) => {
+    release()
+    if (err) {
+      return console.error('Error executing query', err.stack)
+    }
+    console.log(result.rows)
+  })
+})
 
-// const query = "SELECT * FROM books";
 
 module.exports = {
     // query: (text, params, callback) => {
     //     return pool.query(text, params, callback)
     // }
-    query: function(text) {
-        return pool.query(text);
+    query: function(text, params) {
+        const query = {
+            text: text,
+            values: params
+        }
+        console.log("Params: " +params);
+        console.log("Performing a query");
+        // return pool.query(query);
+        return pool.query(text, params);
     },
     test: function(text) {
         return console.log(text);
     }
 }
 
-// client.query(query)
-//     .then(res => {
-//         console.log(res.rows[0]);
-//         client.end();
-//     })
-//     .catch(e => console.error(e.stack))
