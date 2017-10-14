@@ -11,4 +11,11 @@ import { RouterModule, Routes, Router } from '@angular/router';
   styleUrls: ['./app.component.css']
 })
 export class RegisterComponent {
+  constructor(private router: Router){}
+  public keyboard: String = "../assets/keyboard.jpg";
+  public upload: String = "../assets/upload.jpg";
+  public style: String = "../assets/style.jpg";
+  register = function(){
+    this.router.navigate(['register']);
+  }
 }

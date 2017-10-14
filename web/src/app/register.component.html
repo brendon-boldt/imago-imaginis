@@ -10,71 +10,65 @@ It is routed to when the user clicks on a router link-->
   <input class="input-box" name="user-password" placeholder="Password"><br><br>
   <input class="input-box" name="user-confirm-password" placeholder="Confirm password"><br><br>
 	<input class="button" type="submit" value="Login"> -->
-	<div class="container-fluid">
-		<div class="center-text">
-			<div class="page-header">
-				<h1 class="display-2">Register</h1>
-			</div>
-			<h3 class="lead">Please enter your details below to register for an account</h3>
-			<hr>
-			<!-- <h4>Please enter your details below to register for an account</h4> -->
-		</div>
-		<br>
-		<br>
+	
+<header class="masthead">
+	<div class="header-content">
+	<div class="header-content-inner">
+		<h1 id="homeHeading">Register</h1>
+		<hr>
+		<p>Please enter your details below to register for an account</p>
 		<div class="container-fluid">
-			<div class="row">
-					<div class="col"></div>
-					<div class="col-md-4">
-							<form class="form-horizontal" role="form" data-toggle="validator">
-								<div class="form-group">
-									<label class="control-label" name="user-fname">First Name<font color="red">*</font></label>
-									<input type="text" class="form-control">
-								</div>
-								<div class="form-group">
-									<label class="control-label" name="user-lname">Last Name<font color="red">*</font></label>
-									<input type="text" class="form-control">
-								</div>
-								<div class="form-group">
-									<label class="control-label" name="user-email">Email<font color="red">*</font></label>
-									<input type="text" class="form-control">
-								</div>
-								<div class="form-group">
-									<label class="control-label" name="user-password">Password<font color="red">*</font></label>
-									<input type="text" class="form-control">
-								</div>
-								<div class="form-group">
-									<label class="control-label" name="user-confirm">Confirm Password<font color="red">*</font></label>
-									<input type="text" class="form-control">
-								</div>
-								<button type="button" class="button btn btn-primary btn-lg center-block" type="submit">Login</button>
-							</form>
-					</div>
-					<div class="col"></div>
-			</div>
-				
-		</div>
-  <br><br>
-
-  <div class="container-fluid">
 		<div class="row">
-				<div class="col-md-4 center-text">
-					<img src="../assets/monalisa.jpg" class="img-border" alt="The Mona Lisa" height="150" width="100">
-					<br>
-					<p class="lead">Upload an image</p>
-				</div>
-				<div class="col-md-4 center-text">
-					<img src="../assets/starrynight.jpg" class="img-border" alt="Starry Night" height="150" width="210">
-					<br>
-					<p class="lead">Choose a style</p>
-				</div>
-				<div class="col-md-4 center-text">
-					<img src="../assets/styledmonalisa.jpg" class="img-border" alt="Style transfers of the Mona Lisa" height="150" width="250">
-					<br>
-					<p class="lead">Share!</p>
-				</div>
+			<div class="col"></div>
+			<div class="col-md-4">
+				<form class="form-horizontal" role="form" data-toggle="validator">
+					<div class="form-group">
+						<label class="control-label" name="user-first-name">First Name</label>
+						<input type="text" class="form-control" name="first-name" placeholder="First Name" [(ngModel)]="this.firstName">
+					</div>
+					<div class="form-group">
+						<label class="control-label" name="user-last-name">Last Name</label>
+						<input type="text" class="form-control" name="last-name" placeholder="Last Name" [(ngModel)]="this.lastName">
+					</div>
+					<div class="form-group">
+						<label class="control-label" name="user-email">Email</label>
+						<input type="email" class="form-control" name="email" placeholder="Email" [(ngModel)]="this.email">
+					</div>
+					<div class="form-group">
+						<label class="control-label" name="user-password">Password</label>
+						<input type="password" class="form-control" name="password" placeholder="Password" [(ngModel)]="this.password">
+					</div>
+					<div class="form-group">
+						<label class="control-label" name="user-confirm-password">Confirm Password</label>
+						<input type="password" class="form-control" name="confirm-password" placeholder="Confirm Password" [(ngModel)]="this.confirmPassword">
+					</div>
+					<button type="button" class="button btn btn-primary btn-xl js-scroll-trigger center-block" (click)="this.register();">Register</button>
+				</form>
+			</div>
+			<div class="col"></div>
 		</div>
 	</div>
-  <br>  
-
-</div>
-
+	<br><br>
+	<div class="card-deck" id="card-deck">
+		<div class="card">
+			<div class="card-block">
+			<img [src]="this.keyboard" id="card-img">
+			</div>
+			Sign Up
+		</div>
+		<div class="card">
+			<div class="card-block">
+			<img [src]="this.upload" id="card-img">
+			</div>
+			Upload
+		</div>
+		<div class="card">
+			<div class="card-block">
+			<img [src]="this.style" id="card-img">
+			</div>
+			Style and Share!
+		</div>
+	</div>
+	</div>
+	</div>
+</header>
