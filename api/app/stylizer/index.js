@@ -18,7 +18,8 @@ module.exports = {
       '-contentSize', runParams.contentSize,
       '-style', runParams.stylePath,
       '-styleSize', runParams.styleSize,
-      '-gpu', config.gpu
+      '-gpu', config.gpu,
+      '-outputDir', config.outputDir
     ];
 
     log(`runId ${runParams.runId} started`);

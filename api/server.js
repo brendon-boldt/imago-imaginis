@@ -11,6 +11,7 @@ const port = 8000;
 //This way, we don't get undefined when receiving JSON
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+app.use(bodyParser.raw({limit: '50mb'}));
 
 require('./app/routes')(app);
 
