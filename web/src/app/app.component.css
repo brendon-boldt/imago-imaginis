@@ -223,6 +223,7 @@ header.masthead .header-content {
   header.masthead .header-content .header-content-inner hr {
     margin: 30px auto; }
   header.masthead .header-content .header-content-inner p {
+    /*text-shadow: 0px 2px black;*/
     font-size: 16px;
     font-weight: 300;
     /* margin-bottom: 50px; */
@@ -246,6 +247,7 @@ header.masthead .header-content {
     header.masthead .header-content .header-content-inner h1 {
       font-size: 50px; }
     header.masthead .header-content .header-content-inner p {
+      text-shadow: 0px 1px black;
       font-size: 18px;
       max-width: 80%;
       margin-right: auto;
