@@ -21,12 +21,12 @@ module.exports = function(app) {
 
   app.post('/test', (req, res) => {
     console.log(req.query);
-    res.send('Hello');
+    res.send('done');
   });
 
   app.get('/sendImage', (req, res) => {
     db.sendImage(2401);
-    res.send('nothing');
+    res.send('done');
   });
 
   app.get('/getImage', (req, res) => {
