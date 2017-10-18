@@ -3,6 +3,10 @@ const bodyParser = require('body-parser');
 const mountRoutes = require('./app/routes');
 
 const app = express();
+
+// Allows for cross-origin resource sharing
+// https://github.com/expressjs/cors
+var cors = require('cors');
 // mountRoutes(app);
 
 const port = 8000;

@@ -1,0 +1,117 @@
+<!--This is the home component, which is displayed underneath the app component.
+Displays various information on the home page.
+It is routed to when the user clicks on a router link-->
+<!-- <header class="masthead">
+  <div class="header-content">
+    <div class="header-content-inner">
+      <h1 id="homeHeading">Artistic Stylizer Platform</h1>
+      <hr>
+      <p>Here, we transform your images based on an art style of your choosing, to create something new and totally cool.</p>
+      <a class="btn btn-primary btn-xl js-scroll-trigger" href="#about">Get Started</a>
+      <br><br>
+    </div>
+  </div>
+</header> -->
+<header class="masthead">
+  <div class="header-content">
+    <div class="header-content-inner">
+      <h1 id="homeHeading">Artistic Stylizer Platform</h1>
+      <hr>
+      <p>Here, we transform your images based on an art style of your choosing, to create something new and totally cool.</p>
+      <a class="btn btn-primary btn-xl js-scroll-trigger" href="#about">Get Started</a>
+      <br><br>
+      <!-- <div class="row">
+        <div class="col-lg-4 mb-4">
+          <div class="card">
+            <img class="card-img-top" src="..." alt="Card image cap">
+            <div class="card-block">
+              <h4 class="card-title">Card title</h4>
+              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+              <a href="#" class="btn btn-primary">Go somewhere</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+          <div class="card">
+            <img class="card-img-top" src="..." alt="Card image cap">
+            <div class="card-block">
+              <h4 class="card-title">Card title</h4>
+              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+              <a href="#" class="btn btn-primary">Go somewhere</a>
+            </div>
+          </div>
+        </div>
+        <div class="col-lg-4 mb-4">
+          <div class="card">
+            <img class="card-img-top" src="..." alt="Card image cap">
+            <div class="card-block">
+              <h4 class="card-title">Card title</h4>
+              <p class="card-text">Some quick example text to build on the card title and make up the bulk of the card's content.</p>
+              <a href="#" class="btn btn-primary">Go somewhere</a>
+            </div>
+          </div>
+        </div>
+      </div> -->
+    </div>
+  </div>
+</header>
+
+
+
+
+
+
+<!-- Old -->
+<!-- <div class="container-fluid">
+  <div class="center-text">
+    <div class="page-header">
+      <h1 class="display-2">Welcome to the Artistic Stylizer Platform!</h1>
+    </div>
+    <h3 class="lead">Here, we transform your images based on an art style of your choosing, to create something new and totally cool.</h3>
+    <hr>
+    <h4>It's super easy to get started:</h4>
+  </div>
+  <br>
+  <br>
+  <div class="row justify-content-center">
+    <div class="col-md-2 grid-center">
+      <p class="lead center-block center-text">1. Create an account</p>
+    </div>
+    <div class="col-md-2">
+      <img src="../assets/keyboard.jpg" class="center-block img-border" alt="Typing on keyboard" height="100" width="180">
+    </div>
+  </div>
+  <br>
+  <div class="row justify-content-center">
+    <div class="col-md-2 grid-center">
+      <p class="lead center-block center-text">2. Upload an image</p>
+    </div>
+    <div class="col-md-2">
+      <img src="../assets/monalisa.jpg" class="center-block img-border" alt="The Mona Lisa" height="150" width="100">
+    </div>
+  </div>
+  <br>
+  <div class="row justify-content-center">
+    <div class="col-md-2 grid-center">
+      <p class="lead center-block center-text">3. Choose a style</p>
+    </div>
+    <div class="col-md-2">
+      <img src="../assets/starrynight.jpg" class="center-block img-border" alt="Starry Night" height="100" width="160">
+    </div>
+  </div>
+  <br>
+  <div class="row justify-content-center">
+    <div class="col-md-2 grid-center">
+      <p class="lead center-block center-text">4. Share!</p>
+    </div>
+    <div class="col-md-2">
+      <img src="../assets/styledmonalisa.jpg" class="center-block img-border" alt="Style transfers of the Mona Lisa" height="100" width="180">
+    </div>
+  </div>
+  <br>
+  <br>
+  <div class="center-text">
+      <button type="button" class="button btn btn-primary btn-lg" (click)="this.btnClick();">Get Started!</button>
+  </div>
+
+</div> -->

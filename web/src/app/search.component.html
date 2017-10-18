@@ -1,26 +1,24 @@
 <!--This is the search component, which is displayed underneath the app component.
   Allows for the user to upload photos to the platform.
 It is routed to when the user clicks on a router link-->
-<div class="container-fluid">
-  <div class="center-text">
-    <div class="page-header">
-      <h1 class="display-2">Search for a Profile</h1>
-    </div>
-    <!-- <h3 class="lead">Here, we transform your images based on an art style of your choosing, to create something new and totally cool.</h3> -->
-    <hr>
-    <h4>Enter a name:</h4>
-    <br>
-  </div>
-  <div class="row">
-    <div class="col-md-4 center-row-contents">
-      <div class="input-group">
-        <input type="text" class="form-control" name="search" placeholder="Search"><br><br>
-        <span class="input-group-btn">
-          <button type="button" class="button btn btn-primary btn-lg" type="submit">Search</button>
-        </span>
-      </div>
-    </div>
-  </div>
-  <br><br>  
+<header class="masthead">
+<div class="header-content">
+	<div class="header-content-inner">
+	<h1 id="homeHeading">Search for a Profile</h1>
+	<hr>
+	<p>Enter a name:</p>
+	
+	<div class="col-md-5" style="float: none; margin: 0 auto;">
+		<div class="input-group">
+		<input type="text" class="form-control" name="search-term" placeholder="Enter Name"><br><br>
+		<span class="input-group-btn">
+			<!-- Validate -->
+			<button type="button" class="button btn btn-primary btn-lg" style="font-size:1.28rem;" type="submit" (click)="this.btnClick();">Search</button>
+		</span>
+		</div>
+	</div>
+	
+	
+	</div>
 </div>
-
+</header>
