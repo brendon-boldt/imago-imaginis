@@ -30,6 +30,6 @@ export class LoginComponent {
         this.user.isLoggedIn = true;
         this.router.navigate(['home']);
       }
-    })
+    });
   }
 }
