@@ -1,3 +1,5 @@
+// File containing deployment specific configuration info
+
 var config = {};
 
 config.thPath = '/home/brendon/torch/install/bin/th';
