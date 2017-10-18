@@ -25,10 +25,12 @@ module.exports = function(app) {
   });
 
   app.get('/sendImage', (req, res) => {
-    db.sendImage(undefined);
+    db.sendImage(2401);
     res.send('nothing');
   });
 
   app.get('/getImage', (req, res) => {
+    db.getImage(2401);
+    res.send('done');
   });
 };

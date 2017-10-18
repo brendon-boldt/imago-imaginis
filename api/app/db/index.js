@@ -1,40 +1,43 @@
 const fs = require('fs');
 const request = require('request');
+const config = require('../../config.js');
+
+const getImagePath = 'getImage';
+const sendImagePath = 'sendImage';
+const getRunPath = 'getRun';
+const sendRunPath = 'sendRun';
 
 module.exports = {
 
   // Retrieve an image from the database
-  getImage: function(imageId) {
-    // DB HTTP calls
-    let requestSettings = {
-      // Request URL
-      url: 'http://localhost:8001/styled',
+  getImage: async function(imageId) {
+    let options = {
+      url: config.dbUrl + getImagePath,
       method: 'GET',
-      encoding: null
+      encoding: null,
+      qs: { imageId: imageId }
     };
 
-    request(requestSettings, (err, res, body) => {
-      fs.writeFile('/tmp/OUTPUT.JPG', body, () => {});
+    request(options, (err, res, body) => {
+      fs.writeFile(`${config.imageDir}recieved-${imageId}.jpg`, body, () => {
+        // Action after file is written
+        if (err) {
+          // On file write error
+        }
+      });
     });
-
-    res.send('action completed');
   },
 
   // Load an image into the database
-  sendImage: function(image) {
-    // DB HTTP calls
-    /*
-    imagePath = '/tmp/style-input/cornell.jpg';
-    console.log("Received: " +  req.body);
-    console.log('Sending: ' + imagePath);
-    res.sendFile(imagePath);
-    */
-    fs.readFile('/tmp/style-input/cornell.jpg', (err, data) => {
-      if (err)
+  sendImage: async function(imageId) {
+    fs.readFile(`${config.imageDir}image-${image.imageId}.jpg`, (err, data) => {
+      if (err) {
+        console.log(`Could not read image with id ${image.imageId}.`);
         return;
+      }
       options = { 
         body: data,
-        url: 'http://localhost:8001/styled',
+        url: `http://localhost:8001/${sendImagePath}`,
         encoding: null,
         method: 'POST',
         headers: { 'Content-Type': 'application/octet-stream'}
@@ -46,20 +49,47 @@ module.exports = {
   },
 
   // Get run information from database
-  getRun: function(runId) {
-    // ...
+  getRun: async function(runId) {
+    // Sample data
+
+    let requestSettings = {
+      url: config.dbUrl + getImagePath,
+      method: 'GET',
+      encoding: null,
+      qs: { runId: runId }
+    };
+
+    request(requestSettings, (err, res, body) => {
+      if (err) {
+        // Action on error
+      }
+      console.log(body);
+      return body;
+    });
+
+    /*
     let runParams = {
       runId : 2401,
-      contentPath : '/tmp/style/cornell.jpg',
+      contentPath : config.imageDir + 'cornell.jpg',
       contentSize : 32,
-      stylePath : '/tmp/style/woman_in_peasant_dress.jpg',
+      stylePath : config.imageDir + 'woman_in_peasant_dress.jpg',
       styleSize : 32
     };
     return runParams;
+    */
   },
 
-  // Send runinformation to database
-  sendRun: function(run) {
-    // ...
+  // Send run information to database
+  sendRun: async function(run) {
+    options = { 
+      body: run,
+      url: `http://localhost:8001/${sendImagePath}`,
+      encoding: null,
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json'}
+    };
+    request(options, (err, res, body) => {
+      console.log('send complete');
+    });
   }
 }
