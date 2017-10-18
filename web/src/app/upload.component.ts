@@ -32,6 +32,7 @@ export class UploadComponent {
     console.log("Uploading...");
     this.db.uploadPhoto(this.fileToUpload).then(result => {
       console.log(result);
+      this.router.navigate(['select-style']);
     });
   }
 

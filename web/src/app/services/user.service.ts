@@ -10,4 +10,5 @@ import 'rxjs/add/operator/toPromise';
 @Injectable()
 export class UserService {
     public isLoggedIn: boolean = false;
+    public uploadedPhoto: File = null;
 }
