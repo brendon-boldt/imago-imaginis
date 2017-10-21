@@ -11,8 +11,10 @@ import { FormsModule } from '@angular/forms'; // This module allows us to have t
 
 //References to all the components in the application
 import { AppComponent } from './app.component';
+import { NotFoundComponent } from './notFound.component';
 import { HomeComponent } from './home.component';
-import { ProfileComponent } from './profile.component';
+import { UserComponent } from './user.component';
+import { UserSettingsComponent } from './user-settings.component';
 import { UploadComponent } from './upload.component';
 import { LoginComponent } from './login.component';
 import { ReportComponent } from './report.component';
@@ -29,8 +31,10 @@ import { UserService } from './services/user.service';
 @NgModule({
   declarations: [
     AppComponent,
+    NotFoundComponent,
     HomeComponent,
-    ProfileComponent,
+    UserComponent,
+    UserSettingsComponent,
     UploadComponent,
     LoginComponent,
     ReportComponent,
