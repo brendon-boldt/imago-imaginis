@@ -4,8 +4,10 @@
 import { NgModule } from '@angular/core';
 import { RouterModule, Routes } from '@angular/router';
 
+import { NotFoundComponent } from './notFound.component';
 import { HomeComponent } from './home.component';
-import { ProfileComponent } from './profile.component';
+import { UserComponent } from './user.component';
+import { UserSettingsComponent } from './user-settings.component';
 import { UploadComponent } from './upload.component';
 import { LoginComponent } from './login.component';
 import { ReportComponent } from './report.component';
@@ -19,7 +21,8 @@ import { LibraryComponent } from './library.component';
 const appRoutes: Routes = [
   { path: '', redirectTo: '/home', pathMatch: 'full' },
   { path: 'home', component: HomeComponent },
-  { path: 'profile', component: ProfileComponent },
+  { path: 'user', component: UserComponent },
+  { path: 'user-settings', component: UserSettingsComponent },
   { path: 'upload', component: UploadComponent },
   { path: 'login', component: LoginComponent },
   { path: 'report', component: ReportComponent },
@@ -27,7 +30,8 @@ const appRoutes: Routes = [
   { path: 'register', component: RegisterComponent },
   { path: 'system-stats', component: SystemStatsComponent },
   { path: 'search', component: SearchComponent },
-  { path: 'library', component: LibraryComponent }
+  { path: 'library', component: LibraryComponent },
+  { path: "**", component: NotFoundComponent } // Must be last
 ];
 
 @NgModule({

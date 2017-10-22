@@ -6,9 +6,9 @@ import { Component } from '@angular/core';
 import { RouterModule, Routes, Router } from '@angular/router';
 
 @Component({
-  selector: 'profile',
-  templateUrl: './profile.component.html',
+  selector: 'user',
+  templateUrl: './user.component.html',
   styleUrls: ['./app.component.css']
 })
-export class ProfileComponent {
+export class UserComponent {
 }
