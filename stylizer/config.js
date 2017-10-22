@@ -2,12 +2,12 @@
 
 var config = {};
 
-config.thPath = '/home/brendon/torch/install/bin/th';
-config.stylizerPath = '/home/brendon/csca/AdaIN-style/';
+config.thPath = '';
+config.stylizerPath = '';
 config.gpu = -1;
-config.outputDir = '/tmp/style-output/';
+config.outputDir = '';
 
-config.dbUrl = 'http://localhost:8001/';
-config.imageDir = '/tmp/images/';
+config.dbUrl = '';
+config.imageDir = '';
 
 module.exports = config;
