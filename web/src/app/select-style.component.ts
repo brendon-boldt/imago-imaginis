@@ -18,4 +18,7 @@ export class SelectStyleComponent {
   update = function(style){
     this.selectedStyle = style;
   }
+  ngOnInit() {
+    
+  }
 }

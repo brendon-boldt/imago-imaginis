@@ -20,6 +20,7 @@ pool.connect((err, client, release) => {
     if (err) {
       return console.error('Error executing query', err.stack)
     }
+    console.log("Connected to DB!");
     console.log(result.rows)
   })
 })
@@ -38,6 +39,9 @@ module.exports = {
         console.log("Performing a query");
         // return pool.query(query);
         return pool.query(text, params);
+    },
+    no_param_query: function(text){
+        return pool.query(text);
     },
     test: function(text) {
         return console.log(text);
