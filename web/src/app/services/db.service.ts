@@ -33,15 +33,15 @@ export class DBService {
     }
 
     uploadPhoto(file: File): Promise<any> {
-        console.log("Performing POST of photo");
+        console.log("WEB: Performing POST of photo");
         let upload = this.url + '/upload';
         let headers = new Headers();
         // headers.append('Content-Type', 'image/jpeg');
 
         let formData: any = new FormData();
-        formData.append("upload", file[0]);
-        console.log("File uploaded: ");
-        console.log(file[0]);
+        formData.append("upload", file);
+        console.log("WEB: File that will be uploaded: ");
+        console.log(file);
 
         let params = new URLSearchParams();
         let options = new RequestOptions({headers: headers, search: params});
@@ -53,7 +53,7 @@ export class DBService {
 
 
     private handleError(error: any): Promise<any> {
-		console.error('An error occurred', error); // for demo purposes only
+		console.error('WEB: An error occurred', error); // for demo purposes only
 		return Promise.reject(error.message || error);
 	}
 }

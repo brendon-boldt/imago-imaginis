@@ -11,7 +11,10 @@ import { RouterModule, Routes, Router } from '@angular/router';
   styleUrls: ['./app.component.css']
 })
 export class HomeComponent {
-  constructor(private router: Router){}
+  constructor(private router: Router){
+    // Clears out what the user previously uploaded
+    // sessionStorage.setItem('fileToUpload', null);
+  }
   public keyboard: String = "../assets/keyboard.jpg";
   public upload: String = "../assets/upload.jpg";
   public style: String = "../assets/style.jpg";

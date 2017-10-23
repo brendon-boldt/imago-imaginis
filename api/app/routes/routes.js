@@ -25,7 +25,7 @@ module.exports = function(app) {
   // https://github.com/expressjs/multer/issues/170
   var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, 'uploads/')
+      cb(null, 'C:/Users/KaiWong/')
     },
     filename: function (req, file, cb) {
         var filename = file.fieldname + '-' + Date.now() + path.extname(file.originalname)
