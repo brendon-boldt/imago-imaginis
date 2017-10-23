@@ -27,7 +27,7 @@ It is routed to when the user clicks on a router link-->
 							</button>
 							<div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="width: 200px;">
 								<div *ngFor="let style of styles">
-									<a class="dropdown-item" (click)="update(style)">{{style.style}}</a>
+									<a class="dropdown-item" (click)="selectStyle(style)">{{style.name}}</a>
 								</div>
 							</div>
 						</div>
@@ -52,7 +52,7 @@ It is routed to when the user clicks on a router link-->
 					</div>
 				</div>-->
 				<div class="card">
-					<img [src]="selectedStyle.example" class="card-img-top" alt="style_image" id="style-img">
+					<img [src]="selectedStyle.example" class="card-img-top" alt="Image of Style Filter" id="style-img">
 					<div class="card-block">
 						 <!--style="height: 100%; width: 100%; max-height: 300px;"-->
 					</div>

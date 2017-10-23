@@ -17,12 +17,13 @@ export class SelectStyleComponent {
   freeUser: boolean = true;
   uploadImage: String = "../assets/monalisa.jpg";
   selectedStyle: Object = {"style": "Select a style", "example":"assets/brush.png"};
-  styles: Array<Object> = [{"style":"Cubism", "example":"../assets/cubism.jpg"}, {"style":"Flowers", "example":"../assets/flowers.jpg"}, {"style":"Starry Night", "example":"../assets/starrynight.jpg"}, {"style":"Oil Painting", "example":"../assets/oil.jpg"}, {"style":"Impressionism", "example":"../assets/impress.jpg"}];
+  // styles: Array<Object> = [{"style":"Cubism", "example":"../assets/cubism.jpg"}, {"style":"Flowers", "example":"../assets/flowers.jpg"}, {"style":"Starry Night", "example":"../assets/starrynight.jpg"}, {"style":"Oil Painting", "example":"../assets/oil.jpg"}, {"style":"Impressionism", "example":"../assets/impress.jpg"}];
+  styles: Array<Object> = null; // Comes from DB as [{"filter_id":1,"name":"VanGogh"},...]
   uploadedImage: File = null;
-
   constructor(private us: UserService, private router: Router, private db: DBService){
     // Checks to see if the user uploaded a photo from the previous page
     if(this.us.uploadedPhoto != null){
+      console.log("Photo user selected");
       console.log(this.us.uploadedPhoto);
       this.uploadedImage = this.us.uploadedPhoto;
       let reader = new FileReader();
@@ -30,6 +31,11 @@ export class SelectStyleComponent {
           this.uploadedImage = e.target.result;
       }
       reader.readAsDataURL(this.uploadedImage);
+
+      // Gets list of filters/styles
+      this.db.getFilters().then(filters => {
+        this.styles = filters;
+      });
     }
     // // If user reloads the page, retrieve image from session storage, convert it from base64 and set it to the user service variable...
     // else if(sessionStorage.getItem('fileToUpload') !== undefined){
@@ -46,14 +52,15 @@ export class SelectStyleComponent {
   }
 
   // This changes the style example image based on user selection
-  update = function(style) {
+  selectStyle = function(style) {
     this.selectedStyle = style;
   }
 
   // This uploads the user photo with appropriate filter id to be styled with
   upload = function() {
     // Calls the database service
-    this.db.uploadPhoto(this.us.uploadedPhoto).then(result => {
+    this.db.uploadPhoto(this.us.uploadedPhoto, this.selectedStyle).then(result => {
+      // Post shouldn't return anything
       console.log(result);
       // This should navigate the user to the library page, where it will show the status of the upload for the user
       this.router.navigate(['home']);

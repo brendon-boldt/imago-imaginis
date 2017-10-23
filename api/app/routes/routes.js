@@ -20,6 +20,17 @@ module.exports = function(app) {
       })
       .catch(e => console.error(e.stack))
   });
+  // Filters returns filter ids and their names
+  app.get('/filters', (req, getres) => {
+    console.log("GET - filters");
+    let queryText = 'SELECT * FROM filters';
+    db.no_param_query(queryText)
+      .then(res => {
+        console.log(res.rows);
+        getres.send(res.rows);
+      })
+      .catch(e => console.error(e.stack))
+  });
 
   // Photo upload
   // https://github.com/expressjs/multer/issues/170
@@ -38,8 +49,8 @@ module.exports = function(app) {
     getres.send(req.file);
     // Create a new entry in the database in Photos
     var path = "somepath\\" + req.file.path;
-    let queryText = "INSERT INTO photos (filter_id, size, creation_date, path, process_time) VALUES (2, 3.0, '2017-10-18', '" + path + "', 5)";
-    console.log(queryText);
+    let queryText = "INSERT INTO photos (filter_id, size, creation_date, path, process_time) VALUES (" + req.query.filter_id + ", 3.0, '2017-10-18', '" + path + "', 5)";
+    console.log("Query: " + queryText);
     db.no_param_query(queryText); 
   });
 };
