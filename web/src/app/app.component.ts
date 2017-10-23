@@ -28,6 +28,9 @@ export class AppComponent {
       });
   }
   logOut = function(){
+    console.log("WEB: Logging user out");
     this.user.isLoggedIn = false;
+    sessionStorage.clear();
+    console.log(sessionStorage);
   }
 }

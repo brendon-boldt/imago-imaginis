@@ -28,6 +28,7 @@ export class LoginComponent {
       // The user information matched a row in the DB so log the user in
       if(user != null){
         this.user.isLoggedIn = true;
+        sessionStorage.setItem('isLoggedIn', 'true');
         this.router.navigate(['home']);
       }
     });
