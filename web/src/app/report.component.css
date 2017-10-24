@@ -18,6 +18,14 @@ h1 {
     font-weight: 400;
 }
 
+h3 {
+    color: ghostwhite;
+}
+
+form {
+    color: ghostwhite;
+}
+
 hr {
   max-width: 50px;
   border-width: 3px;
@@ -54,8 +62,6 @@ th {
     background-color: cornflowerblue;
     color: white;
 }
-
-
 
 
 
