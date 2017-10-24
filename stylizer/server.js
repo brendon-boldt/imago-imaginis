@@ -1,5 +1,13 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+
+try {
+    require('./config.js');
+} catch (e) {
+    console.log("ERROR: Could not find `config.js`. Have you tried copying `config.js.template` to `config.js` (and populating the relevant fields)?");
+    process.exit(1);
+}
+
 const mountRoutes = require('./app/routes');
 
 const app = express();
