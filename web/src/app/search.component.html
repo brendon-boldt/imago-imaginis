@@ -7,18 +7,35 @@ It is routed to when the user clicks on a router link-->
 	<h1 id="homeHeading">Search for a Profile</h1>
 	<hr>
 	<p>Enter a name:</p>
-	
 	<div class="col-md-5" style="float: none; margin: 0 auto;">
 		<div class="input-group">
 		<input type="text" class="form-control" name="search-term" placeholder="Enter Name"><br><br>
 		<span class="input-group-btn">
 			<!-- Validate -->
-			<button type="button" class="button btn btn-primary btn-lg" style="font-size:1.28rem;" type="submit" (click)="this.btnClick();">Search</button>
+			<button type="button" class="button btn btn-primary btn-lg" style="font-size:1.28rem;" type="submit" (click)="this.search();">Search</button>
 		</span>
 		</div>
 	</div>
-	
-	
+	<br>
+	<!--Table results go here-->
+	<div *ngIf="showSearch">
+		<table style="float: none; margin: 0 auto;">
+			<tr>
+				<th>Email</th>
+				<th>First Name</th>
+				<th>Last Name</th>
+				<th>Date Joined</th>
+				<th>Active</th>
+			</tr>
+			<tr>
+				<td>Ha</td>
+				<td>He</td>
+				<td>Hu</td>
+				<td>Ho</td>
+				<td>Hi</td>
+			</tr>
+		</table>
+	</div>
 	</div>
 </div>
 </header>

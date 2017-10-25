@@ -11,8 +11,9 @@ import { RouterModule, Routes, Router } from '@angular/router';
   styleUrls: ['./app.component.css']
 })
 export class SearchComponent {
+  showSearch: boolean = false;
   constructor(private router: Router){}
-  btnClick = function(){
-    this.router.navigate(['search']);
+  search = function(){
+    this.showSearch = true;
   }
 }
