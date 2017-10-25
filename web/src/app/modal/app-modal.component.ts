@@ -1,5 +1,6 @@
 /**
  * This is the modal component that we use in our Angular environment
+ * https://stackoverflow.com/questions/34513558/angular-2-0-and-modal-dialog
  */
 import { Component } from '@angular/core';
 @Component({
