@@ -23,6 +23,7 @@ import { RegisterComponent } from './register.component';
 import { SystemStatsComponent } from './system-stats.component';
 import { SearchComponent } from './search.component';
 import { LibraryComponent } from './library.component';
+import { ModalComponent } from './modal/app-modal.component';
 
 //References to all the services in the application
 import { DBService } from './services/db.service';
@@ -42,7 +43,8 @@ import { UserService } from './services/user.service';
     RegisterComponent,
     SystemStatsComponent,
     SearchComponent,
-    LibraryComponent
+    LibraryComponent,
+    ModalComponent
   ],
   imports: [
     BrowserModule,
