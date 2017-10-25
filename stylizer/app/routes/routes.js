@@ -20,16 +20,16 @@ module.exports = function(app) {
   })
 
   app.post('/test', (req, res) => {
-    console.log(req.query);
+    log(req.query);
     res.send('done');
   });
 
-  app.get('/sendImage', (req, res) => {
+  app.get('/test/sendImage', (req, res) => {
     db.sendImage(2401);
     res.send('done');
   });
 
-  app.get('/getImage', (req, res) => {
+  app.get('/test/getImage', (req, res) => {
     db.getImage(2401);
     res.send('done');
   });

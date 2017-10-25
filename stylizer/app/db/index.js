@@ -2,10 +2,10 @@ const fs = require('fs');
 const request = require('request');
 const config = require('../../config.js');
 
-const getImagePath = 'getImage';
-const sendImagePath = 'sendImage';
-const getRunPath = 'getRun';
-const sendRunPath = 'sendRun';
+const selectImagePath = 'style/selectImage';
+const insertImagePath = 'style/insertImage';
+const selectRunPath = 'style/selectRun';
+const insertRunPath = 'style/insertRun';
 
 const log = (msg) => {console.log("DB: " + msg)};
 
@@ -15,9 +15,10 @@ module.exports = {
   getImage: async function(imageId) {
     let options = {
       url: config.dbUrl + getImagePath,
-      method: 'GET',
+      method: 'POST',
       encoding: null,
-      qs: { imageId: imageId }
+      headers: { 'Content-Type': 'multipart/form-data'},
+      form: { imageId: imageId }
     };
 
     request(options, (err, res, body) => {
@@ -33,19 +34,23 @@ module.exports = {
 
   // Load an image into the database
   sendImage: async function(imageId) {
-    fs.readFile(`${config.imageDir}image-${imageId}.jpg`, (err, data) => {
+    let imagePath = `${config.imageDir}/image-${imageId}.jpg`;
+    fs.readFile(imagePath, (err, data) => {
       if (err) {
-        console.log(`Could not read image with id ${image.imageId}.`);
+        console.log(`Could not read image ${imagePath}.`);
         return;
       }
+
       options = { 
-        body: data,
-        url: `http://localhost:8001/${sendImagePath}`,
+        form: {
+          imageData: data,
+          imageId: imageId
+        },
+        //url: `http://localhost:8000/${sendImagePath}`,
+        url: `${config.dbPath}${insertImagePath}`,
         encoding: null,
         method: 'POST',
-        headers: { 'Content-Type': 'application/octet-stream'},
-        qs: { imageId: imageId }
-
+        headers: { 'Content-Type': 'multipart/form-data'},
       };
       request(options, (err, res, body) => {
         if (err) {
