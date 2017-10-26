@@ -14,11 +14,11 @@ module.exports = {
   // Retrieve an image from the database
   getImage: async function(imageId) {
     let options = {
-      url: config.dbUrl + getImagePath,
+      form: { imageId: imageId },
+      url: config.dbUrl + selectImagePath,
       method: 'POST',
       encoding: null,
-      headers: { 'Content-Type': 'multipart/form-data'},
-      form: { imageId: imageId }
+      headers: { 'Content-Type': 'multipart/form-data'}
     };
 
     request(options, (err, res, body) => {
@@ -47,7 +47,7 @@ module.exports = {
           imageId: imageId
         },
         //url: `http://localhost:8000/${sendImagePath}`,
-        url: `${config.dbPath}${insertImagePath}`,
+        url: `${config.dbUrl}${insertImagePath}`,
         encoding: null,
         method: 'POST',
         headers: { 'Content-Type': 'multipart/form-data'},

@@ -22,8 +22,8 @@ module.exports = function(app) {
 
   app.post('/style/selectImage', (req, res) => {
     imagePath = '/tmp/ii/style/download/';
-    console.log("Received: " +  req.query);
-    console.log('Sending: ' + `${imagePath}image-${req.query.imageId}.jpg`);
+    console.log("Received: ", req.body);
+    console.log('Sending: ' + `${imagePath}image-${req.form.imageId}.jpg`);
     res.sendFile(`${imagePath}image-${req.query.imageId}.jpg`);
     /*
     console.log(req);
