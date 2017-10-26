@@ -22,7 +22,7 @@ module.exports = {
     };
 
     request(options, (err, res, body) => {
-      fs.writeFile(`${config.imageDir}/recieved-${imageId}.jpg`, body, () => {
+      fs.writeFile(`${config.imageDir}/image-${imageId}.jpg`, body, () => {
         // Action after file is written
         if (err) {
           // On file write error

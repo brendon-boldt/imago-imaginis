@@ -24,13 +24,13 @@ module.exports = function(app) {
     res.send('done');
   });
 
-  app.get('/test/sendImage', (req, res) => {
-    db.sendImage(2401);
+  app.get('/test/insertImage', (req, res) => {
+    db.insertImage(2401);
     res.send('done');
   });
 
-  app.get('/test/getImage', (req, res) => {
-    db.getImage(2401);
+  app.get('/test/selectImage', (req, res) => {
+    db.selectImage(2401);
     res.send('done');
   });
 };

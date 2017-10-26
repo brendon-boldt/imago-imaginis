@@ -1,0 +1,9 @@
+// File containing deployment specific configuration info
+
+var config = {};
+
+config.contentPath = '';
+config.stylePath = '';
+config.resultPath = '';
+
+module.exports = config;
