@@ -2,26 +2,27 @@ const fs = require('fs');
 const request = require('request');
 const config = require('../../config.js');
 
-const getImagePath = 'getImage';
-const sendImagePath = 'sendImage';
-const getRunPath = 'getRun';
-const sendRunPath = 'sendRun';
+const selectImagePath = 'style/selectImage';
+const insertImagePath = 'style/insertImage';
+const selectRunPath = 'style/selectRun';
+const insertRunPath = 'style/insertRun';
 
 const log = (msg) => {console.log("DB: " + msg)};
 
 module.exports = {
 
   // Retrieve an image from the database
-  getImage: async function(imageId) {
+  selectImage: async function(imageId) {
     let options = {
-      url: config.dbUrl + getImagePath,
-      method: 'GET',
+      form: { imageId: imageId },
+      url: config.dbUrl + selectImagePath,
+      method: 'POST',
       encoding: null,
-      qs: { imageId: imageId }
+      headers: { 'Content-Type': 'multipart/form-data'}
     };
 
     request(options, (err, res, body) => {
-      fs.writeFile(`${config.imageDir}recieved-${imageId}.jpg`, body, () => {
+      fs.writeFile(`${config.imageDir}/image-${imageId}.jpg`, body, () => {
         // Action after file is written
         if (err) {
           // On file write error
@@ -32,20 +33,23 @@ module.exports = {
   },
 
   // Load an image into the database
-  sendImage: async function(imageId) {
-    fs.readFile(`${config.imageDir}image-${imageId}.jpg`, (err, data) => {
+  insertImage: async function(imageId) {
+    let imagePath = `${config.imageDir}/image-${imageId}.jpg`;
+    fs.readFile(imagePath, (err, data) => {
       if (err) {
-        console.log(`Could not read image with id ${image.imageId}.`);
+        console.log(`Could not read image ${imagePath}.`);
         return;
       }
+
       options = { 
-        body: data,
-        url: `http://localhost:8001/${sendImagePath}`,
+        form: {
+          imageData: data,
+          imageId: imageId
+        },
+        url: `${config.dbUrl}${insertImagePath}`,
         encoding: null,
         method: 'POST',
-        headers: { 'Content-Type': 'application/octet-stream'},
-        qs: { imageId: imageId }
-
+        headers: { 'Content-Type': 'multipart/form-data'},
       };
       request(options, (err, res, body) => {
         if (err) {
@@ -57,7 +61,7 @@ module.exports = {
   },
 
   // Get run information from database
-  getRun: async function(runId) {
+  selectRun: async function(runId) {
     // Sample data
 
     let requestSettings = {
@@ -89,7 +93,7 @@ module.exports = {
   },
 
   // Send run information to database
-  sendRun: async function(run) {
+  insertRun: async function(run) {
     options = { 
       body: run,
       url: `http://localhost:8001/${sendImagePath}`,

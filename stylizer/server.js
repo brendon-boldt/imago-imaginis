@@ -17,7 +17,7 @@ const app = express();
 var cors = require('cors');
 // mountRoutes(app);
 
-const port = 8000;
+const port = 7000;
 
 //This allows Express to process URL encoded forms on its own.
 //This way, we don't get undefined when receiving JSON

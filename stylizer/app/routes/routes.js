@@ -20,17 +20,17 @@ module.exports = function(app) {
   })
 
   app.post('/test', (req, res) => {
-    console.log(req.query);
+    log(req.query);
     res.send('done');
   });
 
-  app.get('/sendImage', (req, res) => {
-    db.sendImage(2401);
+  app.get('/test/insertImage', (req, res) => {
+    db.insertImage(2401);
     res.send('done');
   });
 
-  app.get('/getImage', (req, res) => {
-    db.getImage(2401);
+  app.get('/test/selectImage', (req, res) => {
+    db.selectImage(2401);
     res.send('done');
   });
 };
