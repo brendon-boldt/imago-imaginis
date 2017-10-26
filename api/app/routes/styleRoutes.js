@@ -1,5 +1,4 @@
 const db = require('../db');
-const multer = require('multer'); 
 const path = require('path');
 const fs = require('fs');
 
@@ -23,14 +22,8 @@ module.exports = function(app) {
   app.post('/style/selectImage', (req, res) => {
     imagePath = '/tmp/ii/style/download/';
     console.log("Received: ", req.body);
-    console.log('Sending: ' + `${imagePath}image-${req.form.imageId}.jpg`);
-    res.sendFile(`${imagePath}image-${req.query.imageId}.jpg`);
-    /*
-    console.log(req);
-    fs.writeFile('/tmp/OUTPUT.JPG', req.body, () => {
-      res.send();
-    });
-     */
+    console.log('Sending: ' + `${imagePath}image-${req.body.imageId}.jpg`);
+    res.sendFile(`${imagePath}image-${req.body.imageId}.jpg`);
   });
 
 

@@ -12,7 +12,7 @@ const log = (msg) => {console.log("DB: " + msg)};
 module.exports = {
 
   // Retrieve an image from the database
-  getImage: async function(imageId) {
+  selectImage: async function(imageId) {
     let options = {
       form: { imageId: imageId },
       url: config.dbUrl + selectImagePath,
@@ -22,7 +22,7 @@ module.exports = {
     };
 
     request(options, (err, res, body) => {
-      fs.writeFile(`${config.imageDir}recieved-${imageId}.jpg`, body, () => {
+      fs.writeFile(`${config.imageDir}/recieved-${imageId}.jpg`, body, () => {
         // Action after file is written
         if (err) {
           // On file write error
@@ -33,7 +33,7 @@ module.exports = {
   },
 
   // Load an image into the database
-  sendImage: async function(imageId) {
+  insertImage: async function(imageId) {
     let imagePath = `${config.imageDir}/image-${imageId}.jpg`;
     fs.readFile(imagePath, (err, data) => {
       if (err) {
@@ -46,7 +46,6 @@ module.exports = {
           imageData: data,
           imageId: imageId
         },
-        //url: `http://localhost:8000/${sendImagePath}`,
         url: `${config.dbUrl}${insertImagePath}`,
         encoding: null,
         method: 'POST',
@@ -62,7 +61,7 @@ module.exports = {
   },
 
   // Get run information from database
-  getRun: async function(runId) {
+  selectRun: async function(runId) {
     // Sample data
 
     let requestSettings = {
@@ -94,7 +93,7 @@ module.exports = {
   },
 
   // Send run information to database
-  sendRun: async function(run) {
+  insertRun: async function(run) {
     options = { 
       body: run,
       url: `http://localhost:8001/${sendImagePath}`,
