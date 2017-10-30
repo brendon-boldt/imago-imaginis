@@ -2,7 +2,7 @@ const { Pool, Client } = require('pg');
 
 // https://node-postgres.com/features/pooling
 
-//Pool
+// Pool
 const pool = new Pool({
     user: 'wsadmin',
     host: '10.10.7.189',
@@ -25,22 +25,23 @@ pool.connect((err, client, release) => {
   })
 })
 
-
 module.exports = {
     // query: (text, params, callback) => {
     //     return pool.query(text, params, callback)
     // }
-    query: function(text, params) {
-        const query = {
-            text: text,
-            values: params
-        }
-        console.log("Params: " +params);
-        console.log("Performing a query");
-        // return pool.query(query);
-        return pool.query(text, params);
-    },
-    no_param_query: function(text){
+    // query: function(text, params) {
+    //     const query = {
+    //         text: text,
+    //         values: params
+    //     }
+    //     console.log("Params: " +params);
+    //     console.log("Performing a query");
+    //     return pool.query(text, params);
+    // },
+    // no_param_query: function(text){
+    //     return pool.query(text);
+    // },
+    query: function(text){
         return pool.query(text);
     },
     test: function(text) {

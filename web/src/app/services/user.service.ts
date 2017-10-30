@@ -6,17 +6,14 @@
  */
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/toPromise';
+import { RouterModule, Routes, Router } from '@angular/router';
+import { tokenNotExpired, JwtHelper } from 'angular2-jwt';
+
+// Importing database service so we can check to see if the user login information exists
+import { DBService } from './db.service';
 
 @Injectable()
 export class UserService {
-    public isLoggedIn: boolean = false;
     public uploadedPhoto: File;
-    public constructor(){
-        // If the user reloads the page, keep them logged in
-        console.log(sessionStorage);
-        if(sessionStorage.getItem('isLoggedIn') != undefined){
-            console.log('SESSION: isLoggedIn');
-            this.isLoggedIn = true;
-        }
-    }
+    constructor(){}
 }

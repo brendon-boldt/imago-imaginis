@@ -28,6 +28,8 @@ import { ModalComponent } from './modal/app-modal.component';
 //References to all the services in the application
 import { DBService } from './services/db.service';
 import { UserService } from './services/user.service';
+import { AuthService } from './services/auth.service';
+import { AuthGuard } from './services/auth-guard.service';
 
 @NgModule({
   declarations: [
@@ -54,7 +56,9 @@ import { UserService } from './services/user.service';
   ],
   providers: [
     DBService,
-    UserService
+    UserService,
+    AuthService,
+    AuthGuard
   ],
   bootstrap: [AppComponent]
 })

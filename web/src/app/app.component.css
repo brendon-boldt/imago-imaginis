@@ -79,7 +79,7 @@ body {
 
 #mainNav {
   border-color: rgba(34, 34, 34, 0.05);
-  background-color: rgba(255,255,255,.8);
+  background-color: rgba(255,255,255,.1);
   font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
   -webkit-transition: all 0.2s;
   -moz-transition: all 0.2s;
@@ -125,7 +125,7 @@ body {
   @media (min-width: 992px) {
     #mainNav {
       border-color: rgba(255, 255, 255, 0.3);
-      background-color: transparent; }
+      /*background-color: transparent;*/ }
       #mainNav .navbar-brand {
         color: rgba(255, 255, 255, 0.7); }
         #mainNav .navbar-brand:focus, #mainNav .navbar-brand:hover {
@@ -175,7 +175,8 @@ header.masthead {
   position: relative;
   width: 100%;
   /* min-width: 100vh; */
-  min-height: calc(100vh);
+  /* min-height: calc(100vh); */
+  min-height: 100vh;
   /* height: 100%; */
   text-align: center;
   color: white;
@@ -190,11 +191,11 @@ header.masthead:before{
   content: ' ';
   display: block;
   position: absolute;
-  opacity: 0.5;
+  opacity: 0.4;
   background-image: url("../assets/starrynight.jpg");
   background-color: #524a54;
   background-size: 100%;
-  background-clip: border-box;
+  /*background-clip: border-box;*/
   left: 0;
   top: 0;
   width: 100%;
@@ -230,16 +231,18 @@ header.masthead .header-content {
     color: rgba(255, 255, 255, 0.7); }
 @media (min-width: 992px) {
   header.masthead {
-    /* height: 100vh; */
-    height: 1000px;
-    min-height: 600px; }
+    min-height: 100vh;
+    /* height: 1000px; */
+    /*min-height: 600px; */ 
+  }
     header.masthead .header-content {
-      position: absolute;
-      top: 50%;
-      padding: 0 50px;
-      -webkit-transform: translateY(-50%);
+      /* position: absolute; */
+      /* top: 50%;
+      padding: 0 50px; */
+      /* -webkit-transform: translateY(-50%);
       -ms-transform: translateY(-50%);
-      transform: translateY(-50%); }
+      transform: translateY(-50%);  */
+    }
     header.masthead .header-content .header-content-inner {
       max-width: 1000px;
       margin-right: auto;
@@ -445,3 +448,6 @@ margin: 50px auto 0; }
   display: block;
 }
 
+.toggle-button {
+  background-color: rgba(255,255,255,.3);
+}

@@ -1,9 +1,9 @@
 const routes = require('./routes.js');
-const moreroutes = require('./moreroutes.js');
+const userRoutes = require('./userRoutes.js');
 
 module.exports = function(app){
     routes(app);
-    moreroutes(app);
+    userRoutes(app);
 }
 
 // module.exports = (app) => {

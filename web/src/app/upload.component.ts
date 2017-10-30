@@ -21,12 +21,8 @@ export class UploadComponent {
     this.fileToUpload = null;
   }
 
-  ngOnInit() {
-    // If the user is not logged in, redirect them to the login page
-    if(!this.us.isLoggedIn){
-      this.router.navigate(['login']);
-    }
-  }
+  ngOnInit() {}
+  
   btnClick = function() {
     this.router.navigate(['select-style']);
   }
