@@ -6,13 +6,13 @@ import { Component } from '@angular/core';
 import { RouterModule, Routes, Router } from '@angular/router';
 
 // Importing database service so we can upload an image to the database
-import { DBService } from './services/db.service';
-import { UserService } from './services/user.service';
+import { DBService } from '../services/db.service';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'upload',
   templateUrl: './upload.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['../css/app.component.css']
 })
 export class UploadComponent {
   fileToUpload: File;

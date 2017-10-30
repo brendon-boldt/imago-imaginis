@@ -21,7 +21,7 @@ components, such as the home page and the profile page, while keeping the top he
 			<a class="nav-link" routerLink="/search" routerLinkActive="active">Search</a>
 		</li>
 		<li class="nav-item dropdown">
-			<a *ngIf = "this.user.isLoggedIn" data-toggle="dropdown" class="nav-link dropdown">Profile <b class="caret"></b></a>
+			<a *ngIf = "this.auth.isLoggedIn" data-toggle="dropdown" class="nav-link dropdown">Profile <b class="caret"></b></a>
 			<ul class="dropdown-menu">
 			<div class="dropdown-content">
 				<li class="nav-item"><a class="nav-link" routerLink="/user" routerLinkActive="active">View</a></li>
@@ -31,9 +31,9 @@ components, such as the home page and the profile page, while keeping the top he
 			</ul>
 		</li>
 		<li class="nav-item">
-			<div *ngIf="!this.user.isLoggedIn;then login else logout"></div>
-			<ng-template #login><a *ngIf="!this.user.isLoggedIn" class="nav-link" routerLink="/login" routerLinkActive="active">Log In</a></ng-template>
-			<ng-template #logout><a *ngIf="this.user.isLoggedIn" class="nav-link" (click)="this.logOut();">Log Out</a></ng-template>
+			<div *ngIf="!this.auth.isLoggedIn;then login else logout"></div>
+			<ng-template #login><a *ngIf="!this.auth.isLoggedIn" class="nav-link" routerLink="/login" routerLinkActive="active">Log In</a></ng-template>
+			<ng-template #logout><a *ngIf="this.auth.isLoggedIn" class="nav-link" (click)="this.logOut();">Log Out</a></ng-template>
 			<!--<a *ngIf="!this.user.isLoggedIn" class="nav-link" routerLink="/login" routerLinkActive="active">Log In</a>-->
 		</li>
 		</ul>

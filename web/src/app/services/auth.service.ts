@@ -36,7 +36,7 @@ export class AuthService {
             return !this.jwtHelper.isTokenExpired(token);
         }
     }
-    login = function(email, password) {
+    login(email, password): void {
         console.log(this.isLoggedIn);
         // Take user information entered in fields and pass to DB service
         this.db.getUser(email, password).then(res => {
@@ -45,16 +45,14 @@ export class AuthService {
             // Take the JWT stored in the response and store it local storage
             sessionStorage.setItem('jwt', res._body);
             console.log(sessionStorage);
-            // this.checkLogin();
-          // The user information matched a row in the DB so log the user in
-        //   if(user != null){
-        //     this.isLoggedIn = true;
-        //     // sessionStorage.setItem('isLoggedIn', 'true');
             this.router.navigate(['home']);
-        //   }
         });
     }
+    /**
+     * Redirects the user to the homepage when logging out
+     */
     logout(): void {
         this.isLoggedIn = false;
+        this.router.navigate(['home']);
     }
 }

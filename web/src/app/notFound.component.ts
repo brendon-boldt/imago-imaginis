@@ -8,7 +8,7 @@ import { RouterModule, Routes, Router } from '@angular/router';
 @Component({
   selector: 'notFound',
   templateUrl: './notFound.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./css/app.component.css']
 })
 export class NotFoundComponent {
   constructor(private router: Router){}

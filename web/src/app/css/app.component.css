@@ -192,7 +192,7 @@ header.masthead:before{
   display: block;
   position: absolute;
   opacity: 0.4;
-  background-image: url("../assets/starrynight.jpg");
+  background-image: url("../../assets/starrynight.jpg");
   background-color: #524a54;
   background-size: 100%;
   /*background-clip: border-box;*/

@@ -8,7 +8,7 @@ import { RouterModule, Routes, Router } from '@angular/router';
 @Component({
   selector: 'report',
   templateUrl: './report.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./css/app.component.css']
 })
 export class ReportComponent {
 }

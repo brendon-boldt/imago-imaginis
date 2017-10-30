@@ -11,7 +11,7 @@ import { DBService } from './services/db.service';
 @Component({
   selector: 'search',
   templateUrl: './search.component.html',
-  styleUrls: ['./app.component.css', './css/search.component.css']
+  styleUrls: ['./css/app.component.css', './css/search.component.css']
 })
 export class SearchComponent {
   showSearch: boolean;

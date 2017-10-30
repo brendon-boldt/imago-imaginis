@@ -5,16 +5,16 @@
 import { Component, ViewChild } from '@angular/core';
 import { RouterModule, Routes, Router } from '@angular/router';
 
-import { UserService } from './services/user.service';
-import { DBService } from './services/db.service';
+import { UserService } from '../services/user.service';
+import { DBService } from '../services/db.service';
 
 // Import the modal component
-import { ModalComponent } from './modal/app-modal.component';
+import { ModalComponent } from '../modal/app-modal.component';
 
 @Component({
   selector: 'select-style',
   templateUrl: './select-style.component.html',
-  styleUrls: ['./app.component.css', './css/select-style.component.css']
+  styleUrls: ['../css/app.component.css', '../css/select-style.component.css']
 })
 export class SelectStyleComponent {
   @ViewChild('modal') modal;

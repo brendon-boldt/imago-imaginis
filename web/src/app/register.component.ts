@@ -11,7 +11,7 @@ import { DBService } from './services/db.service';
 @Component({
   selector: 'register',
   templateUrl: './register.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./css/app.component.css']
 })
 export class RegisterComponent {
   constructor(private router: Router, private user: UserService, private db: DBService){}

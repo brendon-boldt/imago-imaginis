@@ -13,7 +13,7 @@ import { AuthService } from './services/auth.service';
 @Component({
   selector: 'login',
   templateUrl: './login.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./css/app.component.css']
 })
 export class LoginComponent {
   public keyboard: String = "../assets/keyboard.jpg";
@@ -21,8 +21,8 @@ export class LoginComponent {
   public style: String = "../assets/style.jpg";
   private email: String = "test.user@email.com";
   private password: String = "123456";
-  constructor(private db: DBService, private user: UserService, private router: Router){}
+  constructor(private db: DBService, private user: UserService, private router: Router, private auth: AuthService){}
   login = function(){
-    this.user.login(this.email, this.password);
+    this.auth.login(this.email, this.password);
   }
 }
