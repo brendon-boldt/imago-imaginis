@@ -3,9 +3,6 @@ Since we're not doing PHP, and using Angular instead, we need to have all commun
 through the usage of API calls. This is easy to setup, and it kills two birds with one stone (API for customer, and communication to our server backend for the web UI).
 
 ### Overview
-You need three things installed: Node, and the node modules Express and body-parser.
-You should also install nodemon, it auto-restarts Express server on file change.
-
 So we have server.js which bootstraps and starts the Express server.
 routes/index.js is the place where we specify all the different routes the API makes available.
 You can test these routes using a REST client (I prefer Chrome extension Restlet Client) (try a GET on localhost:8000/test).
