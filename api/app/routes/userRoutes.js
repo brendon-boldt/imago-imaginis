@@ -25,7 +25,8 @@ module.exports = function(app) {
     var lastName = req.body.last_name;
     var email = req.body.email;
     var password = req.body.password; // Hash password
-    password = hash.update(password);
+    hash.update(password);
+    password = hash.digest('hex');
     var date = new Date(Date.now()).toLocaleDateString();
     let queryText = "INSERT INTO asp_users (first_name, last_name, email, password, date_joined, status) VALUES ('" + firstName + "', '" + lastName + "', '" + email + "', '" + password + "', '" + date + "', true);";
     console.log("Query: " + queryText);
