@@ -19,6 +19,12 @@ export class AppComponent {
   title = 'Artistic Stylizer Platform';
   constructor(private router: Router, private user: UserService, private auth: AuthService) {}
   ngOnInit() {
+      // Check to see if the user is logged in
+      if(this.auth.checkLogin()){
+        this.auth.isLoggedIn = true;
+        // Set user info from JWT
+        this.user.setInfo(sessionStorage.getItem('jwt'));
+      }
       // This will make the window scroll to the top of the page
       // whenever the user is router to another page
       this.router.events.subscribe((evt) => {

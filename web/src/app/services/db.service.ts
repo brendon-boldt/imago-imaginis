@@ -14,13 +14,14 @@ export class DBService {
     constructor(private http: Http){}
 
     /**
-     * Return a user based on email and password
+     * Log a user in based on email and password
+     * Will get a JWT in return
      * @param email 
      * @param password 
      */
-    getUser(email, password): Promise<any> {
+    login(email, password): Promise<any> {
         console.log(email + " " + password);
-        console.log("Performing GET of users");
+        console.log("Performing login");
         let login = this.url + '/user/login';
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
@@ -133,6 +134,24 @@ export class DBService {
         return this.http.get(search, options)
         .toPromise()
         .then(response => response.json()　as Object)
+        .catch(this.handleError);
+    }
+
+    /**
+     * Returns the user information that matches the user id passed in
+     * @param user_id 
+     */
+    getUser(user_id): Promise<any> {
+        console.log("GETTING user info with id " + user_id);
+        let login = this.url + '/user/get';
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        let params = new URLSearchParams();
+        params.set('user_id', user_id);
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.get(login, options)
+        .toPromise()
+        .then(response => response.json() as Object)
         .catch(this.handleError);
     }
 

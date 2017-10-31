@@ -44,7 +44,7 @@ It is routed to when the user clicks on a router link-->
 					</tbody>
 				</table>
 			</div>
-			<div *ngIf="showSearch != null">
+			<div *ngIf="showSearch != null && showSearch != true">
 				<p>We didn't find anything for {{searchString}}.</p>
 			</div>
 		</div>

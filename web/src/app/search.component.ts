@@ -46,7 +46,8 @@ export class SearchComponent {
   goToProfile = function(index) {
     // Get the user based on the table index selected
     let user = this.results[index];
+    console.log(user);
     // Navigate to the user profile, with route parameters set
-    this.router.navigate(['user'], "hi");
+    this.router.navigate(['user'], { queryParams: { user_id: user.user_id }});
   }
 }

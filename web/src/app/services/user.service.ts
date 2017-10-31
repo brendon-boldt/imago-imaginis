@@ -15,5 +15,19 @@ import { DBService } from './db.service';
 @Injectable()
 export class UserService {
     public uploadedPhoto: File;
+    public user_id: number;
+    public first_name: string;
+    public last_name: string;
+    public email: string;
+    jwtHelper: JwtHelper = new JwtHelper();
     constructor(){}
+    setInfo(jwt): void {
+        console.log("USERSERVICE - Setting info:");
+        jwt = this.jwtHelper.decodeToken(jwt)
+        console.log(jwt);
+        this.user_id = jwt.user_id;
+        this.first_name = jwt.first_name;
+        this.last_name = jwt.last_name;
+        this.email = jwt.email;
+    }
 }

@@ -19,6 +19,6 @@ export class HomeComponent {
   public upload: String = "../assets/upload.jpg";
   public style: String = "../assets/style.jpg";
   btnClick = function(){
-    this.router.navigate(['login']);
+    this.router.navigate(['upload']);
   }
 }

@@ -5,14 +5,18 @@ const jwt = require('jsonwebtoken');
 const bcrypt  = require('bcrypt');
 
 module.exports = function(app) {
-  //Just a test route
+  /**
+   * Test route
+   */
   app.post('/test', (req, res) => {
     console.log(req.query);
     res.send('Hello');
   });
 
-  // Inserts an entry into the asp_users' table
-  // Takes in the request body's parameters
+  /**
+   * Inserts an entry into the asp_users' table
+   * Takes in the request body's parameters
+   */
   app.post('/user/create', (req, getres) => {
     console.log("Post - create account");
     var firstName = req.body.first_name;
@@ -35,9 +39,11 @@ module.exports = function(app) {
       .catch(e => console.error(e.stack))
   });
 
-  // Returns the rows in asp_users that match an email and password
-  // Takes in the request query's parameters
-  // Signs a JWT token and returns it to the user
+  /**
+   * Takes in the request query's parameters
+   * Signs a JWT token and returns it to the user
+   * If the user doesn't exist, return an error
+   */
   app.get('/user/login', (req, getres) => {
     console.log("GET - login");
     var email = req.query.email;
@@ -45,25 +51,32 @@ module.exports = function(app) {
     let queryText = "SELECT * FROM asp_users WHERE email = '" + email + "' AND password = '" + password + "';";
     db.query(queryText)
       .then(res => {
-        var payload = {
-          user_id: res.rows[0].user_id,
-          first_name: res.rows[0].first_name,
-          last_name: res.rows[0].last_name,
-          email: email,
-        };
-        var token = jwt.sign(payload, "thisisthekey", { expiresIn: '1h'}); // Sets the token to expire in an hour
-        var decoded = jwt.verify(token, "thisisthekey"); // For reference
-        console.log(res.rows[0]);
-        // Return the token to the user
-        getres.send(token);
-        // console.log(res.rows[0]);
-        // getres.send(res.rows[0]);
+        if(res.rows[0] != null){
+          // Puts various user information into the JWT
+          var payload = {
+            user_id: res.rows[0].user_id,
+            first_name: res.rows[0].first_name,
+            last_name: res.rows[0].last_name,
+            email: email,
+          };
+          var token = jwt.sign(payload, "thisisthekey", { expiresIn: '1h'}); // Sets the token to expire in an hour
+          var decoded = jwt.verify(token, "thisisthekey"); // For reference
+          console.log(res.rows[0]);
+          // Return the token to the user
+          getres.send(token);
+          // getres.send(res.rows[0]);
+        }
+        else{
+          getres.send("User not found");
+        }
       })
       .catch(e => console.error(e.stack))
   });
 
-  // Returns users that match a query string
-  // Takes in the request query's parameters
+  /**
+   * Returns users that match a query string
+   * Takes in the request query's parameters
+   */
   app.get('/user/search', (req, getres) => {
     console.log("GET - search");
     var searchString = req.query.searchString;

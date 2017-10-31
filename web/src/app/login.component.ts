@@ -21,7 +21,11 @@ export class LoginComponent {
   public style: String = "../assets/style.jpg";
   private email: String = "test.user@email.com";
   private password: String = "123456";
-  constructor(private db: DBService, private user: UserService, private router: Router, private auth: AuthService){}
+  constructor(private db: DBService, private user: UserService, private router: Router, private auth: AuthService){
+    if(this.auth.isLoggedIn){
+      this.router.navigate(['home']);
+    }
+  }
   login = function(){
     this.auth.login(this.email, this.password);
   }
