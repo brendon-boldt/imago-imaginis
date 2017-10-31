@@ -4,7 +4,7 @@ const { Pool, Client } = require('pg');
 
 // Pool
 const pool = new Pool({
-    user: 'wsadmin',
+    user: 'administrator',
     host: '10.10.7.189',
     database: 'aspdb',
     password: 'Cg17',
