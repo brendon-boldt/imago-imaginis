@@ -52,6 +52,8 @@ module.exports = function(app) {
     console.log("GET - login");
     var email = req.query.email;
     var password = req.query.password;
+    hash.update(password);
+    password = hash.digest('hex');
     let queryText = "SELECT * FROM asp_users WHERE email = '" + email + "' AND password = '" + password + "';";
     db.query(queryText)
       .then(res => {
