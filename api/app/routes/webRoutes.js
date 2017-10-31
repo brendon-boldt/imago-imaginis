@@ -46,18 +46,18 @@ module.exports = function(app) {
     console.log("POST - upload");
     console.log(req.file);
     getres.send(req.file);
-    // // Create a new entry in the database in Unfiltered_Photo
-    // var path = "somepath\\" + req.file.path;
-    // let queryText = "INSERT INTO unfiltered_photo (size, height, width, path) VALUES (3.0, 264, 264, '" + path + "')";
-    // console.log("Query: " + queryText);
-    // db.query(queryText); 
-    // // Need to generate entry in Photos to have photo id so we can create entry in user_photo
-    // queryText = "INSERT INTO photos"
-    // console.log("Query: " + queryText);
-    // db.query(queryText); 
-    // // We also need to create a new entry in User_Photo. Need to use generated unfiltered_photo_id
-    // queryText = "INSERT INTO user_photo (filter_id, unfiltered_photo_id, status, wait_time) VALUES (" + req.query.filter_id
-    // console.log("Query: " + queryText);
-    // db.query(queryText); 
+    // Create a new entry in the database in Unfiltered_Photo
+    var path = "/home/administrator/files/images/uploads/" + req.file.filename;
+    let queryText = "INSERT INTO unfiltered_photo (size, height, width, path) VALUES (3.0, 264, 264, '" + path + "') RETURNING unfiltered_photo_id;";
+    console.log("Query: " + queryText);
+    var unfiltered_photo_id = db.query(queryText);
+    // Need to generate entry in Photos to have photo id so we can create entry in user_photo
+    queryText = "INSERT INTO photos (size, creation_date, path, process_time, flag, display, height, width) VALUES (.00000001, '1970-01-01', '', 0, false, false, 0, 0);";
+    console.log("Query: " + queryText);
+    db.query(queryText); 
+    // We also need to create a new entry in User_Photo. Need to use generated unfiltered_photo_id
+    queryText = "INSERT INTO user_photo (filter_id, unfiltered_photo_id, status, wait_time) VALUES (" + req.query.filter_id + ", " + unfiltered_photo_id + ", waiting, 0);";
+    console.log("Query: " + queryText);
+    db.query(queryText); 
   });
 };
