@@ -21,13 +21,13 @@ export class UserComponent {
   constructor(private user: UserService, private route: ActivatedRoute, private router: Router, private db: DBService){}
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
+      console.log(params);
       // No params were passed, or the user id is the current user's id, so display the logged in user's profile
-      if(params[0] == null){
+      if(params.user_id == null){
         this.router.navigate(['user']);
       }
-      // Params were passed, so set the page info to the user id's info so we can display it
       else{
-        console.log(params);
+        // Params were passed, so set the page info to the user id's info so we can display it
         // Do DB call that returns user info given ID
         // this.db.getUser().then(result => {
         //   // this.user_id = this.user.user_id;
