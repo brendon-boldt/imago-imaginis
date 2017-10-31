@@ -6,13 +6,13 @@ import { Component } from '@angular/core';
 import { RouterModule, Routes, Router } from '@angular/router';
 
 // Importing database service so we can check to see if the user login information exists
-import { DBService } from './services/db.service';
-import { UserService } from './services/user.service';
+import { DBService } from '../services/db.service';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'user-settings',
   templateUrl: './user-settings.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['../css/app.component.css']
 })
 export class UserSettingsComponent {
   constructor(private router: Router){}

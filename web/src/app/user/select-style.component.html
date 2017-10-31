@@ -11,7 +11,7 @@ It is routed to when the user clicks on a router link-->
 			<br><br>
 			<div class="card-deck" id="card-deck">
 				<div class="card">
-					<img [src]="this.uploadImage" class="card-img-top" id="upload-img">
+					<img [src]="this.uploadedImage" class="card-img-top" id="upload-img">
 					<div class="card-block">
 						<!--style="height: 100%; max-height: 300px;"-->
 					</div>
@@ -27,7 +27,7 @@ It is routed to when the user clicks on a router link-->
 							</button>
 							<div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="width: 200px;">
 								<div *ngFor="let style of styles">
-									<a class="dropdown-item" (click)="update(style)">{{style.style}}</a>
+									<a class="dropdown-item" (click)="selectStyle(style)">{{style.name}}</a>
 								</div>
 							</div>
 						</div>
@@ -52,7 +52,7 @@ It is routed to when the user clicks on a router link-->
 					</div>
 				</div>-->
 				<div class="card">
-					<img [src]="selectedStyle.example" class="card-img-top" alt="style_image" id="upload-img">
+					<img [src]="selectedStyle.example" class="card-img-top" alt="Image of Style Filter" id="style-img">
 					<div class="card-block">
 						 <!--style="height: 100%; width: 100%; max-height: 300px;"-->
 					</div>
@@ -63,7 +63,18 @@ It is routed to when the user clicks on a router link-->
 			</div>
 		</div>
 		<br><br>
-		<a class="btn btn-primary btn-xl js-scroll-trigger" (click)="this.btnClick();">Style</a>
+		<a class="btn btn-primary btn-xl js-scroll-trigger" (click)="this.upload();">Style</a>
+		<app-modal #modal>
+			<div class="app-modal-header">
+				<!--Error-->&nbsp;
+			</div>
+			<div class="app-modal-body">
+				Please select a style!
+			</div>
+			<div class="app-modal-footer">
+				<button type="button" class="btn btn-default" (click)="modal.hide()">Close</button>
+			</div>
+		</app-modal>
 	</div>
 </header>
 

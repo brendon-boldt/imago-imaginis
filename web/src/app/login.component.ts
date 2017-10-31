@@ -8,11 +8,12 @@ import { RouterModule, Routes, Router } from '@angular/router';
 // Importing database service so we can check to see if the user login information exists
 import { DBService } from './services/db.service';
 import { UserService } from './services/user.service';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'login',
   templateUrl: './login.component.html',
-  styleUrls: ['./app.component.css']
+  styleUrls: ['./css/app.component.css']
 })
 export class LoginComponent {
   public keyboard: String = "../assets/keyboard.jpg";
@@ -20,16 +21,12 @@ export class LoginComponent {
   public style: String = "../assets/style.jpg";
   private email: String = "test.user@email.com";
   private password: String = "123456";
-  constructor(private db: DBService, private user: UserService, private router: Router){}
+  constructor(private db: DBService, private user: UserService, private router: Router, private auth: AuthService){
+    if(this.auth.isLoggedIn){
+      this.router.navigate(['home']);
+    }
+  }
   login = function(){
-    console.log(this.user.isLoggedIn);
-    // Take user information entered in fields and pass to DB service
-    this.db.getUserREST(this.email, this.password).then(user => {
-      // The user information matched a row in the DB so log the user in
-      if(user != null){
-        this.user.isLoggedIn = true;
-        this.router.navigate(['home']);
-      }
-    });
+    this.auth.login(this.email, this.password);
   }
 }

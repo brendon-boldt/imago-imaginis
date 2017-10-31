@@ -1,10 +1,10 @@
-const routes = require('./routes.js');
-const moreroutes = require('./moreroutes.js');
+const webRoutes = require('./webRoutes.js');
+const userRoutes = require('./userRoutes.js');
 const styleRoutes = require('./styleRoutes.js');
 
 module.exports = function(app){
-    routes(app);
-    moreroutes(app);
+    webRoutes(app);
+    userRoutes(app);
     styleRoutes(app);
 }
 

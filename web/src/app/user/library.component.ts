@@ -8,7 +8,7 @@ import { RouterModule, Routes, Router } from '@angular/router';
 @Component({
   selector: 'library',
   templateUrl: './library.component.html',
-  styleUrls: ['./app.component.css', './library.component.css']
+  styleUrls: ['../css/app.component.css', '../css/library.component.css']
 })
 export class LibraryComponent {
   constructor(private router: Router){}
