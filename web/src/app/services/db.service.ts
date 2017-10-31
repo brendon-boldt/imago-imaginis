@@ -11,6 +11,7 @@ import 'rxjs/add/operator/toPromise';
 export class DBService {
     // This is the url of the Express server that is serving as the connection for the DB to the open world
     url = `http://10.10.7.189:8000`;
+    // url = `http://localhost:8000`;
     constructor(private http: Http){}
 
     /**

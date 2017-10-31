@@ -50,7 +50,12 @@ module.exports = function(app) {
     var path = "/home/administrator/files/images/uploads/" + req.file.filename;
     let queryText = "INSERT INTO unfiltered_photo (size, height, width, path) VALUES (3.0, 264, 264, '" + path + "') RETURNING unfiltered_photo_id;";
     console.log("Query: " + queryText);
-    var unfiltered_photo_id = db.query(queryText);
+    async function test() {
+      var unfiltered_photo_id = await db.query(queryText);
+      return unfiltered_photo_id
+    }
+    var unfiltered_photo_id = test();
+    console.log(unfiltered_photo_id);
     // Need to generate entry in Photos to have photo id so we can create entry in user_photo
     queryText = "INSERT INTO photos (size, creation_date, path, process_time, flag, display, height, width) VALUES (.00000001, '1970-01-01', '', 0, false, false, 0, 0);";
     console.log("Query: " + queryText);
