@@ -34,7 +34,7 @@ module.exports = function(app) {
    */
   var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, 'C:/Users/KaiWong/')
+      cb(null, '/home/administrator/files/images/uploads')
     },
     filename: function (req, file, cb) {
         var filename = file.fieldname + '-' + Date.now() + path.extname(file.originalname)
@@ -46,10 +46,18 @@ module.exports = function(app) {
     console.log("POST - upload");
     console.log(req.file);
     getres.send(req.file);
-    // Create a new entry in the database in Photos
-    var path = "somepath\\" + req.file.path;
-    let queryText = "INSERT INTO photos (filter_id, size, creation_date, path, process_time) VALUES (" + req.query.filter_id + ", 3.0, '2017-10-18', '" + path + "', 5)";
-    console.log("Query: " + queryText);
-    db.query(queryText); 
+    // // Create a new entry in the database in Unfiltered_Photo
+    // var path = "somepath\\" + req.file.path;
+    // let queryText = "INSERT INTO unfiltered_photo (size, height, width, path) VALUES (3.0, 264, 264, '" + path + "')";
+    // console.log("Query: " + queryText);
+    // db.query(queryText); 
+    // // Need to generate entry in Photos to have photo id so we can create entry in user_photo
+    // queryText = "INSERT INTO photos"
+    // console.log("Query: " + queryText);
+    // db.query(queryText); 
+    // // We also need to create a new entry in User_Photo. Need to use generated unfiltered_photo_id
+    // queryText = "INSERT INTO user_photo (filter_id, unfiltered_photo_id, status, wait_time) VALUES (" + req.query.filter_id
+    // console.log("Query: " + queryText);
+    // db.query(queryText); 
   });
 };
