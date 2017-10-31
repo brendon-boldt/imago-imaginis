@@ -2,7 +2,9 @@ const db = require('../db');
 const multer = require('multer'); 
 const path = require('path');
 const jwt = require('jsonwebtoken');
-const bcrypt  = require('bcrypt');
+const crypto = require('crypto');
+
+const hash = crypto.createHash('sha256');
 
 module.exports = function(app) {
   /**
@@ -23,6 +25,7 @@ module.exports = function(app) {
     var lastName = req.body.last_name;
     var email = req.body.email;
     var password = req.body.password; // Hash password
+    password = hash.update(password);
     var date = new Date(Date.now()).toLocaleDateString();
     let queryText = "INSERT INTO asp_users (first_name, last_name, email, password, date_joined, status) VALUES ('" + firstName + "', '" + lastName + "', '" + email + "', '" + password + "', '" + date + "', true);";
     console.log("Query: " + queryText);
