@@ -6,6 +6,11 @@ import { AuthService } from './auth.service';
 export class AuthGuard implements CanActivate {
     constructor(private authService: AuthService, private router: Router){}
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
+        console.log(route.queryParams);
+        // Check to see if the user is looking up a profile (not their own) and allow it
+        if(route.queryParams.user_id != null){
+            return true;
+        }
         let url: string = state.url;
         return this.checkLogin(url);
     }

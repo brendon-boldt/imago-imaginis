@@ -4,8 +4,6 @@ const path = require('path');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 
-const hash = crypto.createHash('sha256');
-
 module.exports = function(app) {
   /**
    * Test route
@@ -25,6 +23,7 @@ module.exports = function(app) {
     var lastName = req.body.last_name;
     var email = req.body.email;
     var password = req.body.password; // Hash password
+    const hash = crypto.createHash('sha256');
     hash.update(password);
     password = hash.digest('hex');
     var date = new Date(Date.now()).toLocaleDateString();
@@ -52,6 +51,7 @@ module.exports = function(app) {
     console.log("GET - login");
     var email = req.query.email;
     var password = req.query.password;
+    const hash = crypto.createHash('sha256');
     hash.update(password);
     password = hash.digest('hex');
     let queryText = "SELECT * FROM asp_users WHERE email = '" + email + "' AND password = '" + password + "';";
