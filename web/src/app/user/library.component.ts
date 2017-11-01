@@ -14,6 +14,10 @@ import { UserService } from '../services/user.service';
   styleUrls: ['../css/app.component.css', '../css/library.component.css']
 })
 export class LibraryComponent {
-  constructor(private router: Router, private db: DBService, private user: UserService){}
   public placeholder: String = "../assets/placeholder.jpg";
+  constructor(private router: Router, private db: DBService, private user: UserService){
+    this.db.getStyledPhotos(this.user.user_id).then(res => {
+      console.log(res);
+    })
+  }
 }

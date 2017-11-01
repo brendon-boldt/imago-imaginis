@@ -23,7 +23,6 @@ export class DBService {
      * @param password 
      */
     login(email, password): Promise<any> {
-        console.log(email + " " + password);
         console.log("Performing login");
         let login = this.url + '/user/login';
         let headers = new Headers();
@@ -104,7 +103,7 @@ export class DBService {
      */
     uploadProfilePhoto(file: File): Promise<any> {
         console.log("WEB: Performing POST of photo");
-        let uploadProfile = this.url + '/upload/profile';
+        let uploadProfile = this.url + '/user/upload/profile';
         let headers = new Headers();
         // headers.append('Content-Type', 'image/jpeg');
 
@@ -197,15 +196,36 @@ export class DBService {
      */
     getUser(user_id): Promise<any> {
         console.log("GETTING user info with id " + user_id);
-        let login = this.url + '/user/get';
+        let getUser = this.url + '/user/info';
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
         let params = new URLSearchParams();
-        params.set('user_id', user_id);
+        params.set('id', user_id);
         let options = new RequestOptions({headers: headers, search: params});
-        return this.http.get(login, options)
+        return this.http.get(getUser, options)
         .toPromise()
         .then(response => response.json() as Object)
+        .catch(this.handleError);
+    }
+
+    saveUserSettings(userId, firstName, lastName, email, password): Promise<any>{
+        console.log("WEB: Saving user settings");
+        let createUser = this.url + '/user/alter';
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/x-www-form-urlencoded');
+
+        let body = new URLSearchParams();
+        body.append("firstName", firstName);
+        body.append("lastName", lastName);
+        body.append("email", email);
+        body.append("password", password);
+
+        let params = new URLSearchParams();
+        params.set('userId', userId);
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.post(createUser, body.toString(), options)
+        .toPromise()
+        .then(response => {return response as Object})
         .catch(this.handleError);
     }
 

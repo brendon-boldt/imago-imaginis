@@ -19,28 +19,87 @@ import { ModalComponent } from '../modal/app-modal.component';
 })
 export class UserSettingsComponent {
   @ViewChild('modal') modal;
-  constructor(private router: Router, private db: DBService){}
-  public keyboard: String = "../assets/keyboard.jpg";
-  public upload: String = "../assets/upload.jpg";
-  public style: String = "../assets/style.jpg";
+  firstName: string;
+  lastName: string;
+  email: string;
+  password: string;
   fileToUpload: any;
-  upgradeAccount = function() {
-    this.router.navigate(['upgradeAccount']);
+  profilePhoto: any = '../../assets/placeholder.jpg';
+  modalText: string;
+  constructor(private router: Router, private db: DBService, private user: UserService){
+    this.firstName = this.user.first_name;
+    this.lastName = this.user.last_name;
+    this.email = this.user.email;
+    // Get the user's profile photo
+    this.db.getProfilePhoto(this.user.user_id).then(res => {
+      if(res._body == "[]"){ // The user had no profile picture
+        console.log("User has no profile picture");
+      }
+      else{
+        this.profilePhoto = this.db.url + "/" + res.json()[0].path;
+        console.log(res.json());
+        console.log(this.profilePhoto);
+      }
+    });
   }
-  save = function() {
-	console.log("save settings");
+  /**
+   * Pops up a modal to allow the user to upgrade their account
+   */
+  upgradeAccount(): void {
+    this.router.navigate(['upgradeAccount']); // Probably just want to pop a modal up for this...
   }
+  /**
+   * Front-end method to save changes to user account
+   */
+  save(): void {
+    console.log("WEB: Saving user settings");
+    this.db.saveUserSettings(this.user.user_id, this.firstName, this.lastName, this.email, this.password).then(res => {
+      this.user.first_name = this.firstName;
+      this.user.last_name = this.lastName;
+      this.user.email = this.email;
+      this.modalText = "User Settings Saved!";
+      // Scroll user to top of page
+      window.scrollTo(0, 0)
+      this.modal.show();
+    })
+  }
+  /**
+   * Called when file is entered into upload
+   */
   fileChangeEvent(fileInput: any): void {
     this.fileToUpload = fileInput.target.files[0];
     console.log(this.fileToUpload);
     this.uploadProfilePhoto();
   }
+  /**
+   * Submits the form when pressing the enter key
+   */
+  onKey(event: any): void {
+    if(event.key == "Enter"){
+      this.save();
+    }
+  }
+  /**
+   * Front-end performance of profile photo upload
+   */
   uploadProfilePhoto(): void {
     // Uploading photo with no style
     this.db.uploadProfilePhoto(this.fileToUpload).then(result => {
       // Post shouldn't return anything
       console.log(result);
+      this.modalText = "Profile Picture Updated!";
       this.modal.show();
+      // Update the profile picture
+      this.db.getProfilePhoto(this.user.user_id).then(res => {
+        if(res._body == "[]"){ // The user had no profile picture
+          console.log("User has no profile picture");
+        }
+        else{
+          this.profilePhoto = this.db.url + "/" + res.json()[0].path;
+          console.log(res.json());
+          console.log(this.profilePhoto);
+        }
+      });
     });
   }
 }

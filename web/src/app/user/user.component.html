@@ -7,24 +7,26 @@
 <header class="masthead">
     <div class="header-content">
         <div class="header-content-inner">
-			<h1 id="homeHeading">{{this.user.first_name}} {{this.user.last_name}}</h1>
-			<br>
+			<h1 id="homeHeading">{{this.first_name}} {{this.last_name}}</h1>
+			<hr>
             <div class="container center-text">
                 <div class="row">
-
                     <div class="col-md-6">
                         <br>
-                        <img src="../assets/dy.jpg" class="img-border" alt="profile picture" style="width: 200px; height: auto">
+                        <img [src]="this.profilePhoto" class="img-border" alt="profile picture" style="width: 200px; height: auto">
                         <br>
-                        <p class="lead">{{this.user.first_name}} {{this.user.last_name}}</p>
+                        <p class="lead">{{this.first_name}} {{this.last_name}}</p>
                     </div>
                     <div class="col-md-5">
-                        <h5>Favorite Images</h5>
-                        <br>
-                        <img src="../assets/jurassic_styled.jpg" class="img-border" alt="favorite_1" style="width: 350px; height: auto">
-                        <br>
-                        <br>
-                        <img src="../assets/sanfran_styled.jpg" class="img-border" alt="favorite_2" style="width: 350px; height: auto">
+                        <p class="lead">Favorite Images</p>
+                        <hr>
+                        <div id="divMain" class="library-container">
+                            <div class="container-one">
+                                <div *ngFor="let photo of photos">
+                                    <img [src]="photo" class="image">
+                                </div>
+                            </div>
+                        </div>
                     </div>
                     <br style="clear: left;" />
                 </div>
