@@ -23,7 +23,7 @@ It is routed to when the user clicks on a router link-->
 					<div class="card-block">-->
 						<div class="dropdown" style="margin-top: 150px; margin-bottom: 150px; margin-left: 50px; margin-right: 50px;">
 							<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								Choose a Style
+								{{this.selectedStyle.name}}
 							</button>
 							<div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="width: 200px;">
 								<div *ngFor="let style of styles">

@@ -4,8 +4,9 @@ const mountRoutes = require('./app/routes');
 
 const app = express();
 
+var config;
 try {
-    require('./config.js');
+    config = require('./config.js');
 } catch (e) {
     console.log("ERROR: Could not find `config.js`. Have you tried copying `config.js.template` to `config.js` (and populating the relevant fields)?");
     process.exit(1);
@@ -25,8 +26,10 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 app.use(cors());
 
-app.use(express.static('../../files'))
-
+console.log(config);
+app.use(express.static('../../files'));
+// '../../files'
+// C:/Users/KaiWong
 
 require('./app/routes')(app);
 app.listen(port, () => {

@@ -20,7 +20,7 @@ export class SelectStyleComponent {
   @ViewChild('modal') modal;
   freeUser: boolean = true;
   uploadImage: String = "../assets/monalisa.jpg";
-  selectedStyle: Object = {"filter_id": "Select a style", "example":"assets/brush.png"};
+  selectedStyle: Object = {"filter_id": "Select a style", "name":"Select a Style", "example":"assets/brush.png"};
   // styles: Array<Object> = [{"style":"Cubism", "example":"../assets/cubism.jpg"}, {"style":"Flowers", "example":"../assets/flowers.jpg"}, {"style":"Starry Night", "example":"../assets/starrynight.jpg"}, {"style":"Oil Painting", "example":"../assets/oil.jpg"}, {"style":"Impressionism", "example":"../assets/impress.jpg"}];
   styles: Array<Object> = null; // Comes from DB as [{"filter_id":1,"name":"VanGogh"},...]
   uploadedImage: File = null;

@@ -5,18 +5,19 @@
 import { Component } from '@angular/core';
 import { RouterModule, Routes, Router } from '@angular/router';
 
+import { DBService } from '../services/db.service';
+import { UserService } from '../services/user.service';
+
 @Component({
   selector: 'library',
   templateUrl: './library.component.html',
   styleUrls: ['../css/app.component.css', '../css/library.component.css']
 })
 export class LibraryComponent {
-  constructor(private router: Router){}
   public placeholder: String = "../assets/placeholder.jpg";
-  public keyboard: String = "../assets/keyboard.jpg";
-  public upload: String = "../assets/upload.jpg";
-  public style: String = "../assets/style.jpg";
-  btnClick = function(){
-    this.router.navigate(['login']);
+  constructor(private router: Router, private db: DBService, private user: UserService){
+    this.db.getStyledPhotos(this.user.user_id).then(res => {
+      console.log(res);
+    })
   }
 }
