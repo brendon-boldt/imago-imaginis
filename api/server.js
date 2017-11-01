@@ -27,8 +27,9 @@ app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 app.use(cors());
 
 console.log(config);
-app.use(express.static('C:/Users/KaiWong'));
+app.use(express.static('../../files'));
 // '../../files'
+// C:/Users/KaiWong
 
 require('./app/routes')(app);
 app.listen(port, () => {

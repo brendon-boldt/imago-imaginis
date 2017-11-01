@@ -4,6 +4,9 @@ const path = require('path');
 const jwt = require('jsonwebtoken');
 const bcrypt  = require('bcrypt');
 
+const uploadsPath = '/home/administrator/files/images/uploads';
+// const uploadsPath = 'C:/Users/KaiWong/';
+
 module.exports = function(app) {
   
   /**
@@ -34,8 +37,7 @@ module.exports = function(app) {
    */
   var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      // cb(null, '/home/administrator/files/images/uploads')
-      cb(null, 'C:/Users/KaiWong/')
+      cb(null, uploadsPath)
     },
     filename: function (req, file, cb) {
         var filename = file.fieldname + '-' + Date.now() + path.extname(file.originalname)
