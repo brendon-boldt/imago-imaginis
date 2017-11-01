@@ -12,8 +12,8 @@ import { UserService } from './user.service';
 @Injectable()
 export class DBService {
     // This is the url of the Express server that is serving as the connection for the DB to the open world
-    url = `http://10.10.7.189:8000`;
-    // url = `http://localhost:8000`;
+    // url = `http://10.10.7.189:8000`;
+    url = `http://localhost:8000`;
     constructor(private http: Http, private user: UserService){}
 
     /**
@@ -99,11 +99,50 @@ export class DBService {
     }
 
     /**
+     * Performs an upload of a profile photo to the database, taking in a file
+     * @param file 
+     */
+    uploadProfilePhoto(file: File): Promise<any> {
+        console.log("WEB: Performing POST of photo");
+        let uploadProfile = this.url + '/upload/profile';
+        let headers = new Headers();
+        // headers.append('Content-Type', 'image/jpeg');
+
+        let formData: any = new FormData();
+        formData.append("upload", file);
+        console.log("WEB: Profile photo that will be uploaded: ");
+        console.log(file);
+
+        let params = new URLSearchParams();
+        params.set('user_id', ""+this.user.user_id);
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.post(uploadProfile, formData, options)
+        .toPromise()
+        .then(response => response.json().data　as Object)
+        .catch(this.handleError);
+    }
+
+    /**
      * Returns photos specified by type
      * @param type (styled, profile, display)
      */
     getPhotos(type: String) {
 
+    }
+    
+    getProfilePhoto(num: number) {
+        console.log(num);
+        let profilePicture = this.url + '/user/profile-picture';
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        let params = new URLSearchParams();
+        params.set('id', num+"");
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.get(profilePicture, options)
+        .toPromise()
+        // .then(response => response.json()　as Object)
+        .then(response => response as Object)
+        .catch(this.handleError);
     }
 
     /**

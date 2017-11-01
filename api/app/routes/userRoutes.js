@@ -18,7 +18,7 @@ module.exports = function(app) {
    * Takes in the request body's parameters
    */
   app.post('/user/create', (req, getres) => {
-    console.log("Post - create account");
+    console.log("POST - create account");
     var firstName = req.body.first_name;
     var lastName = req.body.last_name;
     var email = req.body.email;
@@ -93,5 +93,41 @@ module.exports = function(app) {
         getres.send(res.rows);
       })
       .catch(e => console.error(e.stack))
+  });
+
+  /**
+   * Performs a profile photo upload
+   * https://github.com/expressjs/multer/issues/170
+   */
+  var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      // cb(null, '/home/administrator/files/images/uploads')
+      cb(null, 'C:/Users/KaiWong/')
+    },
+    filename: function (req, file, cb) {
+        var filename = file.fieldname + '-' + Date.now() + path.extname(file.originalname)
+        cb(null, filename);
+    }
+  });
+  app.post('/upload/profile', multer({storage: storage}).single("upload"), (req, getres) => {
+    // Do verification that this is indeed a photo upload
+    console.log("POST - upload");
+    console.log(req.file);
+    getres.send(req.file);
+    async function test() {
+      // var path = "/home/administrator/files/images/uploads/" + req.file.filename;
+      var path = req.file.filename;
+      // Need to generate entry in Photos to have photo id so we can create entry in user_photo
+      var queryText = "INSERT INTO photos (size, creation_date, path, process_time, flag, display, height, width) VALUES (.00000001, '1970-01-01', '" + path + "', 0, false, false, 0, 0) RETURNING photo_id;";
+      console.log("Query: " + queryText);
+      result = await db.query(queryText); 
+      var photo_id = result.rows[0].photo_id;
+      // We also need to create a new entry in User_Photo. Need to use generated unfiltered_photo_id
+      // Delete profile photo they had before first
+      queryText = "INSERT INTO user_photo (user_id, photo_id, type, filter_id, status, wait_time) VALUES (" + req.query.user_id + ", " + photo_id + ", 'profile', " + "0" + ", 'done', 0);";
+      console.log("Query: " + queryText);
+      db.query(queryText); 
+    }
+    test();
   });
 }
