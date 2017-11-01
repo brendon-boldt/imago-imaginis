@@ -41,7 +41,7 @@ export class UserComponent {
             console.log("User has no profile picture");
           }
           else{
-            this.profilePhoto = this.db.url + res.json()[0].path;
+            this.profilePhoto = this.db.url + "/" + res.json()[0].path;
             console.log(res.json());
             console.log(this.profilePhoto);
           }
@@ -62,7 +62,7 @@ export class UserComponent {
             console.log("User has no profile picture");
           }
           else{
-            this.profilePhoto = this.db.url + res.json()[0].path;
+            this.profilePhoto = this.db.url + "/" + res.json()[0].path;
             console.log(res.json());
             console.log(this.profilePhoto);
           }
