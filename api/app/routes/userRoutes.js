@@ -127,7 +127,7 @@ module.exports = function(app) {
   app.get('/user/profile-picture', (req, getres) => {
     console.log("GET - profile picture");
     var id = req.query.id;
-    let queryText = "SELECT path FROM PHOTOS WHERE photo_id = (SELECT photo_id FROM USER_PHOTO WHERE user_ID = " +  id + " AND type = 'profile');";
+    let queryText = "SELECT profile_photo FROM asp_users WHERE user_id = " + id + ";";
     db.query(queryText)
       .then(res => {
         console.log(res.rows);
@@ -174,7 +174,7 @@ module.exports = function(app) {
     });
 
   /**
-   * Returns user's photos for user with id
+   * Returns user's styled photos for user with id
    * Takes in the request query's parameters
    */
   app.get('/user/photos', (req, getres) => {
@@ -230,36 +230,17 @@ module.exports = function(app) {
         cb(null, filename);
     }
   });
-  // "SELECT path FROM PHOTOS WHERE photo_id = (SELECT photo_id FROM USER_PHOTO WHERE user_ID = " +  id + " AND type = 'profile');";
   app.post('/user/upload/profile', multer({storage: storage}).single("upload"), (req, getres) => {
-    // Do verification that this is indeed a photo upload
+    // TODO: Do verification that this is indeed a photo upload
     console.log("POST - upload");
     console.log(req.file);
     getres.send(req.file);
     async function test() {
-      var path = config.uploadsPath + "/" +  req.file.filename;
+      var path = config.uploadsPath + req.file.filename;
       // var path = req.file.filename;
-      // Need to generate entry in Photos to have photo id so we can create entry in user_photo
-      var queryText = "INSERT INTO photos (size, creation_date, path, process_time, flag, display, height, width) VALUES (.00000001, '1970-01-01', '" + path + "', 0, false, false, 0, 0) RETURNING photo_id;";
+      var queryText = "UPDATE asp_users SET (profile_photo) = ('" + path + "') WHERE user_id = " + req.query.user_id + ";";
       console.log("Query: " + queryText);
       result = await db.query(queryText); 
-      var photo_id = result.rows[0].photo_id;
-      // We also need to create a new entry in User_Photo. Need to use generated unfiltered_photo_id
-      // Delete profile photo they had before first
-      queryText = "SELECT * FROM user_photo WHERE user_id = " + req.query.user_id + " AND type = 'profile'";
-      console.log("Query: " + queryText);
-      result = await db.query(queryText);
-      if(result.rows[0] != null){
-        console.log("User had a profile photo before!");
-        var old_profile_id = result.rows[0].photo_id;
-        queryText = "DELETE FROM user_photo WHERE photo_id = " + old_profile_id;
-        result = await db.query(queryText);
-        queryText = "DELETE FROM photos WHERE photo_id = " + old_profile_id;
-        result = await db.query(queryText);
-      }
-      queryText = "INSERT INTO user_photo (user_id, photo_id, type, filter_id, status, wait_time) VALUES (" + req.query.user_id + ", " + photo_id + ", 'profile', " + "0" + ", 'done', 0);";
-      console.log("Query: " + queryText);
-      db.query(queryText); 
     }
     test();
   });
