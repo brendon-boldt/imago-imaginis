@@ -16,6 +16,7 @@
     "mongodb": "^2.2.31",
     "nodemon": "^1.12.1",
     "pg": "^7.3.0",
-    "request": "^2.83.0"
+    "request": "^2.83.0",
+    "request-promise-native": "^1.0.5"
   }
 }

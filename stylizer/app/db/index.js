@@ -1,5 +1,6 @@
 const fs = require('fs');
-const request = require('request');
+//const request = require('request');
+const request = require('request-promise-native');
 const config = require('../../config.js');
 
 const selectImagePath = 'style/selectImage';
@@ -15,14 +16,23 @@ module.exports = {
   selectImage: async function(imageId) {
     let options = {
       form: { imageId: imageId },
-      url: config.dbUrl + selectImagePath,
+      url: config.dbUrl +'/'+ selectImagePath,
       method: 'POST',
       encoding: null,
       headers: { 'Content-Type': 'multipart/form-data'}
     };
 
-    request(options, (err, res, body) => {
-      fs.writeFile(`${config.imageDir}/image-${imageId}.jpg`, body, () => {
+    await request(options, (err, res, body) => {
+      if (err) {
+        log(err);
+        return;
+      } else if (body.length === 0) {
+        log ("ERROR: Empty file received.");
+        return;
+      }
+      let filename = `${config.contentPath}/upload-${imageId}.jpg`;
+      log(`Writing ${filename}`);
+      fs.writeFile(filename, body, () => {
         // Action after file is written
         if (err) {
           // On file write error
@@ -30,12 +40,14 @@ module.exports = {
         }
       });
     });
+
+    return 0;
   },
 
   // Load an image into the database
   insertImage: async function(imageId) {
-    let imagePath = `${config.imageDir}/image-${imageId}.jpg`;
-    fs.readFile(imagePath, (err, data) => {
+    let imagePath = `${config.outputPath}/output-${imageId}.jpg`;
+    fs.readFile(imagePath, async (err, data) => {
       if (err) {
         console.log(`Could not read image ${imagePath}.`);
         return;
@@ -46,18 +58,21 @@ module.exports = {
           imageData: data,
           imageId: imageId
         },
-        url: `${config.dbUrl}${insertImagePath}`,
+        url: `${config.dbUrl}/${insertImagePath}`,
         encoding: null,
         method: 'POST',
         headers: { 'Content-Type': 'multipart/form-data'},
       };
-      request(options, (err, res, body) => {
+
+      await request(options, (err, res, body) => {
         if (err) {
           log(err);
         }
         console.log('send complete');
       });
     });
+
+    return 0;
   },
 
   // Get run information from database
