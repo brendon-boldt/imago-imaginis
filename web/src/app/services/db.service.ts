@@ -12,8 +12,8 @@ import { UserService } from './user.service';
 @Injectable()
 export class DBService {
     // This is the url of the Express server that is serving as the connection for the DB to the open world
-    url = `http://10.10.7.189:8000`;
-    // url = `http://localhost:8000`;
+    url = `http://10.10.7.189:8000/`;
+    // url = `http://localhost:8000/`;
     constructor(private http: Http, private user: UserService){}
 
     /**
@@ -24,7 +24,7 @@ export class DBService {
      */
     login(email, password): Promise<any> {
         console.log("Performing login");
-        let login = this.url + '/user/login';
+        let login = this.url + 'user/login';
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
         let params = new URLSearchParams();
@@ -47,7 +47,7 @@ export class DBService {
      */
     createUser(firstName, lastName, email, password): Promise<any> {
         console.log("WEB: Creating user");
-        let createUser = this.url + '/user/create';
+        let createUser = this.url + 'user/create';
         let headers = new Headers();
         headers.append('Content-Type', 'application/x-www-form-urlencoded');
 
@@ -78,7 +78,7 @@ export class DBService {
      */
     uploadPhoto(file: File, style: Object): Promise<any> {
         console.log("WEB: Performing POST of photo");
-        let upload = this.url + '/upload';
+        let upload = this.url + 'upload';
         let headers = new Headers();
         // headers.append('Content-Type', 'image/jpeg');
 
@@ -103,7 +103,7 @@ export class DBService {
      */
     uploadProfilePhoto(file: File): Promise<any> {
         console.log("WEB: Performing POST of photo");
-        let uploadProfile = this.url + '/user/upload/profile';
+        let uploadProfile = this.url + 'user/upload/profile';
         let headers = new Headers();
         // headers.append('Content-Type', 'image/jpeg');
 
@@ -127,7 +127,7 @@ export class DBService {
      */
     getStyledPhotos(id: number): Promise<any> {
         console.log(id);
-        let profilePicture = this.url + '/user/photos';
+        let profilePicture = this.url + 'user/photos';
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
         let params = new URLSearchParams();
@@ -142,7 +142,7 @@ export class DBService {
     
     getProfilePhoto(id: number): Promise<any> {
         console.log(id);
-        let profilePicture = this.url + '/user/profile-picture';
+        let profilePicture = this.url + 'user/profile-picture';
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
         let params = new URLSearchParams();
@@ -160,7 +160,7 @@ export class DBService {
      */
     getFilters(): Promise<any> {
         console.log("Performing GET of filters");
-        let filters = this.url + '/filters';
+        let filters = this.url + 'filters';
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
         let params = new URLSearchParams();
@@ -178,7 +178,7 @@ export class DBService {
      */
     searchUsers(searchString): Promise<any> {
         console.log("Performing GET of users with " + searchString);
-        let search = this.url + '/user/search';
+        let search = this.url + 'user/search';
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
         let params = new URLSearchParams();
@@ -196,7 +196,7 @@ export class DBService {
      */
     getUser(user_id): Promise<any> {
         console.log("GETTING user info with id " + user_id);
-        let getUser = this.url + '/user/info';
+        let getUser = this.url + 'user/info';
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
         let params = new URLSearchParams();
@@ -210,7 +210,7 @@ export class DBService {
 
     saveUserSettings(userId, firstName, lastName, email, password): Promise<any>{
         console.log("WEB: Saving user settings");
-        let createUser = this.url + '/user/alter';
+        let createUser = this.url + 'user/alter';
         let headers = new Headers();
         headers.append('Content-Type', 'application/x-www-form-urlencoded');
 
