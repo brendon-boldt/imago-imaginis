@@ -237,7 +237,7 @@ module.exports = function(app) {
     console.log(req.file);
     getres.send(req.file);
     async function test() {
-      var path = config.uploadsPath + req.file.filename;
+      var path = config.uploadsPath + "/" +  req.file.filename;
       // var path = req.file.filename;
       // Need to generate entry in Photos to have photo id so we can create entry in user_photo
       var queryText = "INSERT INTO photos (size, creation_date, path, process_time, flag, display, height, width) VALUES (.00000001, '1970-01-01', '" + path + "', 0, false, false, 0, 0) RETURNING photo_id;";
