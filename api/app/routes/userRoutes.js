@@ -4,7 +4,8 @@ const path = require('path');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 
-const uploadsPath = '/home/administrator/files/images/uploads/';
+const uploadsPath = '/images/uploads/';
+// const uploadsPath = '/home/administrator/files/images/uploads/';
 // const uploadsPath = 'C:/Users/KaiWong/';
 
 module.exports = function(app) {

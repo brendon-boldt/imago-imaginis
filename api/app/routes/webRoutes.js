@@ -3,7 +3,8 @@ const multer = require('multer');
 const path = require('path');
 const jwt = require('jsonwebtoken');
 
-const uploadsPath = '/home/administrator/files/images/uploads/';
+const uploadsPath = '/images/uploads/';
+// const uploadsPath = '/home/administrator/files/images/uploads/';
 // const uploadsPath = 'C:/Users/KaiWong/';
 
 module.exports = function(app) {
