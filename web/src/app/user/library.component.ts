@@ -14,10 +14,16 @@ import { UserService } from '../services/user.service';
   styleUrls: ['../css/app.component.css', '../css/library.component.css']
 })
 export class LibraryComponent {
+  photos: Array<Object> = [];
   public placeholder: String = "../assets/placeholder.jpg";
   constructor(private router: Router, private db: DBService, private user: UserService){
+    // Get the user's styled photos
     this.db.getStyledPhotos(this.user.user_id).then(res => {
-      console.log(res);
-    })
+      res = res.json();
+      for(var photo of res){
+        console.log(photo);
+        this.photos.push(photo);
+      }
+    });
   }
 }

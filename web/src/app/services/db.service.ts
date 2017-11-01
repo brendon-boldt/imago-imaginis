@@ -127,21 +127,23 @@ export class DBService {
      */
     getStyledPhotos(id: number): Promise<any> {
         console.log(id);
-        let profilePicture = this.url + '/user/photos';
+        let photos = this.url + '/user/photos';
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
         let params = new URLSearchParams();
         params.set('id', id+"");
         let options = new RequestOptions({headers: headers, search: params});
-        return this.http.get(profilePicture, options)
+        return this.http.get(photos, options)
         .toPromise()
         // .then(response => response.json()　as Object)
         .then(response => response as Object)
         .catch(this.handleError);
     }
     
+    /**
+     * Gets the user's profile photo based on passed user id
+     */
     getProfilePhoto(id: number): Promise<any> {
-        console.log(id);
         let profilePicture = this.url + '/user/profile-picture';
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');

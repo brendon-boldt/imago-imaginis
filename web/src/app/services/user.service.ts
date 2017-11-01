@@ -2,7 +2,7 @@
  * Imago Imaginis 
  * ----------------------------
  * Angular Service that manages the user
- * Right now, keeps track if user is logged in or not
+ * The authentication service sets the user information
  */
 import { Injectable } from '@angular/core';
 import 'rxjs/add/operator/toPromise';

@@ -19,17 +19,17 @@ export class UserComponent {
   public last_name: string;
   public email: string;
   public placeholder: String = "../assets/placeholder.jpg";
-  photos: Array<String> = []; // array of filepaths of images
+  photos: Array<Object> = []; // array of filepaths of images
   profilePhoto: String = this.placeholder;
   constructor(private user: UserService, private route: ActivatedRoute, private router: Router, private db: DBService){
-    this.photos.push(this.placeholder);
-    this.photos.push(this.placeholder);
+    this.photos.push({path: this.placeholder});
+    this.photos.push({path: this.placeholder});
   }
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
       console.log(params);
       // No params were passed, or the user id is the current user's id, so display the logged in user's profile
-      if(params.user_id == null){
+      if(params.user_id == null || params.user_id == this.user.user_id){
         this.router.navigate(['user']);
         this.user_id = this.user.user_id;
         this.first_name = this.user.first_name;

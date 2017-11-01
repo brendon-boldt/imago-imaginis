@@ -19,6 +19,7 @@ import { ModalComponent } from '../modal/app-modal.component';
 })
 export class UserSettingsComponent {
   @ViewChild('modal') modal;
+  @ViewChild('modalUpgrade') modalUpgrade;
   firstName: string;
   lastName: string;
   email: string;
@@ -26,6 +27,7 @@ export class UserSettingsComponent {
   fileToUpload: any;
   profilePhoto: any = '../../assets/placeholder.jpg';
   modalText: string;
+  cardInfo: string;
   constructor(private router: Router, private db: DBService, private user: UserService){
     this.firstName = this.user.first_name;
     this.lastName = this.user.last_name;
@@ -46,7 +48,7 @@ export class UserSettingsComponent {
    * Pops up a modal to allow the user to upgrade their account
    */
   upgradeAccount(): void {
-    this.router.navigate(['upgradeAccount']); // Probably just want to pop a modal up for this...
+    this.modalUpgrade.show();
   }
   /**
    * Front-end method to save changes to user account
