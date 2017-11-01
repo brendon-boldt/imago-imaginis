@@ -172,5 +172,34 @@ module.exports = function(app) {
       })
       .catch(e => console.error(e.stack))
   });
+
+  /**
+   * Creates a paid user with id
+   * Takes in the request body's parameters
+   */
+  app.post('/user/paid', (req, getres) => {
+    console.log("Post - create paid user");
+    var id = req.body.id;
+	var queryText = "SELECT * FROM Paid_Users WHERE user_id = '" + id + "';";
+	db.query(queryText)
+      .then(res => {
+		  if (res == undefined) {
+          getres.send("Paid user creation failed");
+		  }
+		  if (res.rowCount === 0) {
+			  queryText = "INSERT INTO Paid_Users (user_ID) VALUES ('" + id + "');";
+			  db.query(queryText).then(res => {
+				  if (res != undefined) {
+					console.log("Paid user created");
+					getres.send("Paid user created");
+				  }
+			  })
+		  } else {
+          console.log("User is already paid account");
+          getres.send("User is already paid account");
+		  }
+      })
+      .catch(e => console.error(e.stack))
+  });
   
 }
