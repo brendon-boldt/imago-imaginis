@@ -4,7 +4,9 @@ const path = require('path');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 
-const uploadsPath = '/images/uploads/';
+const config = require('../../config.js');
+
+// const uploadsPath = '/images/uploads/';
 // const uploadsPath = '/home/administrator/files/images/uploads/';
 // const uploadsPath = 'C:/Users/KaiWong/';
 
@@ -221,7 +223,7 @@ module.exports = function(app) {
    */
   var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, uploadsPath)
+      cb(null, config.uploadsPath)
     },
     filename: function (req, file, cb) {
         var filename = file.fieldname + '-' + Date.now() + path.extname(file.originalname)
@@ -235,7 +237,7 @@ module.exports = function(app) {
     console.log(req.file);
     getres.send(req.file);
     async function test() {
-      var path = uploadsPath + req.file.filename;
+      var path = config.uploadsPath + req.file.filename;
       // var path = req.file.filename;
       // Need to generate entry in Photos to have photo id so we can create entry in user_photo
       var queryText = "INSERT INTO photos (size, creation_date, path, process_time, flag, display, height, width) VALUES (.00000001, '1970-01-01', '" + path + "', 0, false, false, 0, 0) RETURNING photo_id;";
