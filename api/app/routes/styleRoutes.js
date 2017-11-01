@@ -9,10 +9,14 @@ module.exports = function(app) {
   app.post('/style/insertImage', /*multer({storage: storage}).single("upload"),*/ (req, getres) => {
     console.log("POST - style upload");
     getres.json({'status': 0});
-    fs.writeFile(`${config.resultPath}/image-${req.body.imageId}.jpg`,
-        req.body, () => {
+    fs.writeFile(`${config.outputPath}/output-${req.body.imageId}.jpg`,
+        req.body.imageData, (err) => {
+        if (err) {
+          throw err;    
+        }
+      });
       //res.send();
-    });
+    //});
     return;
 
     let path = config.resultPath;
@@ -23,8 +27,8 @@ module.exports = function(app) {
 
   app.post('/style/selectImage', (req, res) => {
     console.log("Received: ", req.body);
-    console.log('Sending: ' + `${config.contentPath}image-${req.body.imageId}.jpg`);
-    res.sendFile(`${config.contentPath}/image-${req.body.imageId}.jpg`);
+    console.log('Sending: ' + `${config.contentPath}/upload-${req.body.imageId}.jpg`);
+    res.sendFile(`${config.contentPath}/upload-${req.body.imageId}.jpg`);
   });
 
 
