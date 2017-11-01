@@ -1,22 +1,24 @@
 {
   "name": "api-learn",
   "version": "1.0.0",
-  "description": "",
+  "description": "So as not to have git track the specific local configuration of each machine, the most up-to-date format of `config.js` file will be named `config.js.template`. From here, you must copy this to `config.js` and populate it with the necessary information.",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "author": "",
   "license": "ISC",
   "dependencies": {
     "body-parser": "^1.18.2",
     "cors": "^2.8.4",
-    "express": "^4.15.4",
+    "express": "^4.16.2",
     "mongodb": "^2.2.31",
     "nodemon": "^1.12.1",
     "pg": "^7.3.0",
     "request": "^2.83.0",
     "request-promise-native": "^1.0.5"
-  }
+  },
+  "devDependencies": {}
 }
