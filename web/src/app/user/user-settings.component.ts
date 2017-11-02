@@ -34,11 +34,12 @@ export class UserSettingsComponent {
     this.email = this.user.email;
     // Get the user's profile photo
     this.db.getProfilePhoto(this.user.user_id).then(res => {
+      console.log(res.json());
       if(res._body == "[]"){ // The user had no profile picture
         console.log("User has no profile picture");
       }
       else{
-        this.profilePhoto = this.db.url + "/" + res.json()[0].path;
+        this.profilePhoto = this.db.url + "/" + res.json()[0].profile_photo;
         console.log(res.json());
         console.log(this.profilePhoto);
       }
@@ -97,7 +98,8 @@ export class UserSettingsComponent {
           console.log("User has no profile picture");
         }
         else{
-          this.profilePhoto = this.db.url + "/" + res.json()[0].path;
+          console.log(res);
+          this.profilePhoto = this.db.url + res.json()[0].profile_photo;
           console.log(res.json());
           console.log(this.profilePhoto);
         }
