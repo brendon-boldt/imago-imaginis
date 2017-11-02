@@ -234,15 +234,15 @@ module.exports = function(app) {
     // TODO: Do verification that this is indeed a photo upload
     console.log("POST - upload");
     console.log(req.file);
-    getres.send(req.file);
     async function test() {
-      var path = config.uploadsPath + req.file.filename;
+      var path = config.uploadsPath + "/" + req.file.filename;
       // var path = req.file.filename;
       var queryText = "UPDATE asp_users SET (profile_photo) = ('" + path + "') WHERE user_id = " + req.query.user_id + ";";
       console.log("Query: " + queryText);
       result = await db.query(queryText); 
     }
     test();
+    getres.send(req.file);
   });
   
 }

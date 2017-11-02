@@ -53,7 +53,7 @@ module.exports = function(app) {
     getres.send(req.file);
     async function test() {
       // Create a new entry in the database in Unfiltered_Photo
-      var path = config.uploadsPath + req.file.filename;
+      var path = config.uploadsPath + "/" + req.file.filename;
       // var path = req.file.filename;
       let queryText = "INSERT INTO unfiltered_photo (size, height, width, path) VALUES (" + req.file.size + ", 264, 264, '" + path + "') RETURNING unfiltered_photo_id;";
       console.log("Query: " + queryText);
