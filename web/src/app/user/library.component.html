@@ -3,27 +3,27 @@
       <div class="header-content-inner">
          <h1 id="homeHeading">Library</h1>
          <hr>
-         <p>There are the photos you have stylized:</p>
+         <p>These are the photos you have stylized:</p>
          <div id="divMain" class="library-container">
             <div class="container-one">
-               <img [src]="this.placeholder" class="image">
-               <img [src]="this.placeholder" class="image">
-               <img [src]="this.placeholder" class="image">
+                <div *ngFor="let photo of photoArrOne">
+                    <img [src]="this.db.url + photo.path" class="image">
+                </div>
             </div>
             <div class="container-two">
-               <img [src]="this.placeholder" class="image">
-               <img [src]="this.placeholder" class="image">
-               <img [src]="this.placeholder" class="image">
+                <div *ngFor="let photo of photoArrTwo">
+                    <img [src]="this.db.url + photo.path" class="image">
+                </div>
             </div>
             <div class="container-three">
-               <img [src]="this.placeholder" class="image">
-               <img [src]="this.placeholder" class="image">
-               <img [src]="this.placeholder" class="image">
+                <div *ngFor="let photo of photoArrThree">
+                    <img [src]="this.db.url + photo.path" class="image">
+                </div>
             </div>
             <div class="container-four">
-               <img [src]="this.placeholder" class="image">
-               <img [src]="this.placeholder" class="image">
-               <img [src]="this.placeholder" class="image">
+                <div *ngFor="let photo of photoArrFour">
+                    <img [src]="this.db.url + photo.path" class="image">
+                </div>
             </div>
          </div>
          <br><br>

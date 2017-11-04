@@ -52,15 +52,16 @@ export class AuthService {
             return !this.jwtHelper.isTokenExpired(token);
         }
     }
-    login(email, password): any {
+    login(email, password): Promise<any> {
         console.log(this.isLoggedIn);
         this.enteredPassword = password;
         var userFound = true;
         // Take user information entered in fields and pass to DB service
-        this.db.login(email, password).then(res => {
+        return this.db.login(email, password).then(res => {
+            console.log(userFound);
             console.log(res);
             if(res._body == "User not found"){
-                console.log("ha");
+                console.log("WEB: User not found");
                 userFound = false;
                 return userFound;
             }
@@ -77,20 +78,21 @@ export class AuthService {
                 this.db.getProfilePhoto(this.user.user_id).then(res => {
                     console.log(res.json());
                     if(res._body == "[]"){ // The user had no profile picture
-                    console.log("User has no profile picture");
+                    console.log("WEB: User has no profile picture");
                     }
                     else{
-                    this.user.profilePhoto = this.db.url + "/" + res.json()[0].profile_photo;
-                    console.log(res.json());
-                    console.log(this.user.profilePhoto);
+                        this.user.profilePhoto = this.db.url + "/" + res.json()[0].profile_photo;
+                        console.log(res.json());
+                        console.log(this.user.profilePhoto);
                     }
-                    // Navigate the user to home
-                    this.router.navigate(['home']);
-                    userFound = true;
-                    return userFound;
                 });
+                // Navigate the user to home
+                this.router.navigate(['home']);
+                userFound = true;
+                return userFound;
             }
-        }).then(response => response);
+        })
+        // .then(response => {console.log(response); return response});
     }
     /**
      * Redirects the user to the homepage when logging out

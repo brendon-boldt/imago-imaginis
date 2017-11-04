@@ -33,13 +33,24 @@ export class LoginComponent {
     }
   }
   login(): void {
-    if(!this.auth.login(this.email, this.password)){
-      console.log('WEB: Login failed');
-      this.modal.show();
+    async function test(auth, email, password, modal) {
+      var login = await auth.login(email, password);
+      if(!login){
+        console.log('WEB: Login failed');
+        modal.show();
+      }
+      else{
+        console.log('WEB: Login was a success!');
+      }
     }
-    else{
-      console.log('WEB: Login was a success!');
-    }
+    test(this.auth, this.email, this.password, this.modal);
+    // if(!this.auth.login(this.email, this.password)){
+    //   console.log('WEB: Login failed');
+    //   this.modal.show();
+    // }
+    // else{
+    //   console.log('WEB: Login was a success!');
+    // }
   }
   /**
    * Submits the form when pressing the enter key
