@@ -10,7 +10,7 @@ import { RouterModule, Routes, Router } from '@angular/router';
 import { tokenNotExpired, JwtHelper } from 'angular2-jwt';
 
 // Importing database service so we can check to see if the user login information exists
-import { DBService } from './db.service';
+// import { DBService } from './db.service';
 
 @Injectable()
 export class UserService {
@@ -19,6 +19,7 @@ export class UserService {
     public first_name: string;
     public last_name: string;
     public email: string;
+    public profilePhoto: string = '../../assets/placeholder.jpg';
     jwtHelper: JwtHelper = new JwtHelper();
     constructor(){}
     setInfo(jwt): void {

@@ -331,4 +331,76 @@ module.exports = function(app) {
             .catch(e => console.error(e.stack))
     });
 
+  /**
+   * Returns user's styled photos for user with id
+   * Takes in the request query's parameters
+   */
+  app.get('/user/photos', (req, getres) => {
+    console.log("GET - user photos");
+    var id = req.query.id;
+    let queryText = "SELECT * FROM PHOTOS WHERE photo_id in (SELECT photo_id FROM USER_PHOTO WHERE user_ID = " +  id + " AND type = 'styled')";
+    db.query(queryText)
+      .then(res => {
+        console.log(res.rows);
+        getres.send(res.rows);
+      })
+      .catch(e => console.error(e.stack))
+  });
+
+  /**
+   * Creates a paid user with id
+   * Takes in the request body's parameters
+   */
+  app.post('/user/paid', (req, getres) => {
+    console.log("Post - create paid user");
+    var id = req.body.id;
+    var queryText = "SELECT * FROM Paid_Users WHERE user_id = '" + id + "';";
+    db.query(queryText)
+      .then(res => {
+		  if (res == undefined) {
+          getres.send("Paid user creation failed");
+		  }
+		  if (res.rowCount === 0) {
+			  queryText = "INSERT INTO Paid_Users (user_ID) VALUES ('" + id + "');";
+			  db.query(queryText).then(res => {
+				  if (res != undefined) {
+					console.log("Paid user created");
+					getres.send("Paid user created");
+				  }
+			  })
+		  } else {
+          console.log("User is already paid account");
+          getres.send("User is already paid account");
+		  }
+      })
+      .catch(e => console.error(e.stack))
+  });
+
+   /* Performs a profile photo upload
+   * https://github.com/expressjs/multer/issues/170
+   */
+  var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, config.uploadsPath)
+    },
+    filename: function (req, file, cb) {
+        var filename = "profile" + '-' + Date.now() + path.extname(file.originalname)
+        cb(null, filename);
+    }
+  });
+  app.post('/user/upload/profile', multer({storage: storage}).single("upload"), (req, getres) => {
+    // TODO: Do verification that this is indeed a photo upload
+    console.log("POST - upload");
+    console.log(req.file);
+    async function test() {
+      var path = config.uploadsPath + "/" + req.file.filename;
+      // var path = req.file.filename;
+      var queryText = "UPDATE asp_users SET (profile_photo) = ('" + path + "') WHERE user_id = " + req.query.user_id + ";";
+      console.log("Query: " + queryText);
+      result = await db.query(queryText); 
+    }
+    test();
+    getres.send(req.file);
+  });
+  
 }
