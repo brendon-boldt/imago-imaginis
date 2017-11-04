@@ -43,7 +43,6 @@ module.exports = function(app) {
     },
     filename: async function (req, file, cb) {
         // Insert new entry into the database and use the unfiltered photo ID as filename
-        console.log(file);
         let queryText = "INSERT INTO unfiltered_photo (size, height, width, path) VALUES (0, 264, 264, '') RETURNING unfiltered_photo_id;";
         console.log("Query: " + queryText);
         var result = await db.query(queryText);

@@ -226,7 +226,7 @@ module.exports = function(app) {
       cb(null, config.uploadsPath)
     },
     filename: function (req, file, cb) {
-        var filename = file.fieldname + '-' + Date.now() + path.extname(file.originalname)
+        var filename = "profile" + '-' + Date.now() + path.extname(file.originalname)
         cb(null, filename);
     }
   });
