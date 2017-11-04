@@ -38,17 +38,7 @@ export class AuthService {
             console.log(this.jwtHelper.decodeToken(token));
             console.log("JWT token expired: " + this.jwtHelper.isTokenExpired(token));
             // Get user's profile picture
-            this.db.getProfilePhoto(this.user.user_id).then(res => {
-                console.log(res.json());
-                if(res._body == "[]"){ // The user had no profile picture
-                    console.log("User has no profile picture");
-                }
-                else{
-                    this.user.profilePhoto = this.db.url + res.json()[0].profile_photo;
-                    console.log(res.json());
-                    console.log(this.user.profilePhoto);
-                }
-            });
+            this.user.getProfilePhoto();
             return !this.jwtHelper.isTokenExpired(token);
         }
     }
@@ -75,24 +65,13 @@ export class AuthService {
                 // Set info in user service
                 console.log(res.rows);
                 // Get the user's profile photo
-                this.db.getProfilePhoto(this.user.user_id).then(res => {
-                    console.log(res.json());
-                    if(res._body == "[]"){ // The user had no profile picture
-                    console.log("WEB: User has no profile picture");
-                    }
-                    else{
-                        this.user.profilePhoto = this.db.url + res.json()[0].profile_photo;
-                        console.log(res.json());
-                        console.log(this.user.profilePhoto);
-                    }
-                });
+                this.user.getProfilePhoto();
                 // Navigate the user to home
                 this.router.navigate(['home']);
                 userFound = true;
                 return userFound;
             }
         })
-        // .then(response => {console.log(response); return response});
     }
     /**
      * Redirects the user to the homepage when logging out

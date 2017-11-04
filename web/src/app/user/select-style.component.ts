@@ -66,7 +66,7 @@ export class SelectStyleComponent {
   upload = function() {
     if(this.selectedStyle.filter_id != "Select a style"){
       // Calls the database service
-      this.db.uploadPhoto(this.us.uploadedPhoto, this.selectedStyle).then(result => {
+      this.db.uploadPhoto(this.user.user_id, this.us.uploadedPhoto, this.selectedStyle).then(result => {
         // Post shouldn't return anything
         console.log(result);
         // This should navigate the user to the library page, where it will show the status of the upload for the user

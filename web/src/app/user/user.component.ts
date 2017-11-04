@@ -5,6 +5,8 @@
 import { Component } from '@angular/core';
 import { RouterModule, Routes, Router, ActivatedRoute } from '@angular/router';
 
+import { Observable } from "rxjs/Observable";
+
 import { UserService } from '../services/user.service';
 import { DBService } from '../services/db.service';
 
@@ -25,8 +27,6 @@ export class UserComponent {
     // this.photos.push({path: this.placeholder});
     // this.photos.push({path: this.placeholder});
     this.photos = [];
-    this.profilePhoto = this.user.profilePhoto;
-    console.log(this.user.profilePhoto);
   }
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
@@ -38,6 +38,9 @@ export class UserComponent {
         this.first_name = this.user.first_name;
         this.last_name = this.user.last_name;
         this.email = this.user.email;
+        var test = Observable.fromPromise(this.user.getProfilePhoto());
+        test.subscribe(res => {console.log(res); this.profilePhoto = res});
+
         // // Get the user's profile photo
         // this.db.getProfilePhoto(this.user_id).then(res => {
         //   if(res._body == "[]"){ // The user had no profile picture
@@ -58,9 +61,8 @@ export class UserComponent {
             this.photos.push(photo);
           }
           // TODO: Figure out a better way to do this.
-          this.profilePhoto = this.user.profilePhoto;
+          // this.profilePhoto = this.user.profilePhoto;
         });
-        
       }
       else{
         console.log("WEB: Looking up user...")

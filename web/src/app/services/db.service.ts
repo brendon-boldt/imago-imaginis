@@ -7,14 +7,12 @@ import { Injectable } from '@angular/core';
 import { Headers, Http, RequestOptions, URLSearchParams } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 
-import { UserService } from './user.service';
-
 @Injectable()
 export class DBService {
     // This is the url of the Express server that is serving as the connection for the DB to the open world
     url = `http://10.10.7.189:8000`;
     // url = `http://localhost:8000`;
-    constructor(private http: Http, private user: UserService){}
+    constructor(private http: Http){}
 
     /**
      * Log a user in based on email and password
@@ -76,7 +74,7 @@ export class DBService {
      * Performs an upload of a photo to the database, taking in a file and a filter
      * @param file 
      */
-    uploadPhoto(file: File, style: Object): Promise<any> {
+    uploadPhoto(id: number, file: File, style: Object): Promise<any> {
         console.log("WEB: Performing POST of photo");
         let upload = this.url + '/upload';
         let headers = new Headers();
@@ -89,7 +87,7 @@ export class DBService {
 
         let params = new URLSearchParams();
         params.set('filter_id', style['filter_id']);
-        params.set('user_id', ""+this.user.user_id);
+        params.set('user_id', ""+id);
         let options = new RequestOptions({headers: headers, search: params});
         return this.http.post(upload, formData, options)
         .toPromise()
@@ -101,7 +99,7 @@ export class DBService {
      * Performs an upload of a profile photo to the database, taking in a file
      * @param file 
      */
-    uploadProfilePhoto(file: File): Promise<any> {
+    uploadProfilePhoto(id: number, file: File): Promise<any> {
         console.log("WEB: Performing POST of photo");
         let uploadProfile = this.url + '/user/upload/profile';
         let headers = new Headers();
@@ -113,7 +111,7 @@ export class DBService {
         console.log(file);
 
         let params = new URLSearchParams();
-        params.set('user_id', ""+this.user.user_id);
+        params.set('user_id', ""+id);
         let options = new RequestOptions({headers: headers, search: params});
         return this.http.post(uploadProfile, formData, options)
         .toPromise()

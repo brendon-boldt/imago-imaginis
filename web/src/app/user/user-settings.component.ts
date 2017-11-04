@@ -74,7 +74,7 @@ export class UserSettingsComponent {
    */
   uploadProfilePhoto(): void {
     // Uploading photo with no style
-    this.db.uploadProfilePhoto(this.fileToUpload).then(result => {
+    this.db.uploadProfilePhoto(this.user.user_id, this.fileToUpload).then(result => {
       // Post shouldn't return anything
       console.log(result);
       this.modalText = "Profile Picture Updated!";
