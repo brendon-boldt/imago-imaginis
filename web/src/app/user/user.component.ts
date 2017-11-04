@@ -22,8 +22,11 @@ export class UserComponent {
   photos: Array<Object> = []; // array of filepaths of images
   profilePhoto: String = this.placeholder;
   constructor(private user: UserService, private route: ActivatedRoute, private router: Router, private db: DBService){
-    this.photos.push({path: this.placeholder});
-    this.photos.push({path: this.placeholder});
+    // this.photos.push({path: this.placeholder});
+    // this.photos.push({path: this.placeholder});
+    this.photos = [];
+    this.profilePhoto = this.user.profilePhoto;
+    console.log(this.user.profilePhoto);
   }
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
@@ -35,7 +38,6 @@ export class UserComponent {
         this.first_name = this.user.first_name;
         this.last_name = this.user.last_name;
         this.email = this.user.email;
-        this.profilePhoto = this.user.profilePhoto;
         // // Get the user's profile photo
         // this.db.getProfilePhoto(this.user_id).then(res => {
         //   if(res._body == "[]"){ // The user had no profile picture
@@ -47,8 +49,21 @@ export class UserComponent {
         //     console.log(this.profilePhoto);
         //   }
         // });
+        // Get the photos the user wants to display on their profile
+        this.db.getProfilePhotos(this.user.user_id).then(res => {
+          console.log("WEB: Get user's profile display photos");
+          res = res.json();
+          for(var photo of res){
+            console.log(photo);
+            this.photos.push(photo);
+          }
+          // TODO: Figure out a better way to do this.
+          this.profilePhoto = this.user.profilePhoto;
+        });
+        
       }
       else{
+        console.log("WEB: Looking up user...")
         // Params were passed, so set the page info to the user id's info so we can display it
         // Do DB call that returns user info given ID
         this.db.getUser(params.user_id).then(res => {
@@ -57,7 +72,7 @@ export class UserComponent {
           this.email = res[0].email;
           console.log(res);
         });
-        // Get the user's profile photo
+        // Get that user's profile photo
         this.db.getProfilePhoto(params.user_id).then(res => {
           if(res._body == "[]"){ // The user had no profile picture
             console.log("User has no profile picture");
@@ -68,7 +83,16 @@ export class UserComponent {
             console.log(this.profilePhoto);
           }
         });
+        // Get the photos that user wants to display on their profile
+        this.db.getProfilePhotos(params.user_id).then(res => {
+          console.log("WEB: Get user's profile display photos");
+          res = res.json();
+          for(var photo of res){
+            console.log(photo);
+            this.photos.push(photo);
+          }
+        });
       }
-    })
+    });
   }
 }

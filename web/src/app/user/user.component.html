@@ -23,7 +23,8 @@
                         <div id="divMain" class="library-container">
                             <div class="container-one">
                                 <div *ngFor="let photo of photos">
-                                    <img [src]="photo.path" class="image">
+                                    <img [src]="this.db.url + photo.path" class="image">
+                                    <br><br>
                                 </div>
                             </div>
                         </div>

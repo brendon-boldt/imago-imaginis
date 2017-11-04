@@ -27,11 +27,11 @@ import { AuthGuard } from '../services/auth-guard.service';
 @NgModule({
   declarations: [
     ModalComponent,
-    UserComponent,
-    UserSettingsComponent,
     UploadComponent,
     SelectStyleComponent,
-    LibraryComponent
+    LibraryComponent,
+    UserComponent,
+    UserSettingsComponent
   ],
   imports: [
     BrowserModule,

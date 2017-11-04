@@ -44,7 +44,7 @@ export class AuthService {
                     console.log("User has no profile picture");
                 }
                 else{
-                    this.user.profilePhoto = this.db.url + "/" + res.json()[0].profile_photo;
+                    this.user.profilePhoto = this.db.url + res.json()[0].profile_photo;
                     console.log(res.json());
                     console.log(this.user.profilePhoto);
                 }
@@ -81,7 +81,7 @@ export class AuthService {
                     console.log("WEB: User has no profile picture");
                     }
                     else{
-                        this.user.profilePhoto = this.db.url + "/" + res.json()[0].profile_photo;
+                        this.user.profilePhoto = this.db.url + res.json()[0].profile_photo;
                         console.log(res.json());
                         console.log(this.user.profilePhoto);
                     }

@@ -338,7 +338,22 @@ module.exports = function(app) {
   app.get('/user/photos', (req, getres) => {
     console.log("GET - user photos");
     var id = req.query.id;
-    let queryText = "SELECT * FROM PHOTOS WHERE photo_id in (SELECT photo_id FROM USER_PHOTO WHERE user_ID = " +  id + " AND type = 'styled')";
+    let queryText = "SELECT * FROM PHOTOS WHERE photo_id in (SELECT photo_id FROM USER_PHOTO WHERE user_ID = " +  id + " AND status = 'done')";
+    db.query(queryText)
+      .then(res => {
+        console.log(res.rows);
+        getres.send(res.rows);
+      })
+      .catch(e => console.error(e.stack))
+  });
+
+  /**
+   * Returns photos the user chooses to display on their profile
+   */
+  app.get('/user/photos/display', (req, getres) => {
+    console.log("GET - user profile display photos");
+    var id = req.query.id;
+    let queryText = "SELECT * FROM PHOTOS WHERE photo_id in (SELECT photo_id FROM USER_PHOTO WHERE user_ID = " +  id + " AND status = 'done') AND display = true;";
     db.query(queryText)
       .then(res => {
         console.log(res.rows);

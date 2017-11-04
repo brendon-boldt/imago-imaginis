@@ -141,6 +141,24 @@ export class DBService {
     }
     
     /**
+     * Returns the photos the user wants to display on their profile
+     * @param id (user id)
+     */
+    getProfilePhotos(id: number): Promise<any> {
+        console.log(id);
+        let photos = this.url + '/user/photos/display';
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        let params = new URLSearchParams();
+        params.set('id', id+"");
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.get(photos, options)
+        .toPromise()
+        .then(response => response as Object)
+        .catch(this.handleError);
+    }
+    
+    /**
      * Gets the user's profile photo based on passed user id
      */
     getProfilePhoto(id: number): Promise<any> {
