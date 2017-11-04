@@ -35,17 +35,18 @@ export class UserComponent {
         this.first_name = this.user.first_name;
         this.last_name = this.user.last_name;
         this.email = this.user.email;
-        // Get the user's profile photo
-        this.db.getProfilePhoto(this.user_id).then(res => {
-          if(res._body == "[]"){ // The user had no profile picture
-            console.log("User has no profile picture");
-          }
-          else{
-            this.profilePhoto = this.db.url + res.json()[0].profile_photo;
-            console.log(res.json());
-            console.log(this.profilePhoto);
-          }
-        });
+        this.profilePhoto = this.user.profilePhoto;
+        // // Get the user's profile photo
+        // this.db.getProfilePhoto(this.user_id).then(res => {
+        //   if(res._body == "[]"){ // The user had no profile picture
+        //     console.log("User has no profile picture");
+        //   }
+        //   else{
+        //     this.profilePhoto = this.db.url + res.json()[0].profile_photo;
+        //     console.log(res.json());
+        //     console.log(this.profilePhoto);
+        //   }
+        // });
       }
       else{
         // Params were passed, so set the page info to the user id's info so we can display it

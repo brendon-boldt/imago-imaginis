@@ -25,25 +25,12 @@ export class UserSettingsComponent {
   email: string;
   password: string;
   fileToUpload: any;
-  profilePhoto: any = '../../assets/placeholder.jpg';
   modalText: string;
   cardInfo: string;
   constructor(private router: Router, private db: DBService, private user: UserService){
     this.firstName = this.user.first_name;
     this.lastName = this.user.last_name;
     this.email = this.user.email;
-    // Get the user's profile photo
-    this.db.getProfilePhoto(this.user.user_id).then(res => {
-      console.log(res.json());
-      if(res._body == "[]"){ // The user had no profile picture
-        console.log("User has no profile picture");
-      }
-      else{
-        this.profilePhoto = this.db.url + "/" + res.json()[0].profile_photo;
-        console.log(res.json());
-        console.log(this.profilePhoto);
-      }
-    });
   }
   /**
    * Pops up a modal to allow the user to upgrade their account
@@ -99,9 +86,10 @@ export class UserSettingsComponent {
         }
         else{
           console.log(res);
-          this.profilePhoto = this.db.url + res.json()[0].profile_photo;
+          // Update the user's profile photo
+          this.user.profilePhoto = this.db.url + res.json()[0].profile_photo;
           console.log(res.json());
-          console.log(this.profilePhoto);
+          console.log(this.user.profilePhoto);
         }
       });
     });
