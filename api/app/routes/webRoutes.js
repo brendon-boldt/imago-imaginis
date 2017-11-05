@@ -33,6 +33,43 @@ module.exports = function(app) {
       .catch(e => console.error(e.stack))
   });
 
+  
+  /**
+   * Get filter path based on passed filter_id
+   * Takes in the request query's parameters
+   */
+  app.get('/filter', (req, getres) => {
+    console.log("GET - filter path for id");
+    var id = req.query.id;
+    let queryText = "SELECT path FROM FILTERS WHERE filter_id = " + id;
+    db.query(queryText)
+        .then(res => {
+            console.log(res.rows);
+            getres.send(res.rows);
+        })
+        .catch(e => console.error(e.stack))
+  });
+
+  /**
+     * Set a photo as reported on passed photo_id
+     * Takes in the request body's parameters
+     */
+  app.post('/report/photo', (req, getres) => {
+    console.log("POST - set photo reported with id");
+    var id = req.body.id;
+    var queryText = "UPDATE PHOTOS SET flag = TRUE WHERE photo_id = '" + id + "';";
+    db.query(queryText)
+        .then(res => {
+            if (res != undefined) {
+                console.log("Photo flagging successful!");
+                getres.send("Photo flagging successful!");
+            } else {
+                getres.send("Photo flagging failed");
+            }
+        })
+        .catch(e => console.error(e.stack))
+  });
+
   /**
    * Performs a photo upload
    * https://github.com/expressjs/multer/issues/170

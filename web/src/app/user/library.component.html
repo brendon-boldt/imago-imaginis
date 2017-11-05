@@ -7,26 +7,38 @@
          <div id="divMain" class="library-container">
             <div class="container-one">
                 <div *ngFor="let photo of photoArrOne">
-                    <img [src]="this.db.url + photo.path" class="image">
+                    <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)">
                 </div>
             </div>
             <div class="container-two">
                 <div *ngFor="let photo of photoArrTwo">
-                    <img [src]="this.db.url + photo.path" class="image">
+                    <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)">
                 </div>
             </div>
             <div class="container-three">
                 <div *ngFor="let photo of photoArrThree">
-                    <img [src]="this.db.url + photo.path" class="image">
+                    <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)">
                 </div>
             </div>
             <div class="container-four">
                 <div *ngFor="let photo of photoArrFour">
-                    <img [src]="this.db.url + photo.path" class="image">
+                    <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)">
                 </div>
             </div>
-         </div>
-         <br><br>
+        </div>
+        <br><br>
+        <app-modal #modal>
+            <div class="app-modal-header">
+                <!--Error-->&nbsp;
+            </div>
+            <div class="app-modal-body preview">
+                <img [src]="this.db.url + this.modalPhoto.path">
+            </div>
+            <div class="app-modal-footer">
+                <button type="button" class="btn btn-info" [style.background-color]="this.buttonDisplay" (click)="this.displayProfile();">Display on Profile</button>
+                <button type="button" class="btn btn-default" (click)="modal.hide();">Close</button>
+            </div>
+        </app-modal>
       </div>
    </div>
 </header>

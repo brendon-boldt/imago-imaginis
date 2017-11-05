@@ -2,7 +2,7 @@
  * This is the TypeScript backend for the profile component.
  * Here, we reference profile.component.html as the HTML for this component, as well as the app's css
  */
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { RouterModule, Routes, Router, ActivatedRoute } from '@angular/router';
 
 import { Observable } from "rxjs/Observable";
@@ -10,12 +10,15 @@ import { Observable } from "rxjs/Observable";
 import { UserService } from '../services/user.service';
 import { DBService } from '../services/db.service';
 
+import { ModalComponent } from '../modal/app-modal.component';
+
 @Component({
   selector: 'user',
   templateUrl: './user.component.html',
   styleUrls: ['../css/app.component.css', '../css/user.component.css']
 })
 export class UserComponent {
+  @ViewChild('modal') modal;
   public user_id: number;
   public first_name: string;
   public last_name: string;
@@ -23,10 +26,18 @@ export class UserComponent {
   public placeholder: String = "../assets/placeholder.jpg";
   photos: Array<Object> = []; // array of filepaths of images
   profilePhoto: String = this.placeholder;
+  modalPhoto: Object = {};
   constructor(private user: UserService, private route: ActivatedRoute, private router: Router, private db: DBService){
     // this.photos.push({path: this.placeholder});
     // this.photos.push({path: this.placeholder});
     this.photos = [];
+  }
+  /** 
+   * Displays picture that was clicked in a pop-up modal
+  */
+  showPicture(photo: Object): void {
+    this.modalPhoto = photo;
+    this.modal.show();
   }
   ngOnInit() {
     this.route.queryParams.subscribe(params => {

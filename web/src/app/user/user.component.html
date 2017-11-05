@@ -23,7 +23,7 @@
                         <div id="divMain" class="library-container">
                             <div class="container-one">
                                 <div *ngFor="let photo of photos">
-                                    <img [src]="this.db.url + photo.path" class="image">
+                                    <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)">
                                     <br><br>
                                 </div>
                             </div>
@@ -32,6 +32,17 @@
                     <br style="clear: left;" />
                 </div>
             </div>
+            <app-modal #modal>
+                <div class="app-modal-header">
+                    <!--Error-->&nbsp;
+                </div>
+                <div class="app-modal-body preview">
+                    <img [src]="this.db.url + this.modalPhoto.path">
+                </div>
+                <div class="app-modal-footer">
+                    <button type="button" class="btn btn-default" (click)="modal.hide();">Close</button>
+                </div>
+            </app-modal>
         </div>
 
     </div>

@@ -226,7 +226,10 @@ export class DBService {
         .catch(this.handleError);
     }
 
-    saveUserSettings(userId, firstName, lastName, email, password): Promise<any>{
+    /**
+     * Used for account information modification
+     */
+    saveUserSettings(userId, firstName, lastName, email, password): Promise<any> {
         console.log("WEB: Saving user settings");
         let createUser = this.url + '/user/alter';
         let headers = new Headers();
@@ -244,6 +247,22 @@ export class DBService {
         return this.http.post(createUser, body.toString(), options)
         .toPromise()
         .then(response => {return response as Object})
+        .catch(this.handleError);
+    }
+
+    setToDisplay(photo: any, display: String): Promise<any> {
+        let setToDisplay = this.url + '/user/set-display';
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/x-www-form-urlencoded');
+        let body = new URLSearchParams();
+        body.append('photo_id', photo.photo_id+"");
+        body.append('display', display+"");
+        let params = new URLSearchParams();
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.post(setToDisplay, body.toString(), options)
+        .toPromise()
+        // .then(response => response.json()　as Object)
+        .then(response => response as Object)
         .catch(this.handleError);
     }
 

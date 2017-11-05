@@ -264,42 +264,27 @@ module.exports = function(app) {
     });
 
     /**
-     * Get filter path based on passed filter_id
-     * Takes in the request query's parameters
-     */
-    app.get('/filter', (req, getres) => {
-        console.log("GET - filter path for id");
-        var id = req.query.id;
-        let queryText = "SELECT path FROM FILTERS WHERE filter_id = " + id;
-        db.query(queryText)
-            .then(res => {
-                console.log(res.rows);
-                getres.send(res.rows);
-            })
-            .catch(e => console.error(e.stack))
-    });
-
-
-    /**
-     * Set a photo as reported on passed photo_id
+     * Set a photo to display or not on user profile on passed photo_id
      * Takes in the request body's parameters
      */
-    app.post('/report/photo', (req, getres) => {
-        console.log("Post - set photo reported with id");
-        var id = req.body.id;
-        var queryText = "UPDATE PHOTOS SET flag = TRUE WHERE photo_id = '" + id + "';";
-        db.query(queryText)
-            .then(res => {
-                if (res != undefined) {
-                    console.log("Photo flagging successful!");
-                    getres.send("Photo flagging successful!");
-                } else {
-                    getres.send("Photo flagging failed");
-                }
-            })
-            .catch(e => console.error(e.stack))
+    app.post('/user/set-display', (req, getres) => {
+      console.log("POST - set photo to display");
+      var id = req.body.photo_id;
+      var display = req.body.display;
+      var queryText = "UPDATE PHOTOS SET display = " + req.body.display + " WHERE photo_id = " + id + ";";
+      console.log(queryText);
+      db.query(queryText)
+          .then(res => {
+              if (res != undefined) {
+                  console.log("Photo profile display successful! Changed to " + req.body.display);
+                  getres.send("Photo profile display successful! Changed to " + req.body.display);
+              } else {
+                  getres.send("Photo profile display change failed");
+              }
+          })
+          .catch(e => console.error(e.stack))
     });
-
+    
     /**
      * Returns user's styled videos for user with id
      * Takes in the request query's parameters

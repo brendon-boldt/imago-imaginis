@@ -13,21 +13,25 @@
 .container-one {
     order:1;
     flex-basis:100%;
+    padding: 2.5px;
 }
 
 .container-two {
     order:2;
     flex-basis:100%;
+    padding: 2.5px;
 }
 
 .container-three {
     order:3;
     flex-basis:100%;
+    padding: 2.5px;
 }
 
 .container-four {
     order:4;
     flex-basis:100%;
+    padding: 2.5px;
 }
 
 .image {
@@ -39,4 +43,10 @@
     .library-container {
         flex-wrap:nowrap;
     }
+}
+
+.preview {
+    position: relative;
+    z-index: 2;
+    opacity: 1;
 }
