@@ -7,6 +7,7 @@ import { RouterModule, Routes, Router } from '@angular/router';
 
 import { UserService } from './services/user.service';
 import { DBService } from './services/db.service';
+import { AuthService } from './services/auth.service';
 
 @Component({
   selector: 'register',
@@ -14,7 +15,7 @@ import { DBService } from './services/db.service';
   styleUrls: ['./css/app.component.css']
 })
 export class RegisterComponent {
-  constructor(private router: Router, private user: UserService, private db: DBService){}
+  constructor(private router: Router, private user: UserService, private db: DBService, private auth: AuthService){}
   public keyboard: String = "../assets/keyboard.jpg";
   public upload: String = "../assets/upload.jpg";
   public style: String = "../assets/style.jpg";
@@ -24,11 +25,30 @@ export class RegisterComponent {
   email: String;
   password: String;
 
-  register = function(){
+  /**
+   * Registers the user
+   */
+  register(): void{
     // Create a new user entry in the database
     this.db.createUser(this.firstName, this.lastName, this.email, this.password).then(result => {
       // After user created, log them in and go to home
-      this.router.navigate(['home']);
+      this.auth.login(this.email, this.password).then(result => {
+        this.router.navigate(['home']);
+      });
     })
+  }
+  /**
+   * Verifies if the user's passwords match up
+   */
+  verifyPassword(): void {
+
+  }
+  /**
+   * Submits form on enter key
+   */
+  onKey(event: any): void {
+    if(event.key == "Enter"){
+      this.register();
+    }
   }
 }

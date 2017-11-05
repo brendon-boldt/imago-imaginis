@@ -4,8 +4,9 @@ const mountRoutes = require('./app/routes');
 
 const app = express();
 
+var config;
 try {
-    require('./config.js');
+    config = require('./config.js');
 } catch (e) {
     console.log("ERROR: Could not find `config.js`. Have you tried copying `config.js.template` to `config.js` (and populating the relevant fields)?");
     process.exit(1);
@@ -19,14 +20,18 @@ var cors = require('cors');
 
 const port = 8000;
 
+console.log(__dirname);
+
 //This allows Express to process URL encoded forms on its own.
 //This way, we don't get undefined when receiving JSON
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 app.use(cors());
 
-app.use(express.static('../../files'))
-
+console.log(config);
+app.use(express.static(config.serve));
+// '../../files'
+// C:/Users/KaiWong
 
 require('./app/routes')(app);
 app.listen(port, () => {

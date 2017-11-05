@@ -20,6 +20,9 @@ import { RegisterComponent } from './register.component';
 import { SystemStatsComponent } from './system-stats.component';
 import { SearchComponent } from './search.component';
 
+// References to custom directives
+import { FocusDirective } from './directives/focus.directive';
+
 //References to all the services in the application
 import { DBService } from './services/db.service';
 import { UserService } from './services/user.service';
@@ -35,7 +38,8 @@ import { AuthGuard } from './services/auth-guard.service';
     ReportComponent,
     RegisterComponent,
     SystemStatsComponent,
-    SearchComponent
+    SearchComponent,
+    FocusDirective
   ],
   imports: [
     UserModule,

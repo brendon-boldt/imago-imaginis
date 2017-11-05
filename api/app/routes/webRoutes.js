@@ -2,7 +2,12 @@ const db = require('../db');
 const multer = require('multer'); 
 const path = require('path');
 const jwt = require('jsonwebtoken');
-const bcrypt  = require('bcrypt');
+
+const config = require('../../config.js');
+
+// const uploadsPath = '/images/uploads/';
+// const uploadsPath = '/home/administrator/files/images/uploads/';
+// const uploadsPath = 'C:/Users/KaiWong/';
 
 module.exports = function(app) {
   
@@ -34,8 +39,7 @@ module.exports = function(app) {
    */
   var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, '/home/administrator/files/images/uploads')
-      // cb(null, 'C:/Users/KaiWong/')
+      cb(null, config.uploadsPath)
     },
     filename: function (req, file, cb) {
         var filename = file.fieldname + '-' + Date.now() + path.extname(file.originalname)
@@ -49,7 +53,7 @@ module.exports = function(app) {
     getres.send(req.file);
     async function test() {
       // Create a new entry in the database in Unfiltered_Photo
-      var path = "/home/administrator/files/images/uploads/" + req.file.filename;
+      var path = config.uploadsPath + "/" + req.file.filename;
       // var path = req.file.filename;
       let queryText = "INSERT INTO unfiltered_photo (size, height, width, path) VALUES (" + req.file.size + ", 264, 264, '" + path + "') RETURNING unfiltered_photo_id;";
       console.log("Query: " + queryText);

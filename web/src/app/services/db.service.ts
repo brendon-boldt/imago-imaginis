@@ -23,7 +23,6 @@ export class DBService {
      * @param password 
      */
     login(email, password): Promise<any> {
-        console.log(email + " " + password);
         console.log("Performing login");
         let login = this.url + '/user/login';
         let headers = new Headers();
@@ -46,7 +45,7 @@ export class DBService {
      * @param email 
      * @param password 
      */
-    createUser(firstName, lastName, email, password) {
+    createUser(firstName, lastName, email, password): Promise<any> {
         console.log("WEB: Creating user");
         let createUser = this.url + '/user/create';
         let headers = new Headers();
@@ -99,11 +98,61 @@ export class DBService {
     }
 
     /**
-     * Returns photos specified by type
-     * @param type (styled, profile, display)
+     * Performs an upload of a profile photo to the database, taking in a file
+     * @param file 
      */
-    getPhotos(type: String) {
+    uploadProfilePhoto(file: File): Promise<any> {
+        console.log("WEB: Performing POST of photo");
+        let uploadProfile = this.url + '/user/upload/profile';
+        let headers = new Headers();
+        // headers.append('Content-Type', 'image/jpeg');
 
+        let formData: any = new FormData();
+        formData.append("upload", file);
+        console.log("WEB: Profile photo that will be uploaded: ");
+        console.log(file);
+
+        let params = new URLSearchParams();
+        params.set('user_id', ""+this.user.user_id);
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.post(uploadProfile, formData, options)
+        .toPromise()
+        .then(response => response.json().data　as Object)
+        .catch(this.handleError);
+    }
+
+    /**
+     * Returns user's styled photos
+     * @param id (user id)
+     */
+    getStyledPhotos(id: number): Promise<any> {
+        console.log(id);
+        let profilePicture = this.url + '/user/photos';
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        let params = new URLSearchParams();
+        params.set('id', id+"");
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.get(profilePicture, options)
+        .toPromise()
+        // .then(response => response.json()　as Object)
+        .then(response => response as Object)
+        .catch(this.handleError);
+    }
+    
+    getProfilePhoto(id: number): Promise<any> {
+        console.log(id);
+        let profilePicture = this.url + '/user/profile-picture';
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        let params = new URLSearchParams();
+        params.set('id', id+"");
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.get(profilePicture, options)
+        .toPromise()
+        // .then(response => response.json()　as Object)
+        .then(response => response as Object)
+        .catch(this.handleError);
     }
 
     /**
@@ -127,7 +176,7 @@ export class DBService {
      * Returns all users that match the search string
      * @param searchString 
      */
-    searchUsers(searchString) {
+    searchUsers(searchString): Promise<any> {
         console.log("Performing GET of users with " + searchString);
         let search = this.url + '/user/search';
         let headers = new Headers();
@@ -147,15 +196,36 @@ export class DBService {
      */
     getUser(user_id): Promise<any> {
         console.log("GETTING user info with id " + user_id);
-        let login = this.url + '/user/get';
+        let getUser = this.url + '/user/info';
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
         let params = new URLSearchParams();
-        params.set('user_id', user_id);
+        params.set('id', user_id);
         let options = new RequestOptions({headers: headers, search: params});
-        return this.http.get(login, options)
+        return this.http.get(getUser, options)
         .toPromise()
         .then(response => response.json() as Object)
+        .catch(this.handleError);
+    }
+
+    saveUserSettings(userId, firstName, lastName, email, password): Promise<any>{
+        console.log("WEB: Saving user settings");
+        let createUser = this.url + '/user/alter';
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/x-www-form-urlencoded');
+
+        let body = new URLSearchParams();
+        body.append("firstName", firstName);
+        body.append("lastName", lastName);
+        body.append("email", email);
+        body.append("password", password);
+
+        let params = new URLSearchParams();
+        params.set('userId', userId);
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.post(createUser, body.toString(), options)
+        .toPromise()
+        .then(response => {return response as Object})
         .catch(this.handleError);
     }
 
