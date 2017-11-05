@@ -15,15 +15,27 @@ module.exports = function(app) {
           throw err;    
         }
       });
-      //res.send();
-    //});
-    return;
+
+    ///let filter_id = parseInt(req.body.filter_id);
 
     let path = config.resultPath;
-    let queryText = "INSERT INTO photos (filter_id, size, creation_date, path, process_time) VALUES (2, 3.0, '2017-10-18', '" + path + "', 5)";
+    let queryText = `UPDATE ...`;
     console.log(queryText);
-    db.no_param_query(queryText); 
+    db.query(queryText); 
   });
+  
+  app.post('/style/insertRun', /*multer({storage: storage}).single("upload"),*/ (req, getres) => {
+    console.log("POST - style upload");
+    getres.json({'status': 0});
+
+    let path = config.resultPath;
+    let queryText = `UPDATE ...`;
+    console.log(queryText);
+    db.query(queryText); 
+  });
+
+
+
 
   app.post('/style/selectImage', (req, res) => {
     console.log("Received: ", req.body);
@@ -31,6 +43,31 @@ module.exports = function(app) {
     res.sendFile(`${config.contentPath}/upload-${req.body.imageId}.jpg`);
   });
 
+  app.post('/style/selectRun', (req, res) => {
+    let user_id = parseInt(req.body.user_id);
+    let photo_id = parseInt(req.body.photo_id);
+    let queryText =
+      `SELECT * FROM user_photo WHERE user_id=${user_id} AND photo_id=${photo_id}`;
+
+    console.log("QUERYING: " + queryText);
+    db.query(queryText)
+      .then(res => {
+        console.log(res.rows);
+        res.send(res.rows);
+      })
+      .catch(e => console.error(e.stack))
+
+    return 0;
+    /*
+    let queryText = 'SELECT * FROM filters';
+    db.query(queryText)
+      .then(res => {
+        console.log(res.rows);
+        getres.send(res.rows);
+      })
+      .catch(e => console.error(e.stack))
+     */
+  });
 
 
 };
