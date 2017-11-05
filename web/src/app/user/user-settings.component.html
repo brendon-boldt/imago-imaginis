@@ -7,7 +7,7 @@ It is routed to when the user clicks on a router link-->
 		<h1 id="homeHeading">Settings</h1>
 		<hr>
 		<p>Change your settings below</p>
-		<img [src]="this.profilePhoto" class="img-border" alt="profile picture" style="width: 200px; height: auto">
+		<img [src]="this.user.profilePhoto" class="img-border" alt="profile picture" style="width: 200px; height: auto">
 		<br><br>
 		<div class="container-fluid">
 		<div class="row">
@@ -50,6 +50,30 @@ It is routed to when the user clicks on a router link-->
 			</div>
 			<div class="app-modal-footer">
 				<button type="button" class="btn btn-default" (click)="modal.hide()">Close</button>
+			</div>
+		</app-modal>
+		<app-modal #modalUpgrade>
+			<div class="app-modal-header" style="font-weight: bold">
+				<span>Upgrade your Account!</span>
+			</div>
+			<div class="app-modal-body modalBody">
+				<img src="https://www.materialui.co/materialIcons/social/sentiment_very_satisfied_black_96x96.png" style="background-color:white; border-color: white">
+				<h3>Benefits:</h3>
+				API Usage<br>
+				Increased Styled Photo Storage<br>
+				Style Videos<br>
+				Use your own style<br><br>
+				<!-- Put credit card info here -->
+				<form class="form-horizontal" role="form" data-toggle="validator" (keyup)="onKey($event)">
+					<div class="form-group">
+						<!-- <label class="control-label" name="card-info">Credit Card:</label> -->
+						<input type="text" class="form-control" style="background-color: lightgrey;" name="card-info" placeholder="Credit Card Info" [(ngModel)]="this.cardInfo">
+					</div>
+				</form>
+				<button type="button" class="button btn btn-primary btn-green btn-sm js-scroll-trigger center-block" (click)="this.upgradeAccount();">Upgrade Account</button>
+			</div>
+			<div class="app-modal-footer">
+				<button type="button" class="btn btn-default" (click)="modalUpgrade.hide()">Close</button>
 			</div>
 		</app-modal>
 	</div>

@@ -19,33 +19,34 @@ export class UserComponent {
   public last_name: string;
   public email: string;
   public placeholder: String = "../assets/placeholder.jpg";
-  photos: Array<String> = []; // array of filepaths of images
+  photos: Array<Object> = []; // array of filepaths of images
   profilePhoto: String = this.placeholder;
   constructor(private user: UserService, private route: ActivatedRoute, private router: Router, private db: DBService){
-    this.photos.push(this.placeholder);
-    this.photos.push(this.placeholder);
+    this.photos.push({path: this.placeholder});
+    this.photos.push({path: this.placeholder});
   }
   ngOnInit() {
     this.route.queryParams.subscribe(params => {
       console.log(params);
       // No params were passed, or the user id is the current user's id, so display the logged in user's profile
-      if(params.user_id == null){
+      if(params.user_id == null || params.user_id == this.user.user_id){
         this.router.navigate(['user']);
         this.user_id = this.user.user_id;
         this.first_name = this.user.first_name;
         this.last_name = this.user.last_name;
         this.email = this.user.email;
-        // Get the user's profile photo
-        this.db.getProfilePhoto(this.user_id).then(res => {
-          if(res._body == "[]"){ // The user had no profile picture
-            console.log("User has no profile picture");
-          }
-          else{
-            this.profilePhoto = this.db.url + "/" + res.json()[0].path;
-            console.log(res.json());
-            console.log(this.profilePhoto);
-          }
-        });
+        this.profilePhoto = this.user.profilePhoto;
+        // // Get the user's profile photo
+        // this.db.getProfilePhoto(this.user_id).then(res => {
+        //   if(res._body == "[]"){ // The user had no profile picture
+        //     console.log("User has no profile picture");
+        //   }
+        //   else{
+        //     this.profilePhoto = this.db.url + res.json()[0].profile_photo;
+        //     console.log(res.json());
+        //     console.log(this.profilePhoto);
+        //   }
+        // });
       }
       else{
         // Params were passed, so set the page info to the user id's info so we can display it
@@ -62,7 +63,7 @@ export class UserComponent {
             console.log("User has no profile picture");
           }
           else{
-            this.profilePhoto = this.db.url + "/" + res.json()[0].path;
+            this.profilePhoto = this.db.url + res.json()[0].profile_photo;
             console.log(res.json());
             console.log(this.profilePhoto);
           }

@@ -37,20 +37,32 @@ export class AuthService {
             this.user.setInfo(sessionStorage.getItem('jwt'));
             console.log(this.jwtHelper.decodeToken(token));
             console.log("JWT token expired: " + this.jwtHelper.isTokenExpired(token));
+            // Get user's profile picture
+            this.db.getProfilePhoto(this.user.user_id).then(res => {
+                console.log(res.json());
+                if(res._body == "[]"){ // The user had no profile picture
+                    console.log("User has no profile picture");
+                }
+                else{
+                    this.user.profilePhoto = this.db.url + "/" + res.json()[0].profile_photo;
+                    console.log(res.json());
+                    console.log(this.user.profilePhoto);
+                }
+            });
             return !this.jwtHelper.isTokenExpired(token);
         }
     }
     login(email, password): any {
         console.log(this.isLoggedIn);
         this.enteredPassword = password;
-        var userNotFound = true;
+        var userFound = true;
         // Take user information entered in fields and pass to DB service
         this.db.login(email, password).then(res => {
             console.log(res);
             if(res._body == "User not found"){
                 console.log("ha");
-                userNotFound = false;
-                return userNotFound;
+                userFound = false;
+                return userFound;
             }
             else{
                 this.isLoggedIn = true;
@@ -61,15 +73,22 @@ export class AuthService {
                 this.user.setInfo(sessionStorage.getItem('jwt'));
                 // Set info in user service
                 console.log(res.rows);
-                // this.user.email = res.rows.user_id;
-                // this.user.first_name = res.rows.first_name;
-                // this.user.last_name = res.rows.last_name;
-                // // this.user.email = email;
-                // // this.user.first_name = res
-                // Navigate the user to home
-                this.router.navigate(['home']);
-                userNotFound = true;
-                return userNotFound;
+                // Get the user's profile photo
+                this.db.getProfilePhoto(this.user.user_id).then(res => {
+                    console.log(res.json());
+                    if(res._body == "[]"){ // The user had no profile picture
+                    console.log("User has no profile picture");
+                    }
+                    else{
+                    this.user.profilePhoto = this.db.url + "/" + res.json()[0].profile_photo;
+                    console.log(res.json());
+                    console.log(this.user.profilePhoto);
+                    }
+                    // Navigate the user to home
+                    this.router.navigate(['home']);
+                    userFound = true;
+                    return userFound;
+                });
             }
         }).then(response => response);
     }

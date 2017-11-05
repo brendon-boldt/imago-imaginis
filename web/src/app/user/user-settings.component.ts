@@ -19,34 +19,24 @@ import { ModalComponent } from '../modal/app-modal.component';
 })
 export class UserSettingsComponent {
   @ViewChild('modal') modal;
+  @ViewChild('modalUpgrade') modalUpgrade;
   firstName: string;
   lastName: string;
   email: string;
   password: string;
   fileToUpload: any;
-  profilePhoto: any = '../../assets/placeholder.jpg';
   modalText: string;
+  cardInfo: string;
   constructor(private router: Router, private db: DBService, private user: UserService){
     this.firstName = this.user.first_name;
     this.lastName = this.user.last_name;
     this.email = this.user.email;
-    // Get the user's profile photo
-    this.db.getProfilePhoto(this.user.user_id).then(res => {
-      if(res._body == "[]"){ // The user had no profile picture
-        console.log("User has no profile picture");
-      }
-      else{
-        this.profilePhoto = this.db.url + "/" + res.json()[0].path;
-        console.log(res.json());
-        console.log(this.profilePhoto);
-      }
-    });
   }
   /**
    * Pops up a modal to allow the user to upgrade their account
    */
   upgradeAccount(): void {
-    this.router.navigate(['upgradeAccount']); // Probably just want to pop a modal up for this...
+    this.modalUpgrade.show();
   }
   /**
    * Front-end method to save changes to user account
@@ -95,9 +85,11 @@ export class UserSettingsComponent {
           console.log("User has no profile picture");
         }
         else{
-          this.profilePhoto = this.db.url + "/" + res.json()[0].path;
+          console.log(res);
+          // Update the user's profile photo
+          this.user.profilePhoto = this.db.url + res.json()[0].profile_photo;
           console.log(res.json());
-          console.log(this.profilePhoto);
+          console.log(this.user.profilePhoto);
         }
       });
     });

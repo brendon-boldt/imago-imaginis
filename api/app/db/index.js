@@ -1,14 +1,15 @@
 const { Pool, Client } = require('pg');
+const config = require('../../config.js');
 
 // https://node-postgres.com/features/pooling
 
 // Pool
 const pool = new Pool({
-    user: 'administrator',
-    host: '10.10.7.189',
-    database: 'aspdb',
-    password: 'Cg17',
-    port: 5432,
+    user: config.dbUserName,
+    host: config.dbIP,
+    database: config.dbName,
+    password: config.dbPassword,
+    port: config.dbPort,
 });
 
 pool.connect((err, client, release) => {
