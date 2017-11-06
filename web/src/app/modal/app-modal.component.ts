@@ -2,7 +2,7 @@
  * This is the modal component that we use in our Angular environment
  * https://stackoverflow.com/questions/34513558/angular-2-0-and-modal-dialog
  */
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 @Component({
   selector: 'app-modal',
   template: `
@@ -25,6 +25,7 @@ import { Component } from '@angular/core';
   `
 })
 export class ModalComponent {
+  @Input() clickOutsideToHide;
 
   public visible = false;
   public visibleAnimate = false;
@@ -41,7 +42,9 @@ export class ModalComponent {
 
   public onContainerClicked(event: MouseEvent): void {
     if ((<HTMLElement>event.target).classList.contains('modal')) {
-      this.hide();
+      if(this.clickOutsideToHide){
+        this.hide();
+      }
     }
   }
 }

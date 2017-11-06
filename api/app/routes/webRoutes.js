@@ -24,7 +24,7 @@ module.exports = function(app) {
    */
   app.get('/filters', (req, getres) => {
     console.log("GET - filters");
-    let queryText = 'SELECT * FROM filters';
+    let queryText = 'SELECT * FROM filters WHERE preset = true';
     db.query(queryText)
       .then(res => {
         console.log(res.rows);
@@ -109,6 +109,42 @@ module.exports = function(app) {
       queryText = "INSERT INTO user_photo (user_id, photo_id, filter_id, status, wait_time, unfiltered_photo_id) VALUES (" + req.query.user_id + ", " + photo_id + ", " + req.query.filter_id + ", 'waiting', 0, " + req.file.unfiltered_photo_id + ");";
       console.log("Query: " + queryText);
       db.query(queryText); 
+    }
+    test();
+  });
+
+  /**
+   * Performs filter upload
+   */
+  var storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+      cb(null, config.uploadsPath)
+    },
+    filename: async function (req, file, cb) {
+        // Insert new entry into the database and use the unfiltered photo ID as filename
+        let queryText = "INSERT INTO filters(name, preset) VALUES('', false) RETURNING filter_id;";
+        console.log("Query: " + queryText);
+        var result = await db.query(queryText);
+        var filter_id = result.rows[0].filter_id;
+        file.filter_id = filter_id;
+        var filename = 'filter' + '-' + filter_id + path.extname(file.originalname);
+        cb(null, filename);
+    }
+  });
+  app.post('/filter/upload', multer({storage: storage}).single("upload"), (req, getres) => {
+    // Do verification that this is indeed a photo upload
+    console.log("POST - upload");
+    console.log(req.body);
+    console.log(req.file);
+    // getres.send(req.file);
+    async function test() {
+      var path = config.stylePath + "/" + req.file.filename;
+      // Update record in DB to have file size and path
+      let queryText = "UPDATE filters SET (name, path) = ('" + req.body.user_id + "', '" + path + "') WHERE filter_id = " + req.file.filter_id + ";";
+      console.log("Query: " + queryText);
+      result = await db.query(queryText);
+      getres.send(""+req.file.filter_id);
+      // Need to generate entry in Photos to have photo id so we can create entry in user_photo
     }
     test();
   });

@@ -18,12 +18,14 @@ import { ModalComponent } from '../modal/app-modal.component';
 })
 export class SelectStyleComponent {
   @ViewChild('modal') modal;
+  @ViewChild('uploading') uploading;
   freeUser: boolean = true;
   uploadImage: String = "../assets/monalisa.jpg";
   selectedStyle: Object = {"filter_id": "Select a style", "name":"Select a Style", "path":"../../assets/brush.png"};
   // styles: Array<Object> = [{"style":"Cubism", "example":"../assets/cubism.jpg"}, {"style":"Flowers", "example":"../assets/flowers.jpg"}, {"style":"Starry Night", "example":"../assets/starrynight.jpg"}, {"style":"Oil Painting", "example":"../assets/oil.jpg"}, {"style":"Impressionism", "example":"../assets/impress.jpg"}];
   styles: Array<Object> = null; // Comes from DB as [{"filter_id":1,"name":"VanGogh"},...]
   uploadedImage: File = null;
+  filterToUpload: File;
   constructor(private us: UserService, private router: Router, private db: DBService){
     // Checks to see if the user uploaded a photo from the previous page
     if(this.us.uploadedPhoto != null){
@@ -55,28 +57,66 @@ export class SelectStyleComponent {
     }
   }
 
-  // This changes the style example image based on user selection
+  /**
+   * This changes the style example image based on user selection
+   */
   selectStyle = function(style) {
     this.selectedStyle = style;
     this.selectedStyle.path = this.db.url + "/" + this.selectedStyle.path;
     console.log(this.selectedStyle);
   }
 
-  // This uploads the user photo with appropriate filter id to be styled with
+  /**
+   * This uploads the user photo with appropriate filter id to be styled with
+   */
   upload = function() {
-    if(this.selectedStyle.filter_id != "Select a style"){
+    if(this.selectedStyle.filter_id != "Select a Style"){
       // Calls the database service
-      this.db.uploadPhoto(this.user.user_id, this.us.uploadedPhoto, this.selectedStyle).then(result => {
-        // Post shouldn't return anything
-        console.log(result);
-        // This should navigate the user to the library page, where it will show the status of the upload for the user
-        this.router.navigate(['home']);
-      });
+      // While waiting for an upload response (aka upload finished), display an unremovable modal displaying upload status
+      this.uploading.show();
+      // Upload the filter if custom is selected
+      if(this.selectedStyle.filter_id == "Upload a Style"){
+        this.db.uploadFilter(this.filterToUpload, this.us.user_id).then(res => {
+          // res._body returns the filter id that was just added
+          // TODO: Display loading animation while uploading, stop when response received.
+          this.db.uploadPhoto(this.us.user_id, this.us.uploadedPhoto, res._body).then(result => {
+            // TODO: Display loading animation while uploading, stop when response received.
+            // This should navigate the user to the library page, where it will show the status of the upload for the user
+            this.router.navigate(['home']);
+          });
+        });
+      }
+      else{
+        // TODO: Display loading animation while uploading, stop when response received.
+        this.db.uploadPhoto(this.us.user_id, this.us.uploadedPhoto, this.selectedStyle['filter_id']).then(result => {
+          // TODO: Display loading animation while uploading, stop when response received.
+          // This should navigate the user to the library page, where it will show the status of the upload for the user
+          this.router.navigate(['home']);
+        });
+      }
+      
     }
     else{
       this.modal.show();
     }
   }
+
+  /**
+   * This event fires when a user uploads a filter
+   * TODO: Change so that they can only upload photos. Put more checks!
+   */
+  fileChangeEvent = function(fileInput: any) {
+    this.filterToUpload = fileInput.target.files[0];
+    this.selectedStyle = {"filter_id": "Upload a Style", "name":"Upload a Style", "path":"../../assets/brush.png"};
+    let reader = new FileReader();
+    reader.onload = (e: any) => {
+        this.selectedStyle.path = e.target.result;
+    }
+    reader.readAsDataURL(this.filterToUpload);
+    // this.selectedStyle.path = this.filterToUpload;
+    console.log(this.filterToUpload);
+  }
+
   // This is used to convert a base-64 encoded string back into a File
   // Used for when the user reloads the page
   // dataURLtoFile(dataurl, filename) {

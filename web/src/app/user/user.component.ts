@@ -24,6 +24,7 @@ export class UserComponent {
   public last_name: string;
   public email: string;
   public placeholder: String = "../assets/placeholder.jpg";
+  outside: boolean = true;
   photos: Array<Object> = []; // array of filepaths of images
   profilePhoto: String = this.placeholder;
   modalPhoto: Object = {};

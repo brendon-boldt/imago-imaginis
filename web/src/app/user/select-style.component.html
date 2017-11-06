@@ -29,32 +29,17 @@ It is routed to when the user clicks on a router link-->
 								<div *ngFor="let style of styles">
 									<a class="dropdown-item" (click)="selectStyle(style)">{{style.name}}</a>
 								</div>
+								<div class="dropdown-divider"></div>
+								<a class="dropdown-item">
+									<label>
+										Upload a Style <input type="file" (change)="fileChangeEvent($event)" accept="image/*" hidden>
+									</label>
+								</a>
 							</div>
 						</div>
-						<!--<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="width: 200px;">
-							<li *ngFor="let style of styles">
-								<a class="dropdown-item" (click)="update(style)">{{style.style}}</a>
-							</li>
-						</ul>-->
-						<!--<div class="dropdown">
-							<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								Dropdown button
-							</button>
-							<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-								<a class="dropdown-item" href="#">Action</a>
-								<a class="dropdown-item" href="#">Another action</a>
-								<a class="dropdown-item" href="#">Something else here</a>
-							</div>
-						</div>-->
-					<!--</div>
-					<div class="card-footer">
-						Choose a Style
-					</div>
-				</div>-->
 				<div class="card">
 					<img [src]="this.selectedStyle.path" class="card-img-top" alt="Image of Style Filter" id="style-img">
 					<div class="card-block">
-						 <!--style="height: 100%; width: 100%; max-height: 300px;"-->
 					</div>
 					<div class="card-footer">
 						Style Example
@@ -73,6 +58,17 @@ It is routed to when the user clicks on a router link-->
 			</div>
 			<div class="app-modal-footer">
 				<button type="button" class="btn btn-default" (click)="modal.hide()">Close</button>
+			</div>
+		</app-modal>
+		<app-modal #uploading [clickOutsideToHide] = "false">
+			<div class="app-modal-header">
+				<!--Error-->&nbsp;
+			</div>
+			<div class="app-modal-body">
+				Uploading, please wait!
+			</div>
+			<div class="app-modal-footer">
+				&nbsp;
 			</div>
 		</app-modal>
 	</div>

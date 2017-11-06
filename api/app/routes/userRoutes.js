@@ -234,34 +234,34 @@ module.exports = function(app) {
             .catch(e => console.error(e.stack))
     });
 
-    /* Performs a profile photo upload
-     * https://github.com/expressjs/multer/issues/170
-     */
-    var storage = multer.diskStorage({
-        destination: function(req, file, cb) {
-            cb(null, config.uploadsPath)
-        },
-        filename: function(req, file, cb) {
-            var filename = file.fieldname + '-' + Date.now() + path.extname(file.originalname)
-            cb(null, filename);
-        }
-    });
-    app.post('/user/upload/profile', multer({
-        storage: storage
-    }).single("upload"), (req, getres) => {
-        // TODO: Do verification that this is indeed a photo upload
-        console.log("POST - upload");
-        console.log(req.file);
-        async function test() {
-            var path = config.uploadsPath + "/" + req.file.filename;
-            // var path = req.file.filename;
-            var queryText = "UPDATE asp_users SET (profile_photo) = ('" + path + "') WHERE user_id = " + req.query.user_id + ";";
-            console.log("Query: " + queryText);
-            result = await db.query(queryText);
-        }
-        test();
-        getres.send(req.file);
-    });
+    // /* Performs a profile photo upload
+    //  * https://github.com/expressjs/multer/issues/170
+    //  */
+    // var storage = multer.diskStorage({
+    //     destination: function(req, file, cb) {
+    //         cb(null, config.uploadsPath)
+    //     },
+    //     filename: function(req, file, cb) {
+    //         var filename = file.fieldname + '-' + Date.now() + path.extname(file.originalname)
+    //         cb(null, filename);
+    //     }
+    // });
+    // app.post('/user/upload/profile', multer({
+    //     storage: storage
+    // }).single("upload"), (req, getres) => {
+    //     // TODO: Do verification that this is indeed a photo upload
+    //     console.log("POST - upload");
+    //     console.log(req.file);
+    //     async function test() {
+    //         var path = config.uploadsPath + "/" + req.file.filename;
+    //         // var path = req.file.filename;
+    //         var queryText = "UPDATE asp_users SET (profile_photo) = ('" + path + "') WHERE user_id = " + req.query.user_id + ";";
+    //         console.log("Query: " + queryText);
+    //         result = await db.query(queryText);
+    //     }
+    //     test();
+    //     getres.send(req.file);
+    // });
 
     /**
      * Set a photo to display or not on user profile on passed photo_id

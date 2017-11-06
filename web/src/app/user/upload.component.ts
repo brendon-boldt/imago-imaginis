@@ -16,24 +16,25 @@ import { UserService } from '../services/user.service';
 })
 export class UploadComponent {
   fileToUpload: File;
-
   constructor(private router: Router, private db: DBService, private us: UserService){
     this.fileToUpload = null;
   }
 
   ngOnInit() {}
   
-  btnClick = function() {
+  btnClick(): void {
     this.router.navigate(['select-style']);
   }
-  // Fires when user uploads a file
-  // Change so that they can only upload photos
-  fileChangeEvent(fileInput: any){
+  /**
+   * This event fires when a user uploads a file
+   * TODO: Change so that they can only upload photos. Put more checks!
+   */
+  fileChangeEvent(fileInput: any): void {
     this.fileToUpload = fileInput.target.files;
     console.log(this.fileToUpload);
     this.upload();
   }
-  upload = function() {
+  upload(): void {
     console.log("Redirecting to select style...");
     // Set the photo selected to user.service so we can access it in next page
     this.us.uploadedPhoto = this.fileToUpload[0];

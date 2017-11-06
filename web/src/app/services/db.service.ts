@@ -74,7 +74,7 @@ export class DBService {
      * Performs an upload of a photo to the database, taking in a file and a filter
      * @param file 
      */
-    uploadPhoto(id: number, file: File, style: Object): Promise<any> {
+    uploadPhoto(id: number, file: File, filterId: number): Promise<any> {
         console.log("WEB: Performing POST of photo");
         let upload = this.url + '/upload';
         let headers = new Headers();
@@ -82,11 +82,11 @@ export class DBService {
 
         let formData: any = new FormData();
         formData.append("upload", file);
-        console.log("WEB: File that will be uploaded with filter id " + style['filter_id'] + ":");
+        console.log("WEB: File that will be uploaded with filter id " + filterId + ":");
         console.log(file);
 
         let params = new URLSearchParams();
-        params.set('filter_id', style['filter_id']);
+        params.set('filter_id', filterId+"");
         params.set('user_id', ""+id);
         let options = new RequestOptions({headers: headers, search: params});
         return this.http.post(upload, formData, options)
@@ -250,6 +250,11 @@ export class DBService {
         .catch(this.handleError);
     }
 
+    /**
+     * Sets a photo to be displayed on user's profile
+     * @param photo 
+     * @param display 
+     */
     setToDisplay(photo: any, display: String): Promise<any> {
         let setToDisplay = this.url + '/user/set-display';
         let headers = new Headers();
@@ -263,6 +268,25 @@ export class DBService {
         .toPromise()
         // .then(response => response.json()　as Object)
         .then(response => response as Object)
+        .catch(this.handleError);
+    }
+
+    uploadFilter(file: File, id: number): Promise<any> {
+        console.log("WEB: Performing POST of filter");
+        let uploadFilter = this.url + '/filter/upload';
+        let headers = new Headers();
+        // headers.append('Content-Type', 'image/jpeg');
+
+        let formData: any = new FormData();
+        formData.append("upload", file);
+        formData.append("user_id", id);
+        console.log(file);
+
+        let params = new URLSearchParams();
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.post(uploadFilter, formData, options)
+        .toPromise()
+        .then(response => response)
         .catch(this.handleError);
     }
 
