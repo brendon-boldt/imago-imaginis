@@ -118,7 +118,7 @@ module.exports = function(app) {
    */
   var storage = multer.diskStorage({
     destination: function (req, file, cb) {
-      cb(null, config.uploadsPath)
+      cb(null, config.stylePath)
     },
     filename: async function (req, file, cb) {
         // Insert new entry into the database and use the unfiltered photo ID as filename
@@ -147,5 +147,20 @@ module.exports = function(app) {
       // Need to generate entry in Photos to have photo id so we can create entry in user_photo
     }
     test();
+  });
+
+  /**
+     * Get all system stats
+     * Takes in the request query's parameters
+     */
+    app.get('/system/stats', (req, getres) => {
+      console.log("GET - system stats");
+      let queryText = "SELECT * FROM USAGE INNER JOIN STAT_TYPES ON USAGE.stat_id = STAT_TYPES.stat_id";
+      db.query(queryText)
+          .then(res => {
+              console.log(res.rows);
+              getres.send(res.rows);
+          })
+          .catch(e => console.error(e.stack))
   });
 };

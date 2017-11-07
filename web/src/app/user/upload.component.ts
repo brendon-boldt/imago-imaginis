@@ -8,6 +8,7 @@ import { RouterModule, Routes, Router } from '@angular/router';
 // Importing database service so we can upload an image to the database
 import { DBService } from '../services/db.service';
 import { UserService } from '../services/user.service';
+import { GeneralService } from '../services/general.service';
 
 @Component({
   selector: 'upload',
@@ -16,7 +17,7 @@ import { UserService } from '../services/user.service';
 })
 export class UploadComponent {
   fileToUpload: File;
-  constructor(private router: Router, private db: DBService, private us: UserService){
+  constructor(private router: Router, private db: DBService, private us: UserService, private gen: GeneralService){
     this.fileToUpload = null;
   }
 
@@ -38,6 +39,11 @@ export class UploadComponent {
     console.log("Redirecting to select style...");
     // Set the photo selected to user.service so we can access it in next page
     this.us.uploadedPhoto = this.fileToUpload[0];
+    // If video upload, let the general service know so we can display properly on next page
+    this.gen.isVideoUpload = false;
+    if(this.fileToUpload[0].type == "video/mp4"){
+      this.gen.isVideoUpload = true;
+    }
 
     // Also, put in user's local storage
     // let reader = new FileReader();

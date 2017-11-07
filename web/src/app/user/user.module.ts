@@ -16,6 +16,7 @@ import { UploadComponent } from './upload.component';
 import { SelectStyleComponent } from './select-style.component';
 import { LibraryComponent } from './library.component';
 import { ModalComponent } from '../modal/app-modal.component';
+import { PictureModalComponent } from '../modal/picture-modal.component';
 
 // References to all the services in the application
 // Are these services needed?
@@ -23,6 +24,7 @@ import { DBService } from '../services/db.service';
 import { UserService } from '../services/user.service';
 import { AuthService } from '../services/auth.service';
 import { AuthGuard } from '../services/auth-guard.service';
+import { GeneralService } from '../services/general.service';
 
 @NgModule({
   declarations: [
@@ -31,7 +33,8 @@ import { AuthGuard } from '../services/auth-guard.service';
     SelectStyleComponent,
     LibraryComponent,
     UserComponent,
-    UserSettingsComponent
+    UserSettingsComponent,
+    PictureModalComponent
   ],
   imports: [
     BrowserModule,
@@ -43,7 +46,8 @@ import { AuthGuard } from '../services/auth-guard.service';
     DBService,
     UserService,
     AuthService,
-    AuthGuard
+    AuthGuard,
+    GeneralService
   ],
   exports: [
     ModalComponent

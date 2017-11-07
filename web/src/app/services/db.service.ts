@@ -137,6 +137,25 @@ export class DBService {
         .then(response => response as Object)
         .catch(this.handleError);
     }
+
+    /**
+     * Returns user's unstyled photos
+     * @param id (user id)
+     */
+    getUnStyledPhotos(id: number): Promise<any> {
+        console.log(id);
+        let photos = this.url + '/user/photos/unstyled';
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        let params = new URLSearchParams();
+        params.set('id', id+"");
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.get(photos, options)
+        .toPromise()
+        // .then(response => response.json()　as Object)
+        .then(response => response as Object)
+        .catch(this.handleError);
+    }
     
     /**
      * Returns the photos the user wants to display on their profile
@@ -271,6 +290,11 @@ export class DBService {
         .catch(this.handleError);
     }
 
+    /**
+     * Performs the filter upload
+     * @param file
+     * @param id
+     */
     uploadFilter(file: File, id: number): Promise<any> {
         console.log("WEB: Performing POST of filter");
         let uploadFilter = this.url + '/filter/upload';

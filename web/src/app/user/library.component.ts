@@ -9,6 +9,7 @@ import { DBService } from '../services/db.service';
 import { UserService } from '../services/user.service';
 
 import { ModalComponent } from '../modal/app-modal.component';
+import { PictureModalComponent } from '../modal/picture-modal.component';
 
 @Component({
   selector: 'library',
@@ -30,27 +31,37 @@ export class LibraryComponent {
   buttonDisplay: String = ""; // Color differently depending on if photo is displayed on user profile or not
   constructor(private router: Router, private db: DBService, private user: UserService){
     // Get the user's styled photos
+    // Also, get their unstyled photos, but overlay them with a processing image
     this.db.getStyledPhotos(this.user.user_id).then(res => {
-      res = res.json();
-      for(var photo of res){
-        console.log(photo);
-        this.photos.push(photo);
-      }
-      // Now, split the user's photos into 4 different arrays
-      var arrNum = 0; var numOfArrs = 4; 
-      while(arrNum < numOfArrs && this.photos.length != 0){
-        this.photoArraysArray[arrNum].push(this.photos.pop());
-        arrNum++;
-        if(arrNum == numOfArrs){
-          arrNum = 0;;
+      var styledRes = res.json();
+      // TODO: Remove display on profile button for unstyled photo
+      this.db.getUnStyledPhotos(this.user.user_id).then(res => {
+        var unStyledRes = res.json();
+        for(var photo of unStyledRes){
+          console.log(photo);
+          this.photos.push(photo);
         }
-      }
+        for(var photo of styledRes){
+          console.log(photo);
+          this.photos.push(photo);
+        }
+        // Now, split the user's photos into 4 different arrays for display
+        var arrNum = 0; var numOfArrs = 4; 
+        while(arrNum < numOfArrs && this.photos.length != 0){
+          this.photoArraysArray[arrNum].push(this.photos.pop());
+          arrNum++;
+          if(arrNum == numOfArrs){
+            arrNum = 0;;
+          }
+        }
+      });
     });
   }
   /** 
    * Displays picture that was clicked in a pop-up modal
   */
   showPicture(photo: Object): void {
+    console.log(photo);
     this.modalPhoto = photo;
     if(photo['display']){
       this.buttonDisplay = "lightgreen";

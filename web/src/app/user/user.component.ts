@@ -11,6 +11,7 @@ import { UserService } from '../services/user.service';
 import { DBService } from '../services/db.service';
 
 import { ModalComponent } from '../modal/app-modal.component';
+import { PictureModalComponent } from '../modal/picture-modal.component';
 
 @Component({
   selector: 'user',
@@ -29,9 +30,12 @@ export class UserComponent {
   profilePhoto: String = this.placeholder;
   modalPhoto: Object = {};
   constructor(private user: UserService, private route: ActivatedRoute, private router: Router, private db: DBService){
-    // this.photos.push({path: this.placeholder});
-    // this.photos.push({path: this.placeholder});
     this.photos = [];
+    this.route.queryParams.subscribe(params => {
+      if(params.user_id == null || params.user_id == this.user.user_id){
+        this.router.navigate(['user']);
+      }
+    });
   }
   /** 
    * Displays picture that was clicked in a pop-up modal
@@ -45,7 +49,7 @@ export class UserComponent {
       console.log(params);
       // No params were passed, or the user id is the current user's id, so display the logged in user's profile
       if(params.user_id == null || params.user_id == this.user.user_id){
-        this.router.navigate(['user']);
+        // this.router.navigate(['user']);
         this.user_id = this.user.user_id;
         this.first_name = this.user.first_name;
         this.last_name = this.user.last_name;
@@ -53,6 +57,14 @@ export class UserComponent {
         var test = Observable.fromPromise(this.user.getProfilePhoto());
         test.subscribe(res => {console.log(res); this.profilePhoto = res});
 
+        this.db.getProfilePhotos(this.user.user_id).then(res => {
+          console.log("WEB: Get user's profile display photos");
+          res = res.json();
+          for(var photo of res){
+            console.log(photo);
+            this.photos.push(photo);
+          }
+        });
         // // Get the user's profile photo
         // this.db.getProfilePhoto(this.user_id).then(res => {
         //   if(res._body == "[]"){ // The user had no profile picture
@@ -65,16 +77,6 @@ export class UserComponent {
         //   }
         // });
         // Get the photos the user wants to display on their profile
-        this.db.getProfilePhotos(this.user.user_id).then(res => {
-          console.log("WEB: Get user's profile display photos");
-          res = res.json();
-          for(var photo of res){
-            console.log(photo);
-            this.photos.push(photo);
-          }
-          // TODO: Figure out a better way to do this.
-          // this.profilePhoto = this.user.profilePhoto;
-        });
       }
       else{
         console.log("WEB: Looking up user...")
@@ -88,7 +90,7 @@ export class UserComponent {
         });
         // Get that user's profile photo
         this.db.getProfilePhoto(params.user_id).then(res => {
-          if(res._body == "[]"){ // The user had no profile picture
+          if(res.json()[0].profile_photo == null){ // The user had no profile picture
             console.log("User has no profile picture");
           }
           else{

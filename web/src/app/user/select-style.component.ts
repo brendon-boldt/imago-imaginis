@@ -7,6 +7,7 @@ import { RouterModule, Routes, Router } from '@angular/router';
 
 import { UserService } from '../services/user.service';
 import { DBService } from '../services/db.service';
+import { GeneralService } from '../services/general.service';
 
 // Import the modal component
 import { ModalComponent } from '../modal/app-modal.component';
@@ -20,13 +21,12 @@ export class SelectStyleComponent {
   @ViewChild('modal') modal;
   @ViewChild('uploading') uploading;
   freeUser: boolean = true;
-  uploadImage: String = "../assets/monalisa.jpg";
   selectedStyle: Object = {"filter_id": "Select a style", "name":"Select a Style", "path":"../../assets/brush.png"};
   // styles: Array<Object> = [{"style":"Cubism", "example":"../assets/cubism.jpg"}, {"style":"Flowers", "example":"../assets/flowers.jpg"}, {"style":"Starry Night", "example":"../assets/starrynight.jpg"}, {"style":"Oil Painting", "example":"../assets/oil.jpg"}, {"style":"Impressionism", "example":"../assets/impress.jpg"}];
   styles: Array<Object> = null; // Comes from DB as [{"filter_id":1,"name":"VanGogh"},...]
   uploadedImage: File = null;
   filterToUpload: File;
-  constructor(private us: UserService, private router: Router, private db: DBService){
+  constructor(private us: UserService, private router: Router, private db: DBService, private gen: GeneralService){
     // Checks to see if the user uploaded a photo from the previous page
     if(this.us.uploadedPhoto != null){
       console.log("Photo user selected");

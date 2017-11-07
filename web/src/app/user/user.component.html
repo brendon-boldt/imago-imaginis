@@ -32,17 +32,17 @@
                     <br style="clear: left;" />
                 </div>
             </div>
-            <app-modal #modal [clickOutsideToHide] = "true">
+            <picture-modal #modal [clickOutsideToHide] = "true">
                 <div class="app-modal-header">
                     <!--Error-->&nbsp;
                 </div>
                 <div class="app-modal-body preview">
-                    <img [src]="this.db.url + this.modalPhoto.path">
+                    <img [src]="this.db.url + this.modalPhoto.path" id="modal-img">
                 </div>
                 <div class="app-modal-footer">
                     <button type="button" class="btn btn-default" (click)="modal.hide();">Close</button>
                 </div>
-            </app-modal>
+            </picture-modal>
         </div>
 
     </div>

@@ -206,6 +206,22 @@ module.exports = function(app) {
     });
 
     /**
+     * Returns user's unstyled photos for user with id
+     * Takes in the request query's parameters
+     */
+    app.get('/user/photos/unstyled', (req, getres) => {
+      console.log("GET - user unstyled photos");
+      var id = req.query.id;
+      let queryText = "SELECT * FROM unfiltered_photo WHERE unfiltered_photo_id IN (SELECT unfiltered_photo_id FROM USER_PHOTO WHERE user_ID = " + id + " AND status = 'waiting')";
+      db.query(queryText)
+          .then(res => {
+              console.log(res.rows);
+              getres.send(res.rows);
+          })
+          .catch(e => console.error(e.stack))
+  });
+
+    /**
      * Creates a paid user with id
      * Takes in the request body's parameters
      */
@@ -293,21 +309,6 @@ module.exports = function(app) {
         console.log("GET - user videos");
         var id = req.query.id;
         let queryText = "SELECT * FROM VIDEOS WHERE video_id IN (SELECT video_id FROM USER_VIDEO WHERE user_ID = " + id + " AND status = 'done')";
-        db.query(queryText)
-            .then(res => {
-                console.log(res.rows);
-                getres.send(res.rows);
-            })
-            .catch(e => console.error(e.stack))
-    });
-
-    /**
-     * Get all system stats
-     * Takes in the request query's parameters
-     */
-    app.get('/system/stats', (req, getres) => {
-        console.log("GET - system stats");
-        let queryText = "SELECT * FROM USAGE INNER JOIN STAT_TYPES ON USAGE.stat_id = STAT_TYPES.stat_id";
         db.query(queryText)
             .then(res => {
                 console.log(res.rows);
