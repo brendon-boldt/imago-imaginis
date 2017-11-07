@@ -9,20 +9,32 @@ module.exports = function(app) {
   app.post('/style/insertImage', /*multer({storage: storage}).single("upload"),*/ (req, getres) => {
     console.log("POST - style upload");
     getres.json({'status': 0});
-    let filename = `${config.outputPath}/output-${req.body.photo_id}.jpg`; 
+    let filepath = `${config.outputPath}/output-${req.body.photo_id}.jpg`; 
     console.log(`Writing file: ${filename}`);
-    fs.writeFile(filename, req.body.imageData, (err) => {
+    fs.writeFile(filepath, req.body.imageData, (err) => {
         if (err) {
           throw err;    
         }
       });
 
     ///let filter_id = parseInt(req.body.filter_id);
+    /*
 
+UPDATE user_photo SET status='done' WHERE photo_id=47 AND user_id=33;
+
+     */
+
+    let photo_id = parseInt(req.body.photo_id);
+    let user_id = parseInt(req.body.user_id);
     let path = config.resultPath;
-    let queryText = `UPDATE ...`;
-    console.log(queryText);
-    db.query(queryText); 
+    let photosQuery = `UPDATE photos SET path = '${filepath}' WHERE photo_id = ${photo_id}`;
+    console.ogo(photosQuery); 
+    db.query(photosQuery); 
+
+let user_photoQuery = `UPDATE user_photo SET status='done' WHERE photo_id=${photo_id} AND user_id=${user_id}`;
+    console.log(user_photoQuery); 
+    db.query(user_photoQuery); 
+    return 0;
   });
   
   app.post('/style/insertRun', /*multer({storage: storage}).single("upload"),*/ (req, getres) => {
