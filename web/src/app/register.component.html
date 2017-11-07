@@ -11,7 +11,7 @@ It is routed to when the user clicks on a router link-->
   <input class="input-box" name="user-confirm-password" placeholder="Confirm password"><br><br>
 	<input class="button" type="submit" value="Login"> -->
 	
-<header class="masthead">
+<header class="masthead" style="height:1300px;">
 	<div class="header-content">
 	<div class="header-content-inner">
 		<h1 id="homeHeading">Register</h1>
@@ -21,7 +21,7 @@ It is routed to when the user clicks on a router link-->
 		<div class="row">
 			<div class="col"></div>
 			<div class="col-md-4">
-				<form class="form-horizontal" role="form" data-toggle="validator">
+				<form class="form-horizontal" role="form" data-toggle="validator" (keyup)="onKey($event);">
 					<div class="form-group">
 						<label class="control-label" name="user-first-name">First Name</label>
 						<input type="text" class="form-control" name="first-name" placeholder="First Name" [(ngModel)]="this.firstName">

@@ -1,0 +1,49 @@
+.library-container {
+    display:flex;
+    flex-wrap:wrap;
+    flex-direction:row;
+    justify-content:flex-start;
+}
+
+.container-one {
+    order:1;
+    flex-basis:100%;
+}
+
+.container-two {
+    order:2;
+    flex-basis:100%;
+}
+
+.container-three {
+    order:3;
+    flex-basis:100%;
+}
+
+.container-four {
+    order:4;
+    flex-basis:100%;
+}
+
+.image {
+	padding: 5px 5px 5px 5px; 
+	max-width: 250px;
+}
+
+@media screen and (min-width:1000px) {
+    .library-container {
+        flex-wrap:nowrap;
+    }
+}
+
+#modal-img {
+    max-width: 100%;
+    max-height: 100%;
+}
+
+#video {
+    margin: auto;
+    border: 5px solid skyblue;
+    border-radius: 5px;
+    background: skyblue;
+}

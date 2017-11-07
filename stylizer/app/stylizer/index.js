@@ -10,7 +10,8 @@ module.exports = {
   },
   
 	// "Run" refers to a styling run
-  startStyle: async function(runParams) {
+  startStyle: function(runParams) {
+
     const options = [
       //stylizerPath + 'test.lua',
       'test.lua',
@@ -19,19 +20,20 @@ module.exports = {
       '-style', runParams.stylePath,
       '-styleSize', runParams.styleSize,
       '-gpu', config.gpu,
-      '-outputDir', config.outputDir
+      '-outputDir', config.outputPath,
+      '-outputName', runParams.outputName
     ];
 
     log(`runId ${runParams.runId} started`);
-    execFile(config.thPath, options, {'cwd': config.stylizerPath})
+    return execFile(config.thPath, options, {'cwd': config.stylizerPath})
       .catch((err) => {
         log(`The following error occurred with runId ${runParams.runId}`);
         console.log(err);
+        throw err;
       })
       .then((result) => {
-        log(`runId ${runParams.runId} completed succesfully.`);
+        log(`Styling runId ${runParams.runId} completed succesfully.`);
       });
-    return 'styling started';
   }, 
 
   runComplete: function(runId, imagePath) {

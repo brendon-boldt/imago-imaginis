@@ -1,5 +1,13 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+
+try {
+    require('./config.js');
+} catch (e) {
+    console.log("ERROR: Could not find `config.js`. Have you tried copying `config.js.template` to `config.js` (and populating the relevant fields)?");
+    process.exit(1);
+}
+
 const mountRoutes = require('./app/routes');
 
 const app = express();
@@ -9,7 +17,7 @@ const app = express();
 var cors = require('cors');
 // mountRoutes(app);
 
-const port = 8000;
+const port = 7000;
 
 //This allows Express to process URL encoded forms on its own.
 //This way, we don't get undefined when receiving JSON

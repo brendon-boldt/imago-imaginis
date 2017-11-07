@@ -1,0 +1,14 @@
+// File containing deployment specific configuration info
+
+var config = {};
+
+config.thPath = '';
+config.stylizerPath = '';
+config.gpu = -1;
+
+config.dbUrl = '';
+config.stylePath = '';
+config.outputPath = '';
+config.contentPath = '';
+
+module.exports = config;

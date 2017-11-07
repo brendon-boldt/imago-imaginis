@@ -1,0 +1,165 @@
+<!--This is the login component, which is displayed underneath the app component.
+  Allows for the user to login to the platform.
+It is routed to when the user clicks on a router link-->
+<header class="masthead">
+	<div class="header-content">
+	<div class="header-content-inner">
+		<h1 id="homeHeading">Settings</h1>
+		<hr>
+		<p>Change your settings below</p>
+		<img [src]="this.user.profilePhoto" class="img-border" alt="profile picture" style="width: 200px; height: auto">
+		<br><br>
+		<div class="container-fluid">
+		<div class="row">
+			<div class="col"></div>
+			<div class="col-md-4">
+				<form class="form-horizontal" role="form" data-toggle="validator" (keyup)="onKey($event)">
+					<label class="button btn btn-primary btn-sm">
+						Upload Profile Picture<input type="file" (change)="fileChangeEvent($event)" accept="image/*" hidden>
+					</label>
+					<br><br>
+					<button type="button" class="button btn btn-success btn-green btn-xl js-scroll-trigger center-block" (click)="this.upgradeAccount();">Upgrade Account</button>
+					<br><br>
+					<div class="form-group">
+						<label class="control-label" name="user-first-name">First Name</label>
+						<input type="text" class="form-control" name="first-name" placeholder="First Name" [(ngModel)]="this.firstName">
+					</div>
+					<div class="form-group">
+						<label class="control-label" name="user-last-name">Last Name</label>
+						<input type="text" class="form-control" name="last-name" placeholder="Last Name" [(ngModel)]="this.lastName">
+					</div>
+					<div class="form-group">
+						<label class="control-label" name="user-email">Email</label>
+						<input type="email" class="form-control" placeholder="Email" name="email" [(ngModel)]="this.email">
+					</div>
+					<div class="form-group">
+						<label class="control-label" name="user-password">Change Password</label>
+						<input type="password" class="form-control" placeholder="Password" name="password" [(ngModel)]="this.password">
+					</div>
+					<button type="button" class="button btn btn-primary btn-xl js-scroll-trigger center-block" (click)="this.save();">Save</button>
+				</form>
+			</div>
+			<div class="col"></div>
+		</div>
+		<app-modal #modal>
+			<div class="app-modal-header">
+				<!--Error-->&nbsp;
+			</div>
+			<div class="app-modal-body">
+				{{this.modalText}}
+			</div>
+			<div class="app-modal-footer">
+				<button type="button" class="btn btn-default" (click)="modal.hide()">Close</button>
+			</div>
+		</app-modal>
+		<app-modal #modalUpgrade>
+			<div class="app-modal-header" style="font-weight: bold">
+				<span>Upgrade your Account!</span>
+			</div>
+			<div class="app-modal-body modalBody">
+				<img src="https://www.materialui.co/materialIcons/social/sentiment_very_satisfied_black_96x96.png" style="background-color:white; border-color: white">
+				<h3>Benefits:</h3>
+				API Usage<br>
+				Increased Styled Photo Storage<br>
+				Style Videos<br>
+				Use your own style<br><br>
+				<!-- Put credit card info here -->
+				<form class="form-horizontal" role="form" data-toggle="validator" (keyup)="onKey($event)">
+					<div class="form-group">
+						<!-- <label class="control-label" name="card-info">Credit Card:</label> -->
+						<input type="text" class="form-control" style="background-color: lightgrey;" name="card-info" placeholder="Credit Card Info" [(ngModel)]="this.cardInfo">
+					</div>
+				</form>
+				<button type="button" class="button btn btn-primary btn-green btn-sm js-scroll-trigger center-block" (click)="this.upgradeAccount();">Upgrade Account</button>
+			</div>
+			<div class="app-modal-footer">
+				<button type="button" class="btn btn-default" (click)="modalUpgrade.hide()">Close</button>
+			</div>
+		</app-modal>
+	</div>
+	<br><br>
+	</div>
+	</div>
+</header>
+<!--<div class="container-fluid">
+	<div class="center-text">
+		<div class="page-header">
+			<h1 class="display-2">Login</h1>
+		</div>
+		<hr>
+		<h4>Please Enter Your Email and Password<br>
+			<small>Don't have an account? <a routerLink="/register" routerLinkActive="active">Create account</a></small>
+		</h4>
+	</div>
+	<br>
+	<br>
+	<div class="container-fluid">
+		<div class="row">
+			<div class="col"></div>
+			<div class="col-md-4">
+				<form class="form-horizontal" role="form" data-toggle="validator">
+					<div class="form-group">
+						<label class="control-label" name="user-email">Email</label>
+						<input type="text" class="form-control">
+					</div>
+					<div class="form-group">
+						<label class="control-label" name="user-password">Password</label>
+						<input type="text" class="form-control">
+					</div>
+					<button type="button" class="button btn btn-primary btn-lg center-block" type="submit">Login</button>
+				</form>
+			</div>
+			<div class="col"></div>
+		</div>
+			
+	</div>-->
+	
+  <!-- <input class="input-box" name="user-email" placeholder="Email"><br><br>
+  <input class="input-box" name="user-password" placeholder="Password"><br><br>
+  <input class="button" type="submit" value="Login"> -->
+  <!--<br><br>
+
+	<div class="container-fluid">
+		<div class="row">
+				<div class="col-md-4 center-text">
+					<img src="../assets/monalisa.jpg" class="img-border" alt="The Mona Lisa" height="150" width="100">
+					<br>
+					<p class="lead">Upload an image</p>
+				</div>
+				<div class="col-md-4 center-text">
+					<img src="../assets/starrynight.jpg" class="img-border" alt="Starry Night" height="150" width="210">
+					<br>
+					<p class="lead">Choose a style</p>
+				</div>
+				<div class="col-md-4 center-text">
+					<img src="../assets/styledmonalisa.jpg" class="img-border" alt="Style transfers of the Mona Lisa" height="150" width="250">
+					<br>
+					<p class="lead">Share!</p>
+				</div>
+		</div>
+	</div>-->
+
+
+  <!-- <div style="width:500px; margin:0 auto;">
+	<div style="float:left; width:200px;">
+		<img src="../assets/monalisa.jpg" class="center-block img-border" alt="The Mona Lisa" height="150" width="100">
+		<br>
+		Upload an image
+	</div>
+	
+	<div style="float:left; width:100px;">
+		<img src="../assets/starrynight.jpg" class="center-block img-border" alt="Starry Night" height="150" width="210">
+		<br>
+		Choose a style
+	</div>
+	<div style="float:left; width:200px;">
+		<img src="../assets/styledmonalisa.jpg" class="center-block img-border" alt="Style transfers of the Mona Lisa" height="100" width="180">
+		<br>
+		Share!
+	</div> -->
+	<!--<br style="clear: left;"/>-->
+  <!-- </div> -->
+  <!--<br>  -->
+
+<!--</div>-->
+

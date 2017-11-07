@@ -1,0 +1,17 @@
+// File containing deployment specific configuration info
+
+var config = {};
+
+config.contentPath = '';
+config.stylePath = '';
+config.resultPath = '';
+config.uploadsPath = '';
+config.videoUploadsPath = '';
+config.serve = '';
+config.dbUserName = '';
+config.dbPassword = '';
+config.dbIP = '';
+config.dbName = '';
+config.dbPort = '';
+
+module.exports = config;

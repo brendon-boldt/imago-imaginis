@@ -1,0 +1,58 @@
+<!--
+	This is the profile component, which is displayed underneath the app component.
+	Displays various information relating to the user's profile, including pictures they choose
+	to store and display.
+	It is routed to when the user clicks on a router link
+-->
+<header class="masthead">
+    <div class="header-content">
+        <div class="header-content-inner">
+			<h1 id="homeHeading">{{this.first_name}} {{this.last_name}}</h1>
+			<hr>
+            <div class="container center-text">
+                <div class="row">
+                    <div class="col-md-6">
+                        <br>
+                        <img [src]="this.profilePhoto" class="img-border" alt="profile picture" style="width: 200px; height: auto">
+                        <br>
+                        <p class="lead">{{this.first_name}} {{this.last_name}}</p>
+                    </div>
+                    <div class="col-md-5">
+                        <p class="lead">Favorite Images</p>
+                        <hr>
+                        <div id="divMain" class="library-container">
+                            <div class="container-one">
+                                <div *ngFor="let photo of photos">
+                                    <img *ngIf="photo.photo_id != null" [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)">
+                                    <video *ngIf="photo.video_id != null" height="250" id="video" (click)="this.showPicture(photo)" class="image">
+                                        <source [src]="this.db.url + photo.path" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                    <br><br>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <br style="clear: left;" />
+                </div>
+            </div>
+            <picture-modal #modal [clickOutsideToHide] = "true">
+                <div class="app-modal-header">
+                    <!--Error-->&nbsp;
+                </div>
+                <div class="app-modal-body preview">
+                    <!-- <img [src]="this.db.url + this.modalPhoto.path" id="modal-img"> -->
+                    <img *ngIf="this.modalPhoto.photo_id != null" [src]="this.db.url + this.modalPhoto.path" class="image" id="modal-img">
+                    <video *ngIf="this.modalPhoto.video_id != null" controls id="video" style="margin: auto">
+                        <source [src]="this.db.url + this.modalPhoto.path" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="app-modal-footer">
+                    <button type="button" class="btn btn-default" (click)="modal.hide();">Close</button>
+                </div>
+            </picture-modal>
+        </div>
+
+    </div>
+</header>

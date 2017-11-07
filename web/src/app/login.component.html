@@ -11,10 +11,10 @@ It is routed to when the user clicks on a router link-->
 		<div class="row">
 			<div class="col"></div>
 			<div class="col-md-4">
-				<form class="form-horizontal" role="form" data-toggle="validator">
+				<form class="form-horizontal" role="form" data-toggle="validator" (keyup)="onKey($event)">
 					<div class="form-group">
 						<label class="control-label" name="user-email">Email</label>
-						<input type="email" class="form-control" name="email" [(ngModel)]="this.email">
+						<input focusMe type="email" class="form-control" name="email" [(ngModel)]="this.email">
 					</div>
 					<div class="form-group">
 						<label class="control-label" name="user-password">Password</label>
@@ -47,6 +47,19 @@ It is routed to when the user clicks on a router link-->
 			Style and Share!
 		</div>
 	</div>
+	<app-modal #modal>
+		<div class="app-modal-header">
+			<!--Error-->&nbsp;
+		</div>
+		<div class="app-modal-body">
+			<strong>Login Information Not Found!</strong><br>
+			<hr>
+			Please try again.
+		</div>
+		<div class="app-modal-footer">
+			<button type="button" class="btn btn-default" (click)="modal.hide()">Close</button>
+		</div>
+	</app-modal>
 	</div>
 	</div>
 </header>

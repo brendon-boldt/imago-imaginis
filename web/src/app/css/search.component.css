@@ -1,0 +1,24 @@
+#searchTable {
+    background-color: rgba(135,206,250,.6);
+    color: white;
+}
+#searchTable th, td {
+    padding: 15px;
+    text-align: left;
+}
+
+#searchTable tbody {
+    /*display: block;
+    overflow-y: scroll;
+    height: 100px;
+    max-height: 100px;*/
+}
+
+#searchString {
+    min-width: 100px;
+}
+
+#searchMasthead {
+    min-height: 100vh;
+    /* height:800px; */
+}

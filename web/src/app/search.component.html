@@ -1,24 +1,52 @@
 <!--This is the search component, which is displayed underneath the app component.
   Allows for the user to upload photos to the platform.
 It is routed to when the user clicks on a router link-->
-<header class="masthead">
-<div class="header-content">
-	<div class="header-content-inner">
-	<h1 id="homeHeading">Search for a Profile</h1>
-	<hr>
-	<p>Enter a name:</p>
-	
-	<div class="col-md-5" style="float: none; margin: 0 auto;">
-		<div class="input-group">
-		<input type="text" class="form-control" name="search-term" placeholder="Enter Name"><br><br>
-		<span class="input-group-btn">
-			<!-- Validate -->
-			<button type="button" class="button btn btn-primary btn-lg" style="font-size:1.28rem;" type="submit" (click)="this.btnClick();">Search</button>
-		</span>
+<header class="masthead" id="searchMasthead">
+	<div class="header-content">
+		<div class="header-content-inner">
+			<h1 id="homeHeading">Search for a Profile</h1>
+			<hr>
+			<p>Enter a name:</p>
+			<div class="col-md-5" style="float: none; margin: 0 auto;">
+				<form class="form-horizontal" role="form" data-toggle="validator">
+					<div class="form-group">
+						<div class="input-group">
+						<input type="text" [(ngModel)]="this.searchString" class="form-control" name="searchString" id="searchString" placeholder="Enter Name"><br><br>
+						<span class="input-group-btn">
+							<!-- Validate -->
+							<button type="button" class="button btn btn-primary btn-lg" style="font-size:1.28rem;" type="submit" (click)="this.search();">Search</button>
+						</span>
+						</div>
+					</div>
+				</form>
+			</div>
+			<br>
+			<!--Table results go here-->
+			<div *ngIf="showSearch" class="table-responsive" style="overflow: auto; max-height: 400px;">
+				<table style="float: none; margin: 0 auto;" id="searchTable" class="table-striped table-hover" height=4>
+					<thead>
+						<tr>
+							<th>Email</th>
+							<th>First Name</th>
+							<th>Last Name</th>
+							<th>Date Joined</th>
+							<th>Active</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr *ngFor="let user of results; let i = index" (click)="goToProfile(i)">
+							<td>{{user.email}}</td>
+							<td>{{user.first_name}}</td>
+							<td>{{user.last_name}}</td>
+							<td>{{user.date_joined}}</td>
+							<td>{{user.status}}</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div *ngIf="showSearch != null && showSearch != true">
+				<p>We didn't find anything for {{searchString}}.</p>
+			</div>
 		</div>
 	</div>
-	
-	
-	</div>
-</div>
 </header>

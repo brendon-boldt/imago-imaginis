@@ -6,7 +6,7 @@ components, such as the home page and the profile page, while keeping the top he
 <nav class="navbar navbar-expand-lg navbar-light fixed-top" role="navigation" id="mainNav">
 <div class="container-fluid">
 	<a class="navbar-brand" routerLink="/home">{{title}}</a> <!-- Two-way data binding -->
-	<button class="navbar-toggler navbar-toggler-right" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
+	<button class="navbar-toggler navbar-toggler-right toggle-button" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
 		<span class="navbar-toggler-icon"></span>
 	</button>
 	<div class="collapse navbar-collapse" id="navbarResponsive">
@@ -20,20 +20,20 @@ components, such as the home page and the profile page, while keeping the top he
 		<li class="nav-item">
 			<a class="nav-link" routerLink="/search" routerLinkActive="active">Search</a>
 		</li>
-		<li class="nav-item dropdown">
-			<a *ngIf = "this.user.isLoggedIn" data-toggle="dropdown" class="nav-link dropdown">Profile <b class="caret"></b></a>
+		<li *ngIf = "this.auth.isLoggedIn" class="nav-item dropdown">
+			<a data-toggle="dropdown" class="nav-link dropdown">Profile <b class="caret"></b></a>
 			<ul class="dropdown-menu">
 			<div class="dropdown-content">
-				<li class="nav-item"><a class="nav-link" routerLink="/profile" routerLinkActive="active">View</a></li>
+				<li class="nav-item"><a class="nav-link" routerLink="/user" routerLinkActive="active">View</a></li>
 				<li class="nav-item"><a class="nav-link" routerLink="/library" routerLinkActive="active">Library</a></li>
-				<li class="nav-item"><a class="nav-link">Settings</a></li>
+				<li class="nav-item"><a class="nav-link" routerLink="/user-settings" routerLinkActive="active">Settings</a></li>
 			</div>
 			</ul>
 		</li>
 		<li class="nav-item">
-			<div *ngIf="!this.user.isLoggedIn;then login else logout"></div>
-			<ng-template #login><a *ngIf="!this.user.isLoggedIn" class="nav-link" routerLink="/login" routerLinkActive="active">Log In</a></ng-template>
-			<ng-template #logout><a *ngIf="this.user.isLoggedIn" class="nav-link" (click)="this.logOut();">Log Out</a></ng-template>
+			<div *ngIf="!this.auth.isLoggedIn;then login else logout"></div>
+			<ng-template #login><a *ngIf="!this.auth.isLoggedIn" class="nav-link" routerLink="/login" routerLinkActive="active">Log In</a></ng-template>
+			<ng-template #logout><a *ngIf="this.auth.isLoggedIn" class="nav-link" (click)="this.logOut();">Log Out</a></ng-template>
 			<!--<a *ngIf="!this.user.isLoggedIn" class="nav-link" routerLink="/login" routerLinkActive="active">Log In</a>-->
 		</li>
 		</ul>

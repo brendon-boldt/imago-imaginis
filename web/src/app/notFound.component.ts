@@ -6,13 +6,13 @@ import { Component } from '@angular/core';
 import { RouterModule, Routes, Router } from '@angular/router';
 
 @Component({
-  selector: 'upload',
-  templateUrl: './upload.component.html',
-  styleUrls: ['./app.component.css']
+  selector: 'notFound',
+  templateUrl: './notFound.component.html',
+  styleUrls: ['./css/app.component.css']
 })
-export class UploadComponent {
+export class NotFoundComponent {
   constructor(private router: Router){}
-  btnClick = function(){
-    this.router.navigate(['select-style']);
+  returnHome = function(){
+    this.router.navigate(['home']);
   }
 }
