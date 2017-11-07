@@ -24,33 +24,20 @@ export class SelectStyleComponent {
   selectedStyle: Object = {"filter_id": "Select a style", "name":"Select a Style", "path":"../../assets/brush.png"};
   // styles: Array<Object> = [{"style":"Cubism", "example":"../assets/cubism.jpg"}, {"style":"Flowers", "example":"../assets/flowers.jpg"}, {"style":"Starry Night", "example":"../assets/starrynight.jpg"}, {"style":"Oil Painting", "example":"../assets/oil.jpg"}, {"style":"Impressionism", "example":"../assets/impress.jpg"}];
   styles: Array<Object> = null; // Comes from DB as [{"filter_id":1,"name":"VanGogh"},...]
-  uploadedImage: File = null;
+  // uploadedImage: File = null;
   filterToUpload: File;
+  video: any;
   constructor(private us: UserService, private router: Router, private db: DBService, private gen: GeneralService){
     // Checks to see if the user uploaded a photo from the previous page
     if(this.us.uploadedPhoto != null){
       console.log("Photo user selected");
-      console.log(this.us.uploadedPhoto);
-      this.uploadedImage = this.us.uploadedPhoto;
-      let reader = new FileReader();
-      reader.onload = (e: any) => {
-          this.uploadedImage = e.target.result;
-      }
-      reader.readAsDataURL(this.uploadedImage);
+      // this.uploadedImage = this.gen.uploadedImage;
       // Gets list of filters/styles
       this.db.getFilters().then(filters => {
         this.styles = filters;
         console.log(this.styles);
       });
     }
-    // // If user reloads the page, retrieve image from session storage, convert it from base64 and set it to the user service variable...
-    // else if(sessionStorage.getItem('fileToUpload') !== undefined){
-    //   console.log("User reloaded page");
-    //   this.uploadedImage = JSON.parse(sessionStorage.getItem('fileToUpload'));
-    //   let image = this.dataURLtoFile(this.uploadedImage, 'pic');
-    //   this.us.uploadedPhoto = image;
-    //   console.log(this.us.uploadedPhoto);
-    // }
     // If the user has not uploaded a photo, redirect them to upload page
     else{
       this.router.navigate(['upload']);
@@ -70,31 +57,51 @@ export class SelectStyleComponent {
    * This uploads the user photo with appropriate filter id to be styled with
    */
   upload = function() {
-    if(this.selectedStyle.filter_id != "Select a Style"){
+    if(this.selectedStyle.filter_id != "Select a style"){
       // Calls the database service
       // While waiting for an upload response (aka upload finished), display an unremovable modal displaying upload status
       this.uploading.show();
-      // Upload the filter if custom is selected
-      if(this.selectedStyle.filter_id == "Upload a Style"){
-        this.db.uploadFilter(this.filterToUpload, this.us.user_id).then(res => {
-          // res._body returns the filter id that was just added
-          // TODO: Display loading animation while uploading, stop when response received.
-          this.db.uploadPhoto(this.us.user_id, this.us.uploadedPhoto, res._body).then(result => {
+      // If the file being uploaded is a video, then...
+      if(this.gen.isVideoUpload){
+        // Used to get dimensions of the video uploaded
+        // TODO: GET DIMENSIONS OF VIDEO UPLOAD
+        // Upload the filter if custom is selected
+        if(this.selectedStyle.filter_id == "Upload a style"){
+          this.db.uploadFilter(this.filterToUpload, this.us.user_id).then(res => {
+            // res._body returns the filter id that was just added
             // TODO: Display loading animation while uploading, stop when response received.
-            // This should navigate the user to the library page, where it will show the status of the upload for the user
-            this.router.navigate(['home']);
+            this.db.uploadVideo(this.us.user_id, this.us.uploadedPhoto, res._body).then(result => {
+              this.router.navigate(['library']);
+            });
           });
-        });
+        }
+        else{
+          this.db.uploadVideo(this.us.user_id, this.us.uploadedPhoto, this.selectedStyle['filter_id']).then(result => {
+            this.router.navigate(['library']);
+          });
+        }
       }
+      // Else if it's a photo
       else{
-        // TODO: Display loading animation while uploading, stop when response received.
-        this.db.uploadPhoto(this.us.user_id, this.us.uploadedPhoto, this.selectedStyle['filter_id']).then(result => {
-          // TODO: Display loading animation while uploading, stop when response received.
-          // This should navigate the user to the library page, where it will show the status of the upload for the user
-          this.router.navigate(['home']);
-        });
+        // Used to get dimensions of the photo uploaded
+        var img = new Image();
+        img.src = this.gen.uploadedImage;
+        // Upload the filter if custom is selected
+        if(this.selectedStyle.filter_id == "Upload a style"){
+          this.db.uploadFilter(this.filterToUpload, this.us.user_id).then(res => {
+            // res._body returns the filter id that was just added
+            // TODO: Display loading animation while uploading, stop when response received.
+            this.db.uploadPhoto(this.us.user_id, this.us.uploadedPhoto, res._body, img).then(result => {
+              this.router.navigate(['library']);
+            });
+          });
+        }
+        else{
+          this.db.uploadPhoto(this.us.user_id, this.us.uploadedPhoto, this.selectedStyle['filter_id'], img).then(result => {
+            this.router.navigate(['library']);
+          });
+        }
       }
-      
     }
     else{
       this.modal.show();

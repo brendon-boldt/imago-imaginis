@@ -58,12 +58,14 @@ section {
 
 ::-moz-selection {
   color: white;
-  background: #222222;
+  /* background: #222222; */
+  background: lightblue;
   text-shadow: none; }
 
 ::selection {
   color: white;
-  background: #222222;
+  /* background: #222222; */
+  background: lightblue;
   text-shadow: none; }
 
 img::selection {

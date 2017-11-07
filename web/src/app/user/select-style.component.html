@@ -10,12 +10,13 @@ It is routed to when the user clicks on a router link-->
 			<br><br>
 			<div class="card-deck" id="card-deck">
 				<div class="card">
-					<video *ngIf="this.gen.isVideoUpload" width="320" height="240" controls>
+					<video *ngIf="this.gen.isVideoUpload" width="320" height="240" controls style="margin: auto">
 						<!-- TODO: Make video display properly -->
-						<source src="{{this.uploadedImage}}" type="video/mp4">
+						<source [src]="this.gen.uploadedImage" type="video/mp4">
 						Your browser does not support the video tag.
 					</video>
-					<img *ngIf="!this.gen.isVideoUpload" [src]="this.uploadedImage" class="card-img-top" id="upload-img">
+					<!-- <img *ngIf="!this.gen.isVideoUpload" [src]="this.uploadedImage" class="card-img-top" id="upload-img"> -->
+					<img *ngIf="!this.gen.isVideoUpload" [src]="this.gen.uploadedImage" class="card-img-top" id="upload-img">
 					<div class="card-block">
 						<!--style="height: 100%; max-height: 300px;"-->
 					</div>
@@ -36,7 +37,7 @@ It is routed to when the user clicks on a router link-->
 								<div class="dropdown-divider"></div>
 								<a class="dropdown-item">
 									<label>
-										Upload a Style <input type="file" (change)="fileChangeEvent($event)" accept="image/*" hidden>
+										Upload a style <input type="file" (change)="fileChangeEvent($event)" accept="image/*" hidden>
 									</label>
 								</a>
 							</div>

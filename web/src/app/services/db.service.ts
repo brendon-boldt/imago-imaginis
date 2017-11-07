@@ -10,7 +10,7 @@ import 'rxjs/add/operator/toPromise';
 @Injectable()
 export class DBService {
     // This is the url of the Express server that is serving as the connection for the DB to the open world
-    url = `http://10.10.7.189:8000`;
+    url = `http://10.10.7.189:8001`;
     // url = `http://localhost:8000`;
     constructor(private http: Http){}
 
@@ -74,9 +74,37 @@ export class DBService {
      * Performs an upload of a photo to the database, taking in a file and a filter
      * @param file 
      */
-    uploadPhoto(id: number, file: File, filterId: number): Promise<any> {
+    uploadPhoto(id: number, file: File, filterId: number, img: any): Promise<any> {
         console.log("WEB: Performing POST of photo");
-        let upload = this.url + '/upload';
+        let upload = this.url + '/upload/photo';
+        let headers = new Headers();
+        // headers.append('Content-Type', 'image/jpeg');
+
+        let formData: any = new FormData();
+        formData.append("upload", file);
+        console.log("WEB: File that will be uploaded with filter id " + filterId + ":");
+        console.log(file);
+
+        // TODO: USE PROPER BODY POSTING
+        let params = new URLSearchParams();
+        params.set('filter_id', filterId+"");
+        params.set('user_id', id+"");
+        params.set('height', img.width+"");
+        params.set('width', img.height+"");
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.post(upload, formData, options)
+        .toPromise()
+        .then(response => response　as Object)
+        .catch(this.handleError);
+    }
+
+    /**
+     * Performs an upload of a video to the database, taking in a file and a filter
+     * @param file 
+     */
+    uploadVideo(id: number, file: File, filterId: number): Promise<any> {
+        console.log("WEB: Performing POST of video");
+        let videoUpload = this.url + '/upload/video';
         let headers = new Headers();
         // headers.append('Content-Type', 'image/jpeg');
 
@@ -89,9 +117,9 @@ export class DBService {
         params.set('filter_id', filterId+"");
         params.set('user_id', ""+id);
         let options = new RequestOptions({headers: headers, search: params});
-        return this.http.post(upload, formData, options)
+        return this.http.post(videoUpload, formData, options)
         .toPromise()
-        .then(response => response.json().data　as Object)
+        .then(response => response　as Object)
         .catch(this.handleError);
     }
 
@@ -115,7 +143,7 @@ export class DBService {
         let options = new RequestOptions({headers: headers, search: params});
         return this.http.post(uploadProfile, formData, options)
         .toPromise()
-        .then(response => response.json().data　as Object)
+        .then(response => response　as Object)
         .catch(this.handleError);
     }
 

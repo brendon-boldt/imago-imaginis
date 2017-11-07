@@ -47,9 +47,13 @@ export class UserService {
         return this.db.getProfilePhoto(this.user_id).then(res => {
             console.log("WEB: User service GET profile photo");
             console.log(res.json());
-            this.profilePhoto = this.db.url + res.json()[0].profile_photo;
-            // return this.profilePhoto = res.json()[0].profile_photo;
-            return this.db.url + res.json()[0].profile_photo;
+            if(res.json()[0].profile_photo != null){
+                this.profilePhoto = this.db.url + res.json()[0].profile_photo;
+                return this.db.url + res.json()[0].profile_photo;
+            }
+            else{
+                return null;
+            }
         })
     }
 }

@@ -9,7 +9,7 @@
                 <div *ngFor="let photo of photoArrOne">
                     <div class="card">
                         <div id="photo" *ngIf="photo.unfiltered_photo_id != null">
-                            <div id="text">
+                            <div id="text" (click)="this.showPicture(photo)">
                                 <p class="process">Processing</p>
                             </div>
                             <div id="picture">
@@ -27,7 +27,7 @@
                 <div *ngFor="let photo of photoArrTwo">
                     <div class="card">
                         <div id="photo" *ngIf="photo.unfiltered_photo_id != null">
-                            <div id="text">
+                            <div id="text" (click)="this.showPicture(photo)">
                                 <p class="process">Processing</p>
                             </div>
                             <div id="picture">
@@ -45,7 +45,7 @@
                 <div *ngFor="let photo of photoArrThree">
                     <div class="card">
                         <div id="photo" *ngIf="photo.unfiltered_photo_id != null">
-                            <div id="text">
+                            <div id="text" (click)="this.showPicture(photo)">
                                 <p class="process">Processing</p>
                             </div>
                             <div id="picture">
@@ -63,7 +63,7 @@
                 <div *ngFor="let photo of photoArrFour">
                     <div class="card">
                         <div id="photo" *ngIf="photo.unfiltered_photo_id != null">
-                            <div id="text">
+                            <div id="text" (click)="this.showPicture(photo)">
                                 <p class="process">Processing</p>
                             </div>
                             <div id="picture">

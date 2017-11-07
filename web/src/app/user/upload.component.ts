@@ -35,6 +35,9 @@ export class UploadComponent {
     console.log(this.fileToUpload);
     this.upload();
   }
+  /**
+   * Performs necessary file conversions for display and takes user to next page
+   */
   upload(): void {
     console.log("Redirecting to select style...");
     // Set the photo selected to user.service so we can access it in next page
@@ -44,16 +47,15 @@ export class UploadComponent {
     if(this.fileToUpload[0].type == "video/mp4"){
       this.gen.isVideoUpload = true;
     }
-
-    // Also, put in user's local storage
-    // let reader = new FileReader();
-    // reader.onload = (e: any) => {
-    //     sessionStorage.setItem('fileToUpload', JSON.stringify(e.target.result));
-    // }
-    // reader.readAsDataURL(this.fileToUpload[0]);
-    
-    // Navigate to style selection page
-    this.router.navigate(['select-style']);
+    // We need to convert this to base 64 so that we can display it on the page
+    let reader = new FileReader();
+    reader.onload = (e: any) => {
+        this.gen.uploadedImage = e.target.result;
+        // Navigate to style selection page
+        this.router.navigate(['select-style']);
+    }
+    // reader.readAsDataURL(this.uploadedImage);
+    reader.readAsDataURL(this.us.uploadedPhoto);
   }
 
 }

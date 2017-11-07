@@ -77,21 +77,22 @@ export class UserSettingsComponent {
     this.db.uploadProfilePhoto(this.user.user_id, this.fileToUpload).then(result => {
       // Post shouldn't return anything
       console.log(result);
+      this.user.getProfilePhoto();
       this.modalText = "Profile Picture Updated!";
+      window.scrollTo(0, 0);
       this.modal.show();
       // Update the profile picture
-      this.db.getProfilePhoto(this.user.user_id).then(res => {
-        if(res._body == "[]"){ // The user had no profile picture
-          console.log("User has no profile picture");
-        }
-        else{
-          console.log(res);
-          // Update the user's profile photo
-          this.user.profilePhoto = this.db.url + res.json()[0].profile_photo;
-          console.log(res.json());
-          console.log(this.user.profilePhoto);
-        }
-      });
+      // location.reload();
+      // this.db.getProfilePhoto(this.user.user_id).then(res => {
+      //   if(res.json()[0].profile_photo == null){ // The user had no profile picture
+      //     console.log("User has no profile picture");
+      //   }
+      //   else{
+      //     this.profilePhoto = this.db.url + res.json()[0].profile_photo;
+      //     console.log(res.json());
+      //     console.log(this.profilePhoto);
+      //   }
+      // });
     });
   }
 }
