@@ -9,7 +9,7 @@ module.exports = function(app) {
   app.post('/style/insertImage', /*multer({storage: storage}).single("upload"),*/ (req, getres) => {
     console.log("POST - style upload");
     getres.json({'status': 0});
-    fs.writeFile(`${config.outputPath}/output-${req.body.imageId}.jpg`,
+    fs.writeFile(`${config.outputPath}/output-${req.body.photo_id}.jpg`,
         req.body.imageData, (err) => {
         if (err) {
           throw err;    
@@ -39,8 +39,13 @@ module.exports = function(app) {
 
   app.post('/style/selectImage', (req, res) => {
     console.log("Received: ", req.body);
-    console.log('Sending: ' + `${config.contentPath}/upload-${req.body.imageId}.jpg`);
-    res.sendFile(`${config.contentPath}/upload-${req.body.imageId}.jpg`);
+    let filepath = 'UNSET';
+    if (req.body.type === 'content')
+      filepath = `${config.contentPath}/upload-${req.body.photo_id}.jpg`;
+    else
+      filepath = `${config.stylePath}/filter-${req.body.photo_id}.jpg`;
+    console.log('Sending: ' + filepath);
+    res.sendFile(filepath);
   });
 
   app.post('/style/selectRun', (req, getres) => {
