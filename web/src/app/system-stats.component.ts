@@ -8,7 +8,7 @@ import { RouterModule, Routes, Router } from '@angular/router';
 @Component({
   selector: 'system-stats',
   templateUrl: './system-stats.component.html',
-  styleUrls: ['./css/app.component.css']
+  styleUrls: ['./system-stats.component.css']
 })
 export class SystemStatsComponent {
 }
