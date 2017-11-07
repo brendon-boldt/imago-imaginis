@@ -36,17 +36,6 @@ let user_photoQuery = `UPDATE user_photo SET status='done' WHERE photo_id=${phot
     db.query(user_photoQuery); 
     return 0;
   });
-  
-  app.post('/style/insertRun', /*multer({storage: storage}).single("upload"),*/ (req, getres) => {
-    console.log("POST - style upload");
-    getres.json({'status': 0});
-
-    let path = config.resultPath;
-    let queryText = `UPDATE ...`;
-    console.log(queryText);
-    db.query(queryText); 
-  });
-
 
 
 
@@ -76,15 +65,24 @@ let user_photoQuery = `UPDATE user_photo SET status='done' WHERE photo_id=${phot
       .catch(e => console.error(e.stack));
 
     return 0;
-    /*
-    let queryText = 'SELECT * FROM filters';
+  });
+
+  // Multiple runs
+  app.post('/style/selectRuns', (req, getres) => {
+    let user_id = parseInt(req.body.user_id);
+    let photo_id = parseInt(req.body.photo_id);
+    let queryText =
+      'SELECT * FROM user_photo WHERE status=\'waiting\'';
+
+    console.log("QUERYING: " + queryText);
     db.query(queryText)
       .then(res => {
         console.log(res.rows);
         getres.send(res.rows);
       })
-      .catch(e => console.error(e.stack))
-     */
+      .catch(e => console.error(e.stack));
+
+    return 0;
   });
 
 
