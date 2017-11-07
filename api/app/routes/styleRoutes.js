@@ -43,7 +43,7 @@ module.exports = function(app) {
     res.sendFile(`${config.contentPath}/upload-${req.body.imageId}.jpg`);
   });
 
-  app.post('/style/selectRun', (req, res) => {
+  app.post('/style/selectRun', (req, getres) => {
     let user_id = parseInt(req.body.user_id);
     let photo_id = parseInt(req.body.photo_id);
     let queryText =
@@ -53,9 +53,9 @@ module.exports = function(app) {
     db.query(queryText)
       .then(res => {
         console.log(res.rows);
-        res.send(res.rows);
+        getres.send(res.rows);
       })
-      .catch(e => console.error(e.stack))
+      .catch(e => console.error(e.stack));
 
     return 0;
     /*

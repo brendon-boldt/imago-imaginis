@@ -206,6 +206,22 @@ module.exports = function(app) {
     });
 
     /**
+     * Returns user's unstyled photos for user with id
+     * Takes in the request query's parameters
+     */
+    app.get('/user/photos/unstyled', (req, getres) => {
+      console.log("GET - user unstyled photos");
+      var id = req.query.id;
+      let queryText = "SELECT * FROM unfiltered_photo WHERE unfiltered_photo_id IN (SELECT unfiltered_photo_id FROM USER_PHOTO WHERE user_ID = " + id + " AND status = 'waiting')";
+      db.query(queryText)
+          .then(res => {
+              console.log(res.rows);
+              getres.send(res.rows);
+          })
+          .catch(e => console.error(e.stack))
+  });
+
+    /**
      * Creates a paid user with id
      * Takes in the request body's parameters
      */
@@ -234,72 +250,57 @@ module.exports = function(app) {
             .catch(e => console.error(e.stack))
     });
 
-    /* Performs a profile photo upload
-     * https://github.com/expressjs/multer/issues/170
-     */
-    var storage = multer.diskStorage({
-        destination: function(req, file, cb) {
-            cb(null, config.uploadsPath)
-        },
-        filename: function(req, file, cb) {
-            var filename = file.fieldname + '-' + Date.now() + path.extname(file.originalname)
-            cb(null, filename);
-        }
-    });
-    app.post('/user/upload/profile', multer({
-        storage: storage
-    }).single("upload"), (req, getres) => {
-        // TODO: Do verification that this is indeed a photo upload
-        console.log("POST - upload");
-        console.log(req.file);
-        async function test() {
-            var path = config.uploadsPath + "/" + req.file.filename;
-            // var path = req.file.filename;
-            var queryText = "UPDATE asp_users SET (profile_photo) = ('" + path + "') WHERE user_id = " + req.query.user_id + ";";
-            console.log("Query: " + queryText);
-            result = await db.query(queryText);
-        }
-        test();
-        getres.send(req.file);
-    });
+    // /* Performs a profile photo upload
+    //  * https://github.com/expressjs/multer/issues/170
+    //  */
+    // var storage = multer.diskStorage({
+    //     destination: function(req, file, cb) {
+    //         cb(null, config.uploadsPath)
+    //     },
+    //     filename: function(req, file, cb) {
+    //         var filename = file.fieldname + '-' + Date.now() + path.extname(file.originalname)
+    //         cb(null, filename);
+    //     }
+    // });
+    // app.post('/user/upload/profile', multer({
+    //     storage: storage
+    // }).single("upload"), (req, getres) => {
+    //     // TODO: Do verification that this is indeed a photo upload
+    //     console.log("POST - upload");
+    //     console.log(req.file);
+    //     async function test() {
+    //         var path = config.uploadsPath + "/" + req.file.filename;
+    //         // var path = req.file.filename;
+    //         var queryText = "UPDATE asp_users SET (profile_photo) = ('" + path + "') WHERE user_id = " + req.query.user_id + ";";
+    //         console.log("Query: " + queryText);
+    //         result = await db.query(queryText);
+    //     }
+    //     test();
+    //     getres.send(req.file);
+    // });
 
     /**
-     * Get filter path based on passed filter_id
-     * Takes in the request query's parameters
-     */
-    app.get('/filter', (req, getres) => {
-        console.log("GET - filter path for id");
-        var id = req.query.id;
-        let queryText = "SELECT path FROM FILTERS WHERE filter_id = " + id;
-        db.query(queryText)
-            .then(res => {
-                console.log(res.rows);
-                getres.send(res.rows);
-            })
-            .catch(e => console.error(e.stack))
-    });
-
-
-    /**
-     * Set a photo as reported on passed photo_id
+     * Set a photo to display or not on user profile on passed photo_id
      * Takes in the request body's parameters
      */
-    app.post('/report/photo', (req, getres) => {
-        console.log("Post - set photo reported with id");
-        var id = req.body.id;
-        var queryText = "UPDATE PHOTOS SET flag = TRUE WHERE photo_id = '" + id + "';";
-        db.query(queryText)
-            .then(res => {
-                if (res != undefined) {
-                    console.log("Photo flagging successful!");
-                    getres.send("Photo flagging successful!");
-                } else {
-                    getres.send("Photo flagging failed");
-                }
-            })
-            .catch(e => console.error(e.stack))
+    app.post('/user/set-display', (req, getres) => {
+      console.log("POST - set photo to display");
+      var id = req.body.photo_id;
+      var display = req.body.display;
+      var queryText = "UPDATE PHOTOS SET display = " + req.body.display + " WHERE photo_id = " + id + ";";
+      console.log(queryText);
+      db.query(queryText)
+          .then(res => {
+              if (res != undefined) {
+                  console.log("Photo profile display successful! Changed to " + req.body.display);
+                  getres.send("Photo profile display successful! Changed to " + req.body.display);
+              } else {
+                  getres.send("Photo profile display change failed");
+              }
+          })
+          .catch(e => console.error(e.stack))
     });
-
+    
     /**
      * Returns user's styled videos for user with id
      * Takes in the request query's parameters
@@ -316,21 +317,6 @@ module.exports = function(app) {
             .catch(e => console.error(e.stack))
     });
 
-    /**
-     * Get all system stats
-     * Takes in the request query's parameters
-     */
-    app.get('/system/stats', (req, getres) => {
-        console.log("GET - system stats");
-        let queryText = "SELECT * FROM USAGE INNER JOIN STAT_TYPES ON USAGE.stat_id = STAT_TYPES.stat_id";
-        db.query(queryText)
-            .then(res => {
-                console.log(res.rows);
-                getres.send(res.rows);
-            })
-            .catch(e => console.error(e.stack))
-    });
-
   /**
    * Returns user's styled photos for user with id
    * Takes in the request query's parameters
@@ -338,7 +324,54 @@ module.exports = function(app) {
   app.get('/user/photos', (req, getres) => {
     console.log("GET - user photos");
     var id = req.query.id;
-    let queryText = "SELECT * FROM PHOTOS WHERE photo_id in (SELECT photo_id FROM USER_PHOTO WHERE user_ID = " +  id + " AND type = 'styled')";
+    let queryText = "SELECT * FROM PHOTOS WHERE photo_id in (SELECT photo_id FROM USER_PHOTO WHERE user_ID = " +  id + " AND status = 'done')";
+    db.query(queryText)
+      .then(res => {
+        console.log(res.rows);
+        getres.send(res.rows);
+      })
+      .catch(e => console.error(e.stack))
+  });
+
+  /**
+   * Returns user's styled photos for user with id
+   * Takes in the request query's parameters
+   */
+  app.post('/user/photos/delete', (req, getres) => {
+    console.log("POST - delete photo");
+    // var user_id = req.body.user_id;
+    // var photo_id = req.body.photo_id;
+    console.log(req.body);
+    let queryText = "DELETE FROM user_photo WHERE photo_id = " + req.body.photo_id + " AND user_id = " + req.body.user_id + ";";
+    console.log(queryText);
+    async function test() {
+        result = await db.query(queryText);
+        queryText = "DELETE FROM photos WHERE photo_id = " + req.body.photo_id + ";";
+        console.log(queryText);
+        result = await db.query(queryText); 
+        getres.send("Delete was a success!");
+    }
+    test();
+    // db.query(queryText)
+    //   .then(res => {
+    //     // console.log(res.rows);
+    //     // getres.send(res.rows);
+    //     queryText = "DELETE FROM photos WHERE photo_id = " + req.body.photo_id + ";";
+    //     console.log(queryText);
+    //     db.query(queryText).then(res => {
+    //         getres.send("Delete was a success");
+    //     })
+    //   })
+    //   .catch(e => console.error(e.stack))
+  });
+
+  /**
+   * Returns photos the user chooses to display on their profile
+   */
+  app.get('/user/photos/display', (req, getres) => {
+    console.log("GET - user profile display photos");
+    var id = req.query.id;
+    let queryText = "SELECT * FROM PHOTOS WHERE photo_id in (SELECT photo_id FROM USER_PHOTO WHERE user_ID = " +  id + " AND status = 'done') AND display = true;";
     db.query(queryText)
       .then(res => {
         console.log(res.rows);
