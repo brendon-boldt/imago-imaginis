@@ -1,11 +1,12 @@
 {
   "name": "api-learn",
   "version": "1.0.0",
-  "description": "",
+  "description": "Since we're not doing PHP, and using Angular instead, we need to have all communications to our server done through the usage of API calls. This is easy to setup, and it kills two birds with one stone (API for customer, and communication to our server backend for the web UI).",
   "main": "index.js",
   "scripts": {
     "dev": "nodemon server.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node server.js"
   },
   "author": "",
   "license": "ISC",
@@ -19,5 +20,6 @@
     "multer": "^1.3.0",
     "nodemon": "^1.12.1",
     "pg": "^7.3.0"
-  }
+  },
+  "devDependencies": {}
 }

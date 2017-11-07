@@ -9,28 +9,81 @@ module.exports = function(app) {
   app.post('/style/insertImage', /*multer({storage: storage}).single("upload"),*/ (req, getres) => {
     console.log("POST - style upload");
     getres.json({'status': 0});
-    fs.writeFile(`${config.outputPath}/output-${req.body.imageId}.jpg`,
-        req.body.imageData, (err) => {
+    let filepath = `${config.outputPath}/output-${req.body.photo_id}.jpg`; 
+    console.log(`Writing file: ${filepath}`);
+    fs.writeFile(filepath, req.body.imageData, (err) => {
         if (err) {
           throw err;    
         }
       });
-      //res.send();
-    //});
-    return;
 
+    ///let filter_id = parseInt(req.body.filter_id);
+    /*
+
+UPDATE user_photo SET status='done' WHERE photo_id=47 AND user_id=33;
+
+     */
+
+    let photo_id = parseInt(req.body.photo_id);
+    let user_id = parseInt(req.body.user_id);
     let path = config.resultPath;
-    let queryText = "INSERT INTO photos (filter_id, size, creation_date, path, process_time) VALUES (2, 3.0, '2017-10-18', '" + path + "', 5)";
-    console.log(queryText);
-    db.no_param_query(queryText); 
+    let photosQuery = `UPDATE photos SET path = '${filepath}' WHERE photo_id = ${photo_id}`;
+    console.log(photosQuery); 
+    db.query(photosQuery); 
+
+let user_photoQuery = `UPDATE user_photo SET status='done' WHERE photo_id=${photo_id} AND user_id=${user_id}`;
+    console.log(user_photoQuery); 
+    db.query(user_photoQuery); 
+    return 0;
   });
+
+
 
   app.post('/style/selectImage', (req, res) => {
     console.log("Received: ", req.body);
-    console.log('Sending: ' + `${config.contentPath}/upload-${req.body.imageId}.jpg`);
-    res.sendFile(`${config.contentPath}/upload-${req.body.imageId}.jpg`);
+    let filepath = 'UNSET';
+    if (req.body.type === 'content')
+      filepath = `${config.contentPath}/upload-${req.body.photo_id}.jpg`;
+    else
+      filepath = `${config.stylePath}/filter-${req.body.photo_id}.jpg`;
+    console.log('Sending: ' + filepath);
+    res.sendFile(filepath);
   });
 
+  app.post('/style/selectRun', (req, getres) => {
+    let user_id = parseInt(req.body.user_id);
+    let photo_id = parseInt(req.body.photo_id);
+    let queryText =
+      `SELECT * FROM user_photo WHERE user_id=${user_id} AND photo_id=${photo_id}`;
+
+    console.log("QUERYING: " + queryText);
+    db.query(queryText)
+      .then(res => {
+        console.log(res.rows);
+        getres.send(res.rows);
+      })
+      .catch(e => console.error(e.stack));
+
+    return 0;
+  });
+
+  // Multiple runs
+  app.post('/style/selectRuns', (req, getres) => {
+    let user_id = parseInt(req.body.user_id);
+    let photo_id = parseInt(req.body.photo_id);
+    let queryText =
+      'SELECT * FROM user_photo WHERE status=\'waiting\'';
+
+    console.log("QUERYING: " + queryText);
+    db.query(queryText)
+      .then(res => {
+        console.log(res.rows);
+        getres.send(res.rows);
+      })
+      .catch(e => console.error(e.stack));
+
+    return 0;
+  });
 
 
 };

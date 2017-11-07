@@ -84,4 +84,4 @@ module.exports = function(app) {
         })
         .catch(e => console.error(e.stack))
   });
-};
+}
