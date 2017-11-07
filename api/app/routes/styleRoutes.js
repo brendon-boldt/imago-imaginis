@@ -9,8 +9,9 @@ module.exports = function(app) {
   app.post('/style/insertImage', /*multer({storage: storage}).single("upload"),*/ (req, getres) => {
     console.log("POST - style upload");
     getres.json({'status': 0});
-    fs.writeFile(`${config.outputPath}/output-${req.body.photo_id}.jpg`,
-        req.body.imageData, (err) => {
+    let filename = `${config.outputPath}/output-${req.body.photo_id}.jpg`; 
+    console.log(`Writing file: ${filename}`);
+    fs.writeFile(filename, req.body.imageData, (err) => {
         if (err) {
           throw err;    
         }
