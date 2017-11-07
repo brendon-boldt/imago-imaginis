@@ -150,10 +150,11 @@ module.exports = {
     let R = runInfoArr;
     for (let i = 0; i < R.length; ++i) {
       // If is only for testing
-      if (R[i].unfiltered_photo_id >= 33 && R[i].unfiltered_photo_id <= 40) {
+      //if (R[i].unfiltered_photo_id >= 33 && R[i].unfiltered_photo_id <= 40) {
+        console.log(R[i]);
         this.doRun(R[i]);
         break;
-      }
+      //}
     }
     //this.doRun(runInfo);
   },
