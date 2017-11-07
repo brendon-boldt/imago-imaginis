@@ -9,54 +9,35 @@ const config = require('../../config.js');
 const log = (msg) => {console.log("ROUTES: " + msg)};
 
 module.exports = function(app) {
-  
-  app.get('/', async (req, res) => {
-    const runParams = db.getRun(2401);
-    let response;
-    try {
-      response = await stylizer.startStyle(runParams);
-    } catch (err) {
-      throw err;
-    }
-    res.json({ message : response });
 
-  })
+  app.get('/test/doRun', async (req, res) => {
+    // User - photo ID
+    let upId = [33, 47];
+    let runInfoBuf = await db.selectRun(upId);
+    let runInfo = JSON.parse(runInfoBuf)[0];
+    let promContentFPath = db.selectImage('content',runInfo.unfiltered_photo_id);
+    let promStyleFPath = db.selectImage('style',runInfo.filter_id);
+    let contentFPath = await promContentFPath;
+    let styleFPath = await promStyleFPath;
+    log(contentFPath);
+    log(styleFPath);
 
-  app.post('/test', (req, res) => {
-    log(req.query);
-    res.send('done');
-  });
-
-  app.get('/test/insertImage', (req, res) => {
-    db.insertImage(2401);
-    res.send('done');
-  });
-
-  app.get('/test/selectImage', (req, res) => {
-    db.selectImage(1509420501508);
-    res.send('done');
-  });
-
-  app.get('/test/styleImage', async (req, res) => {
-    let imageId = 1509420501508;
-    await db.selectImage(imageId);
-
-    let runId = 2401;
+    let upIdString = upId[0] + '-' + upId[1];
+    //let outputFPath = `${config.outputPath}/${runInfo.photo_id}.jpg`;
     let testRunParams = {
-      runId : runId,
-      contentPath :
-        `${config.contentPath}/upload-${imageId}.jpg`,
+      upId : upIdString,
+      photo_id : runInfo.photo_id,
+      contentPath : contentFPath,
       contentSize : 16,
-      stylePath :
-        `${config.stylePath}/filter-0.jpg`,
+      stylePath : styleFPath,
       styleSize : 16,
-      outputName :
-        `output-${runId}.jpg`
+      outputName : `${runInfo.photo_id}.jpg`
     };
 
-    await stylizer.startStyle(testRunParams);
+    let outputFPath = await stylizer.startStyle(testRunParams);
 
-    await db.insertImage(runId);
+    await db.insertImage(outputFPath, runInfo.photo_id);
     res.send('the end!');
   });
+
 };

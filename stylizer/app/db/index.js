@@ -12,17 +12,33 @@ const log = (msg) => {console.log("DB: " + msg)};
 
 module.exports = {
 
-  // Retrieve an image from the database
-  selectImage: async function(imageId) {
+  /**
+   * Retrieve an image from the database
+   * type: [ 'content' | 'style' ]
+   */
+  selectImage: async function(imageType, photo_id) {
     let options = {
-      form: { imageId: imageId },
+      form: {
+        photo_id: photo_id,
+        type: imageType
+      },
       url: config.dbUrl +'/'+ selectImagePath,
       method: 'POST',
       encoding: null,
       headers: { 'Content-Type': 'multipart/form-data'}
     };
 
-    await request(options, (err, res, body) => {
+    let filename = 'UNSET';
+    if (imageType === 'content') {
+      filename = `${config.contentPath}/${photo_id}.jpg`;
+    } else if (imageType === 'style') {
+      filename = `${config.stylePath}/${photo_id}.jpg`;
+    } else {
+      throw new Error('Unknown type: ' + imageType);
+    }
+    await request(options, async (err, res, body) => {
+
+      // TODO: The error handling here does not work for DB side error
       if (err) {
         log(err);
         return;
@@ -30,33 +46,33 @@ module.exports = {
         log ("ERROR: Empty file received.");
         return;
       }
-      let filename = `${config.contentPath}/upload-${imageId}.jpg`;
+      
       log(`Writing ${filename}`);
-      fs.writeFile(filename, body, () => {
-        // Action after file is written
+      await fs.writeFile(filename, body, (err) => {
         if (err) {
-          // On file write error
           log(err);
+          return -1;
         }
+        return;
       });
+      return;
     });
-
-    return 0;
+    return filename;
   },
 
   // Load an image into the database
-  insertImage: async function(imageId) {
-    let imagePath = `${config.outputPath}/output-${imageId}.jpg`;
-    fs.readFile(imagePath, async (err, data) => {
+  insertImage: async function(outputFPath, photo_id) {
+    //let imagePath = `${config.outputPath}/${photo_id}.jpg`;
+    fs.readFile(outputFPath, async (err, data) => {
       if (err) {
-        console.log(`Could not read image ${imagePath}.`);
+        console.log(`Could not read image ${outputFPath}.`);
         return;
       }
 
       options = { 
         form: {
           imageData: data,
-          imageId: imageId
+          photo_id: photo_id
         },
         url: `${config.dbUrl}/${insertImagePath}`,
         encoding: null,
@@ -76,35 +92,27 @@ module.exports = {
   },
 
   // Get run information from database
-  selectRun: async function(runId) {
-    // Sample data
-
-    let requestSettings = {
-      url: config.dbUrl + getImagePath,
-      method: 'GET',
+  selectRun: async function(upId) {
+    let options = {
+      form: { user_id: upId[0], photo_id: upId[1] },
+      url: config.dbUrl +'/'+ selectRunPath,
+      method: 'POST',
       encoding: null,
-      qs: { runId: runId }
+      headers: { 'Content-Type': 'multipart/form-data'}
     };
 
-    request(requestSettings, (err, res, body) => {
+    let result = await request(options, (err, res, body) => {
       if (err) {
-        // Action on error
         log(err);
+        return;
+      } else if (body.length === 0) {
+        log ("ERROR: Empty response received.");
+        return;
       }
-      console.log(body);
       return body;
     });
 
-    /*
-    let runParams = {
-      runId : 2401,
-      contentPath : config.imageDir + 'cornell.jpg',
-      contentSize : 32,
-      stylePath : config.imageDir + 'woman_in_peasant_dress.jpg',
-      styleSize : 32
-    };
-    return runParams;
-    */
+    return result;
   },
 
   // Send run information to database
