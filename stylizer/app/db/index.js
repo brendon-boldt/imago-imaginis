@@ -2,11 +2,13 @@ const fs = require('fs');
 //const request = require('request');
 const request = require('request-promise-native');
 const config = require('../../config.js');
+const stylizer = require('../stylizer');
 
 const selectImagePath = 'style/selectImage';
 const insertImagePath = 'style/insertImage';
 const selectRunPath = 'style/selectRun';
-const insertRunPath = 'style/insertRun';
+const selectRunsPath = 'style/selectRuns';
+//const insertRunPath = 'style/insertRun';
 
 const log = (msg) => {console.log("DB: " + msg)};
 
@@ -61,7 +63,7 @@ module.exports = {
   },
 
   // Load an image into the database
-  insertImage: async function(outputFPath, photo_id) {
+  insertImage: async function(outputFPath, runInfo) {
     //let imagePath = `${config.outputPath}/${photo_id}.jpg`;
     fs.readFile(outputFPath, async (err, data) => {
       if (err) {
@@ -72,7 +74,8 @@ module.exports = {
       options = { 
         form: {
           imageData: data,
-          photo_id: photo_id
+          photo_id: runInfo.photo_id,
+          user_id: runInfo.user_id
         },
         url: `${config.dbUrl}/${insertImagePath}`,
         encoding: null,
@@ -115,17 +118,70 @@ module.exports = {
     return result;
   },
 
-  // Send run information to database
-  insertRun: async function(run) {
-    options = { 
-      body: run,
-      url: `http://localhost:8001/${sendImagePath}`,
-      encoding: null,
+  // Multiple runs
+  selectRuns: async function(upId) {
+    let options = {
+      form: {},
+      url: config.dbUrl +'/'+ selectRunsPath,
       method: 'POST',
-      headers: { 'Content-Type': 'application/json'}
+      encoding: null,
+      headers: { 'Content-Type': 'multipart/form-data'}
     };
-    request(options, (err, res, body) => {
-      console.log('send complete');
+
+    let result = await request(options, (err, res, body) => {
+      if (err) {
+        log(err);
+        return;
+      } else if (body.length === 0) {
+        log ("ERROR: Empty response received.");
+        return;
+      }
+      return body;
     });
+
+    return result;
+  },
+
+  getRuns: async function() {
+    let upId = [33, 47];
+    let runInfoBuf = await this.selectRuns();
+    let runInfoArr = JSON.parse(runInfoBuf);
+
+    let R = runInfoArr;
+    for (let i = 0; i < R.length; ++i) {
+      // If is only for testing
+      if (R[i].unfiltered_photo_id >= 33 && R[i].unfiltered_photo_id <= 40) {
+        this.doRun(R[i]);
+        break;
+      }
+    }
+    //this.doRun(runInfo);
+  },
+
+  // Send run information to database
+  doRun: async function(runInfo) {
+    // User - photo ID
+    let promContentFPath = this.selectImage('content',runInfo.unfiltered_photo_id);
+    let promStyleFPath = this.selectImage('style',runInfo.filter_id);
+    let contentFPath = await promContentFPath;
+    let styleFPath = await promStyleFPath;
+    log(contentFPath);
+    log(styleFPath);
+
+    let upIdString = runInfo.user_id + '-' + runInfo.photo_id;
+    //let outputFPath = `${config.outputPath}/${runInfo.photo_id}.jpg`;
+    let testRunParams = {
+      upId : upIdString,
+      photo_id : runInfo.photo_id,
+      contentPath : contentFPath,
+      contentSize : 16,
+      stylePath : styleFPath,
+      styleSize : 16,
+      outputName : `${runInfo.photo_id}.jpg`
+    };
+
+    let outputFPath = await stylizer.startStyle(testRunParams);
+
+    await this.insertImage(outputFPath, runInfo);
   }
 }
