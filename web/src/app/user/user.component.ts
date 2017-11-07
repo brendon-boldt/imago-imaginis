@@ -32,7 +32,7 @@ export class UserComponent {
   constructor(private user: UserService, private route: ActivatedRoute, private router: Router, private db: DBService){
     this.photos = [];
     this.route.queryParams.subscribe(params => {
-      if(params.user_id == null || params.user_id == this.user.user_id){
+      if(params.user_id == this.user.user_id){
         this.router.navigate(['user']);
       }
     });
@@ -48,14 +48,19 @@ export class UserComponent {
     this.route.queryParams.subscribe(params => {
       console.log(params);
       // No params were passed, or the user id is the current user's id, so display the logged in user's profile
-      if(params.user_id == null || params.user_id == this.user.user_id){
+      if(params.user_id == null){
         // this.router.navigate(['user']);
         this.user_id = this.user.user_id;
         this.first_name = this.user.first_name;
         this.last_name = this.user.last_name;
         this.email = this.user.email;
         var test = Observable.fromPromise(this.user.getProfilePhoto());
-        test.subscribe(res => {console.log(res); this.profilePhoto = res});
+        test.subscribe(res => {
+          console.log(res);
+          if(res != null){
+            this.profilePhoto = res
+          }
+        });
 
         this.db.getProfilePhotos(this.user.user_id).then(res => {
           console.log("WEB: Get user's profile display photos");

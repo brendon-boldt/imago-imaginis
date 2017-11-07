@@ -314,6 +314,26 @@ export class DBService {
         .catch(this.handleError);
     }
 
+    /**
+     * Performs a photo delete for the user
+     */
+    deletePhoto(user_id: number, photo_id: number): Promise<any> {
+        console.log("WEB: Performing DELETE of photo");
+        let deletePhoto = this.url + '/user/photos/delete';
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/x-www-form-urlencoded');
+        let body = new URLSearchParams();
+        body.append("user_id", ""+user_id);
+        body.append("photo_id", ""+photo_id);
+
+        let params = new URLSearchParams();
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.post(deletePhoto, body, options)
+        .toPromise()
+        .then(response => response)
+        .catch(this.handleError);
+    }
+
     private handleError(error: any): Promise<any> {
 		console.error('WEB: An error occurred', error); // for demo purposes only
 		return Promise.reject(error.message || error);

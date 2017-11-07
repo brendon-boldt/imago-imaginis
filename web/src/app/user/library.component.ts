@@ -30,6 +30,23 @@ export class LibraryComponent {
   modalPhoto: Object = {}; // The photo to be displayed in the modal
   buttonDisplay: String = ""; // Color differently depending on if photo is displayed on user profile or not
   constructor(private router: Router, private db: DBService, private user: UserService){
+    // Get user photos
+    // this.photos = [];
+    // this.photoArrOne = [];
+    // this.photoArrTwo = [];
+    // this.photoArrThree = [];
+    // this.photoArrFour = [];
+    this.getPictures();
+  }
+  getPictures(): void {
+    // async function clear() {
+    //   this.photos = await [];
+    //   this.photoArrOne = await [];
+    //   this.photoArrTwo = await [];
+    //   this.photoArrThree = await [];
+    //   this.photoArrFour = await [];
+    // }
+    // clear();
     // Get the user's styled photos
     // Also, get their unstyled photos, but overlay them with a processing image
     this.db.getStyledPhotos(this.user.user_id).then(res => {
@@ -70,6 +87,17 @@ export class LibraryComponent {
       this.buttonDisplay = "lightgrey";
     }
     this.modal.show();
+  }
+  /**
+   * Deletes a photo
+   */
+  deletePhoto(): void {
+    this.db.deletePhoto(this.user.user_id, this.modalPhoto['photo_id']).then(res => {
+      console.log(res);
+      // Update the library display
+      // this.getPictures();
+      location.reload();
+    });
   }
   /**
    * Sets the displayed photo to be displayed on the user's profile

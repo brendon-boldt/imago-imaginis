@@ -92,6 +92,7 @@
                 <img [src]="this.db.url + this.modalPhoto.path" id="modal-img">
             </div>
             <div class="app-modal-footer">
+                <button *ngIf="this.modalPhoto.unfiltered_photo_id == null" type="button" class="btn btn-danger" (click)="this.deletePhoto();">Delete</button>
                 <button *ngIf="this.modalPhoto.unfiltered_photo_id == null" type="button" class="btn btn-info" [style.background-color]="this.buttonDisplay" (click)="this.displayProfile();">Display on Profile</button>
                 <button type="button" class="btn btn-default" (click)="modal.hide();">Close</button>
             </div>

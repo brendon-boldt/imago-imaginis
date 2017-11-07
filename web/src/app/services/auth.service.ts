@@ -28,7 +28,10 @@ export class AuthService {
     checkLogin(): boolean {
         // Check to see if there is jwt in local storage
         // If not, return false
+        console.log("WEB: CHECK LOGIN");
         if(sessionStorage.getItem('jwt') == null){
+            console.log("WEB: NOT SIGNED IN");
+            this.isLoggedIn = false;
             return false;
         }
         else{
@@ -37,8 +40,9 @@ export class AuthService {
             this.user.setInfo(sessionStorage.getItem('jwt'));
             console.log(this.jwtHelper.decodeToken(token));
             console.log("JWT token expired: " + this.jwtHelper.isTokenExpired(token));
-            // Get user's profile picture
-            this.user.getProfilePhoto();
+            this.isLoggedIn = true;
+            // // Get user's profile picture
+            // this.user.getProfilePhoto();
             return !this.jwtHelper.isTokenExpired(token);
         }
     }

@@ -334,6 +334,38 @@ module.exports = function(app) {
   });
 
   /**
+   * Returns user's styled photos for user with id
+   * Takes in the request query's parameters
+   */
+  app.post('/user/photos/delete', (req, getres) => {
+    console.log("POST - delete photo");
+    // var user_id = req.body.user_id;
+    // var photo_id = req.body.photo_id;
+    console.log(req.body);
+    let queryText = "DELETE FROM user_photo WHERE photo_id = " + req.body.photo_id + " AND user_id = " + req.body.user_id + ";";
+    console.log(queryText);
+    async function test() {
+        result = await db.query(queryText);
+        queryText = "DELETE FROM photos WHERE photo_id = " + req.body.photo_id + ";";
+        console.log(queryText);
+        result = await db.query(queryText); 
+        getres.send("Delete was a success!");
+    }
+    test();
+    // db.query(queryText)
+    //   .then(res => {
+    //     // console.log(res.rows);
+    //     // getres.send(res.rows);
+    //     queryText = "DELETE FROM photos WHERE photo_id = " + req.body.photo_id + ";";
+    //     console.log(queryText);
+    //     db.query(queryText).then(res => {
+    //         getres.send("Delete was a success");
+    //     })
+    //   })
+    //   .catch(e => console.error(e.stack))
+  });
+
+  /**
    * Returns photos the user chooses to display on their profile
    */
   app.get('/user/photos/display', (req, getres) => {
