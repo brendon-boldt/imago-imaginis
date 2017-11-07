@@ -2,15 +2,15 @@
  * This is the modal component that we use in our Angular environment
  * https://stackoverflow.com/questions/34513558/angular-2-0-and-modal-dialog
  */
-import { Component, Input } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 @Component({
-  selector: 'app-modal',
+  selector: 'picture-modal',
   template: `
   <div (click)="onContainerClicked($event)" class="modal fade" tabindex="-1" [ngClass]="{'show': visibleAnimate}"
-       [ngStyle]="{'display': visible ? 'block' : 'none', 'color': 'black'}">
-    <div class="modal-dialog">
-      <div class="modal-content" style="background: rgba(255, 255, 255, .9)">
-        <div class="modal-header">
+       [ngStyle]="{'display': visible ? 'inline-flex' : 'none', 'color': 'black', 'overflow': 'scroll'}">
+    <div class="modal-dialog" style="min-width: 85%;">
+      <div class="modal-content" style="background: rgba(255, 255, 255, .9);">
+        <div class="modal-header" style="margin: auto">
           <ng-content select=".app-modal-header"></ng-content>
         </div>
         <div class="modal-body">
@@ -24,8 +24,9 @@ import { Component, Input } from '@angular/core';
   </div>
   `
 })
-export class ModalComponent {
+export class PictureModalComponent {
   @Input() clickOutsideToHide;
+  @ViewChild('video') video;
 
   public visible = false;
   public visibleAnimate = false;

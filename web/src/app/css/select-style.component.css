@@ -2,6 +2,7 @@
   max-height: 100%;
   max-width: 100%;
   width: auto;
+  object-fit: cover;
   margin-left: auto;
   margin-right: auto;
   margin-top: auto;
@@ -19,6 +20,8 @@
 #style-img {
   max-height: 100%;
   max-width: 100%;
+  width: auto;
+  object-fit: cover;
   margin-left: auto;
   margin-right: auto;
   margin-top: auto;

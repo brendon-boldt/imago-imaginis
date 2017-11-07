@@ -7,14 +7,12 @@ import { Injectable } from '@angular/core';
 import { Headers, Http, RequestOptions, URLSearchParams } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
 
-import { UserService } from './user.service';
-
 @Injectable()
 export class DBService {
     // This is the url of the Express server that is serving as the connection for the DB to the open world
-    url = `http://10.10.7.189:8000`;
+    url = `http://10.10.7.189:8001`;
     // url = `http://localhost:8000`;
-    constructor(private http: Http, private user: UserService){}
+    constructor(private http: Http){}
 
     /**
      * Log a user in based on email and password
@@ -76,24 +74,52 @@ export class DBService {
      * Performs an upload of a photo to the database, taking in a file and a filter
      * @param file 
      */
-    uploadPhoto(file: File, style: Object): Promise<any> {
+    uploadPhoto(id: number, file: File, filterId: number, img: any): Promise<any> {
         console.log("WEB: Performing POST of photo");
-        let upload = this.url + '/upload';
+        let upload = this.url + '/upload/photo';
         let headers = new Headers();
         // headers.append('Content-Type', 'image/jpeg');
 
         let formData: any = new FormData();
         formData.append("upload", file);
-        console.log("WEB: File that will be uploaded with filter id " + style['filter_id'] + ":");
+        console.log("WEB: File that will be uploaded with filter id " + filterId + ":");
         console.log(file);
 
+        // TODO: USE PROPER BODY POSTING
         let params = new URLSearchParams();
-        params.set('filter_id', style['filter_id']);
-        params.set('user_id', ""+this.user.user_id);
+        params.set('filter_id', filterId+"");
+        params.set('user_id', id+"");
+        params.set('height', img.width+"");
+        params.set('width', img.height+"");
         let options = new RequestOptions({headers: headers, search: params});
         return this.http.post(upload, formData, options)
         .toPromise()
-        .then(response => response.json().data　as Object)
+        .then(response => response　as Object)
+        .catch(this.handleError);
+    }
+
+    /**
+     * Performs an upload of a video to the database, taking in a file and a filter
+     * @param file 
+     */
+    uploadVideo(id: number, file: File, filterId: number): Promise<any> {
+        console.log("WEB: Performing POST of video");
+        let videoUpload = this.url + '/upload/video';
+        let headers = new Headers();
+        // headers.append('Content-Type', 'image/jpeg');
+
+        let formData: any = new FormData();
+        formData.append("upload", file);
+        console.log("WEB: File that will be uploaded with filter id " + filterId + ":");
+        console.log(file);
+
+        let params = new URLSearchParams();
+        params.set('filter_id', filterId+"");
+        params.set('user_id', ""+id);
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.post(videoUpload, formData, options)
+        .toPromise()
+        .then(response => response　as Object)
         .catch(this.handleError);
     }
 
@@ -101,7 +127,7 @@ export class DBService {
      * Performs an upload of a profile photo to the database, taking in a file
      * @param file 
      */
-    uploadProfilePhoto(file: File): Promise<any> {
+    uploadProfilePhoto(id: number, file: File): Promise<any> {
         console.log("WEB: Performing POST of photo");
         let uploadProfile = this.url + '/user/upload/profile';
         let headers = new Headers();
@@ -113,11 +139,11 @@ export class DBService {
         console.log(file);
 
         let params = new URLSearchParams();
-        params.set('user_id', ""+this.user.user_id);
+        params.set('user_id', ""+id);
         let options = new RequestOptions({headers: headers, search: params});
         return this.http.post(uploadProfile, formData, options)
         .toPromise()
-        .then(response => response.json().data　as Object)
+        .then(response => response　as Object)
         .catch(this.handleError);
     }
 
@@ -136,6 +162,99 @@ export class DBService {
         return this.http.get(photos, options)
         .toPromise()
         // .then(response => response.json()　as Object)
+        .then(response => response as Object)
+        .catch(this.handleError);
+    }
+
+    /**
+     * Returns user's styled videos
+     * @param id (user id)
+     */
+    getStyledVideos(id: number): Promise<any> {
+        console.log(id);
+        let videos = this.url + '/user/videos';
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        let params = new URLSearchParams();
+        params.set('id', id+"");
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.get(videos, options)
+        .toPromise()
+        // .then(response => response.json()　as Object)
+        .then(response => response as Object)
+        .catch(this.handleError);
+    }
+
+    /**
+     * Returns user's unstyled photos
+     * @param id (user id)
+     */
+    getUnStyledPhotos(id: number): Promise<any> {
+        console.log(id);
+        let photos = this.url + '/user/photos/unstyled';
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        let params = new URLSearchParams();
+        params.set('id', id+"");
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.get(photos, options)
+        .toPromise()
+        // .then(response => response.json()　as Object)
+        .then(response => response as Object)
+        .catch(this.handleError);
+    }
+
+    /**
+     * Returns user's unstyled videos
+     * @param id (user id)
+     */
+    getUnStyledVideos(id: number): Promise<any> {
+        console.log(id);
+        let videos = this.url + '/user/videos/unstyled';
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        let params = new URLSearchParams();
+        params.set('id', id+"");
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.get(videos, options)
+        .toPromise()
+        // .then(response => response.json()　as Object)
+        .then(response => response as Object)
+        .catch(this.handleError);
+    }
+    
+    /**
+     * Returns the photos the user wants to display on their profile
+     * @param id (user id)
+     */
+    getProfilePhotos(id: number): Promise<any> {
+        console.log(id);
+        let photos = this.url + '/user/photos/display';
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        let params = new URLSearchParams();
+        params.set('id', id+"");
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.get(photos, options)
+        .toPromise()
+        .then(response => response as Object)
+        .catch(this.handleError);
+    }
+
+    /**
+     * Returns the videos the user wants to display on their profile
+     * @param id (user id)
+     */
+    getProfileVideos(id: number): Promise<any> {
+        console.log(id);
+        let videos = this.url + '/user/videos/display';
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        let params = new URLSearchParams();
+        params.set('id', id+"");
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.get(videos, options)
+        .toPromise()
         .then(response => response as Object)
         .catch(this.handleError);
     }
@@ -210,7 +329,10 @@ export class DBService {
         .catch(this.handleError);
     }
 
-    saveUserSettings(userId, firstName, lastName, email, password): Promise<any>{
+    /**
+     * Used for account information modification
+     */
+    saveUserSettings(userId, firstName, lastName, email, password): Promise<any> {
         console.log("WEB: Saving user settings");
         let createUser = this.url + '/user/alter';
         let headers = new Headers();
@@ -228,6 +350,111 @@ export class DBService {
         return this.http.post(createUser, body.toString(), options)
         .toPromise()
         .then(response => {return response as Object})
+        .catch(this.handleError);
+    }
+
+    /**
+     * Sets a photo to be displayed on user's profile
+     * @param photo 
+     * @param display 
+     */
+    setPhotoToDisplay(photo: any, display: String): Promise<any> {
+        let setToDisplay = this.url + '/user/photos/set-display';
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/x-www-form-urlencoded');
+        let body = new URLSearchParams();
+        body.append('photo_id', photo.photo_id+"");
+        body.append('display', display+"");
+        let params = new URLSearchParams();
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.post(setToDisplay, body.toString(), options)
+        .toPromise()
+        // .then(response => response.json()　as Object)
+        .then(response => response as Object)
+        .catch(this.handleError);
+    }
+
+    /**
+     * Sets a photo to be displayed on user's profile
+     * @param video 
+     * @param display 
+     */
+    setVideoToDisplay(video: any, display: String): Promise<any> {
+        let setToDisplay = this.url + '/user/videos/set-display';
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/x-www-form-urlencoded');
+        let body = new URLSearchParams();
+        body.append('video_id', video.video_id+"");
+        body.append('display', display+"");
+        let params = new URLSearchParams();
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.post(setToDisplay, body.toString(), options)
+        .toPromise()
+        .then(response => response as Object)
+        .catch(this.handleError);
+    }
+
+    /**
+     * Performs the filter upload
+     * @param file
+     * @param id
+     */
+    uploadFilter(file: File, id: number): Promise<any> {
+        console.log("WEB: Performing POST of filter");
+        let uploadFilter = this.url + '/filter/upload';
+        let headers = new Headers();
+        // headers.append('Content-Type', 'image/jpeg');
+
+        let formData: any = new FormData();
+        formData.append("upload", file);
+        formData.append("user_id", id);
+        console.log(file);
+
+        let params = new URLSearchParams();
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.post(uploadFilter, formData, options)
+        .toPromise()
+        .then(response => response)
+        .catch(this.handleError);
+    }
+
+    /**
+     * Performs a photo delete for the user
+     */
+    deletePhoto(user_id: number, photo_id: number): Promise<any> {
+        console.log("WEB: Performing DELETE of photo");
+        let deletePhoto = this.url + '/user/photos/delete';
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/x-www-form-urlencoded');
+        let body = new URLSearchParams();
+        body.append("user_id", ""+user_id);
+        body.append("photo_id", ""+photo_id);
+
+        let params = new URLSearchParams();
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.post(deletePhoto, body, options)
+        .toPromise()
+        .then(response => response)
+        .catch(this.handleError);
+    }
+
+    /**
+     * Performs a photo delete for the user
+     */
+    deleteVideo(user_id: number, video_id: number): Promise<any> {
+        console.log("WEB: Performing DELETE of photo");
+        let deletePhoto = this.url + '/user/videos/delete';
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/x-www-form-urlencoded');
+        let body = new URLSearchParams();
+        body.append("user_id", ""+user_id);
+        body.append("video_id", ""+video_id);
+
+        let params = new URLSearchParams();
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.post(deletePhoto, body, options)
+        .toPromise()
+        .then(response => response)
         .catch(this.handleError);
     }
 

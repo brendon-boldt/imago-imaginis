@@ -6,6 +6,7 @@ config.contentPath = '';
 config.stylePath = '';
 config.resultPath = '';
 config.uploadsPath = '';
+config.videoUploadsPath = '';
 config.serve = '';
 config.dbUserName = '';
 config.dbPassword = '';

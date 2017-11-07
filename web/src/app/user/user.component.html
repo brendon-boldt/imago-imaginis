@@ -23,7 +23,12 @@
                         <div id="divMain" class="library-container">
                             <div class="container-one">
                                 <div *ngFor="let photo of photos">
-                                    <img [src]="photo.path" class="image">
+                                    <img *ngIf="photo.photo_id != null" [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)">
+                                    <video *ngIf="photo.video_id != null" height="250" id="video" (click)="this.showPicture(photo)" class="image">
+                                        <source [src]="this.db.url + photo.path" type="video/mp4">
+                                        Your browser does not support the video tag.
+                                    </video>
+                                    <br><br>
                                 </div>
                             </div>
                         </div>
@@ -31,6 +36,22 @@
                     <br style="clear: left;" />
                 </div>
             </div>
+            <picture-modal #modal [clickOutsideToHide] = "true">
+                <div class="app-modal-header">
+                    <!--Error-->&nbsp;
+                </div>
+                <div class="app-modal-body preview">
+                    <!-- <img [src]="this.db.url + this.modalPhoto.path" id="modal-img"> -->
+                    <img *ngIf="this.modalPhoto.photo_id != null" [src]="this.db.url + this.modalPhoto.path" class="image" id="modal-img">
+                    <video *ngIf="this.modalPhoto.video_id != null" controls id="video" style="margin: auto">
+                        <source [src]="this.db.url + this.modalPhoto.path" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                </div>
+                <div class="app-modal-footer">
+                    <button type="button" class="btn btn-default" (click)="modal.hide();">Close</button>
+                </div>
+            </picture-modal>
         </div>
 
     </div>
