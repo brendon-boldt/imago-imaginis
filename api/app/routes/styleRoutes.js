@@ -10,7 +10,7 @@ module.exports = function(app) {
     console.log("POST - style upload");
     getres.json({'status': 0});
     let filepath = `${config.outputPath}/output-${req.body.photo_id}.jpg`; 
-    console.log(`Writing file: ${filename}`);
+    console.log(`Writing file: ${filepath}`);
     fs.writeFile(filepath, req.body.imageData, (err) => {
         if (err) {
           throw err;    
@@ -28,7 +28,7 @@ UPDATE user_photo SET status='done' WHERE photo_id=47 AND user_id=33;
     let user_id = parseInt(req.body.user_id);
     let path = config.resultPath;
     let photosQuery = `UPDATE photos SET path = '${filepath}' WHERE photo_id = ${photo_id}`;
-    console.ogo(photosQuery); 
+    console.log(photosQuery); 
     db.query(photosQuery); 
 
 let user_photoQuery = `UPDATE user_photo SET status='done' WHERE photo_id=${photo_id} AND user_id=${user_id}`;
