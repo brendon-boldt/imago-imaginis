@@ -2,7 +2,7 @@
  * This is the modal component that we use in our Angular environment
  * https://stackoverflow.com/questions/34513558/angular-2-0-and-modal-dialog
  */
-import { Component, Input } from '@angular/core';
+import { Component, Input, ViewChild } from '@angular/core';
 @Component({
   selector: 'picture-modal',
   template: `
@@ -26,6 +26,7 @@ import { Component, Input } from '@angular/core';
 })
 export class PictureModalComponent {
   @Input() clickOutsideToHide;
+  @ViewChild('video') video;
 
   public visible = false;
   public visibleAnimate = false;

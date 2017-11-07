@@ -16,8 +16,25 @@
                                 <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)">
                             </div>
                         </div>
-                        <div *ngIf="photo.unfiltered_photo_id == null" id="photo">
+                        <div id="photo" *ngIf="photo.unfiltered_video_id != null">
+                            <div id="text" (click)="this.showPicture(photo)">
+                                <p class="process">Processing</p>
+                            </div>
+                            <div id="picture">
+                                <video height="250" id="video">
+                                    <source [src]="this.db.url + photo.path" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+                        </div>
+                        <div *ngIf="photo.photo_id != null" id="photo">
                             <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)">
+                        </div>
+                        <div *ngIf="photo.video_id != null" id="photo">
+                            <video height="250" id="video" (click)="this.showPicture(photo)">
+                                <source [src]="this.db.url + photo.path" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
                         </div>
                     </div>
                     <br>
@@ -34,8 +51,26 @@
                                 <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)">
                             </div>
                         </div>
-                        <div *ngIf="photo.unfiltered_photo_id == null" id="photo">
+                        <div id="photo" *ngIf="photo.unfiltered_video_id != null">
+                            <div id="text" (click)="this.showPicture(photo)">
+                                <p class="process">Processing</p>
+                            </div>
+                            <div id="picture">
+                                <!-- <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)"> -->
+                                <video height="250" id="video">
+                                    <source [src]="this.db.url + photo.path" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+                        </div>
+                        <div *ngIf="photo.photo_id != null" id="photo">
                             <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)">
+                        </div>
+                        <div *ngIf="photo.video_id != null" id="photo">
+                            <video height="250" id="video" (click)="this.showPicture(photo)">
+                                <source [src]="this.db.url + photo.path" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
                         </div>
                     </div>
                     <br>
@@ -52,8 +87,26 @@
                                 <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)">
                             </div>
                         </div>
-                        <div *ngIf="photo.unfiltered_photo_id == null" id="photo">
+                        <div id="photo" *ngIf="photo.unfiltered_video_id != null">
+                            <div id="text" (click)="this.showPicture(photo)">
+                                <p class="process">Processing</p>
+                            </div>
+                            <div id="picture">
+                                <!-- <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)"> -->
+                                <video height="250" id="video">
+                                    <source [src]="this.db.url + photo.path" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+                        </div>
+                        <div *ngIf="photo.photo_id != null" id="photo">
                             <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)">
+                        </div>
+                        <div *ngIf="photo.video_id != null" id="photo">
+                            <video height="250" id="video" (click)="this.showPicture(photo)">
+                                <source [src]="this.db.url + photo.path" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
                         </div>
                     </div>
                     <br>
@@ -70,8 +123,26 @@
                                 <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)">
                             </div>
                         </div>
-                        <div *ngIf="photo.unfiltered_photo_id == null" id="photo">
+                        <div id="photo" *ngIf="photo.unfiltered_video_id != null">
+                            <div id="text" (click)="this.showPicture(photo)">
+                                <p class="process">Processing</p>
+                            </div>
+                            <div id="picture">
+                                <!-- <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)"> -->
+                                <video height="250" id="video">
+                                    <source [src]="this.db.url + photo.path" type="video/mp4">
+                                    Your browser does not support the video tag.
+                                </video>
+                            </div>
+                        </div>
+                        <div *ngIf="photo.photo_id != null" id="photo">
                             <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)">
+                        </div>
+                        <div *ngIf="photo.video_id != null" id="photo">
+                            <video height="250" id="video" (click)="this.showPicture(photo)">
+                                <source [src]="this.db.url + photo.path" type="video/mp4">
+                                Your browser does not support the video tag.
+                            </video>
                         </div>
                     </div>
                     <br>
@@ -89,12 +160,23 @@
             </div>
             <div class="app-modal-body preview">
                     <!-- [style.width]="this.modalPhoto.width + 'px'" -->
-                <img [src]="this.db.url + this.modalPhoto.path" id="modal-img">
+                <img *ngIf="this.modalPhoto.unfiltered_photo_id != null || this.modalPhoto.photo_id != null" [src]="this.db.url + this.modalPhoto.path" id="modal-img">
+                <video #video *ngIf="this.modalPhoto.unfiltered_video_id != null || this.modalPhoto.video_id != null" controls style="margin: auto">
+                    <source [src]="this.db.url + this.modalPhoto.path" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
             </div>
             <div class="app-modal-footer">
-                <button *ngIf="this.modalPhoto.unfiltered_photo_id == null" type="button" class="btn btn-danger" (click)="this.deletePhoto();">Delete</button>
-                <button *ngIf="this.modalPhoto.unfiltered_photo_id == null" type="button" class="btn btn-info" [style.background-color]="this.buttonDisplay" (click)="this.displayProfile();">Display on Profile</button>
-                <button type="button" class="btn btn-default" (click)="modal.hide();">Close</button>
+                <div *ngIf="this.modalPhoto.photo_id != null">
+                    <button *ngIf="this.modalPhoto.unfiltered_photo_id == null" type="button" class="btn btn-danger" (click)="this.deletePhoto();">Delete</button>
+                    <button *ngIf="this.modalPhoto.unfiltered_photo_id == null" type="button" class="btn btn-info" [style.background-color]="this.buttonDisplay" (click)="this.displayPictureProfile();">Display on Profile</button>
+                    <button type="button" class="btn btn-default" (click)="modal.hide();">Close</button>
+                </div>
+                <div *ngIf="this.modalPhoto.photo_id == null">
+                    <button *ngIf="this.modalPhoto.unfiltered_video_id == null" type="button" class="btn btn-danger" (click)="this.deleteVideo();">Delete</button>
+                    <button *ngIf="this.modalPhoto.unfiltered_video_id == null" type="button" class="btn btn-info" [style.background-color]="this.buttonDisplay" (click)="this.displayVideoProfile();">Display on Profile</button>
+                    <button type="button" class="btn btn-default" (click)="modal.hide();">Close</button>
+                </div>
             </div>
         </picture-modal>
       </div>

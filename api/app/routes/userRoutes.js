@@ -190,22 +190,6 @@ module.exports = function(app) {
     });
 
     /**
-     * Returns user's styled photos for user with id
-     * Takes in the request query's parameters
-     */
-    app.get('/user/photos', (req, getres) => {
-        console.log("GET - user photos");
-        var id = req.query.id;
-        let queryText = "SELECT * FROM PHOTOS WHERE photo_id IN (SELECT photo_id FROM USER_PHOTO WHERE user_ID = " + id + " AND status = 'done')";
-        db.query(queryText)
-            .then(res => {
-                console.log(res.rows);
-                getres.send(res.rows);
-            })
-            .catch(e => console.error(e.stack))
-    });
-
-    /**
      * Returns user's unstyled photos for user with id
      * Takes in the request query's parameters
      */
@@ -219,7 +203,23 @@ module.exports = function(app) {
               getres.send(res.rows);
           })
           .catch(e => console.error(e.stack))
-  });
+    });
+
+    /**
+     * Returns user's unstyled videos for user with id
+     * Takes in the request query's parameters
+     */
+    app.get('/user/videos/unstyled', (req, getres) => {
+        console.log("GET - user unstyled video");
+        var id = req.query.id;
+        let queryText = "SELECT * FROM unfiltered_video WHERE unfiltered_video_id IN (SELECT unfiltered_video_id FROM user_video WHERE user_ID = " + id + " AND status = 'waiting')";
+        db.query(queryText)
+            .then(res => {
+                console.log(res.rows);
+                getres.send(res.rows);
+            })
+            .catch(e => console.error(e.stack))
+    });
 
     /**
      * Creates a paid user with id
@@ -254,7 +254,7 @@ module.exports = function(app) {
      * Set a photo to display or not on user profile on passed photo_id
      * Takes in the request body's parameters
      */
-    app.post('/user/set-display', (req, getres) => {
+    app.post('/user/photos/set-display', (req, getres) => {
       console.log("POST - set photo to display");
       var id = req.body.photo_id;
       var display = req.body.display;
@@ -271,6 +271,28 @@ module.exports = function(app) {
           })
           .catch(e => console.error(e.stack))
     });
+
+    /**
+     * Set a video to display or not on user profile on passed video_id
+     * Takes in the request body's parameters
+     */
+    app.post('/user/videos/set-display', (req, getres) => {
+        console.log("POST - set video to display");
+        var id = req.body.video_id;
+        var display = req.body.display;
+        var queryText = "UPDATE VIDEOS SET display = " + req.body.display + " WHERE video_id = " + id + ";";
+        console.log(queryText);
+        db.query(queryText)
+            .then(res => {
+                if (res != undefined) {
+                    console.log("Photo profile display successful! Changed to " + req.body.display);
+                    getres.send("Photo profile display successful! Changed to " + req.body.display);
+                } else {
+                    getres.send("Photo profile display change failed");
+                }
+            })
+            .catch(e => console.error(e.stack))
+      });
     
     /**
      * Returns user's styled videos for user with id
@@ -305,22 +327,52 @@ module.exports = function(app) {
   });
 
   /**
-   * Returns user's styled photos for user with id
-   * Takes in the request query's parameters
+   * Deletes the photo id passed in that belongs to that user
+   * TODO: Remove from FS
    */
   app.post('/user/photos/delete', (req, getres) => {
     console.log("POST - delete photo");
     console.log(req.body);
     let queryText = "DELETE FROM user_photo WHERE photo_id = " + req.body.photo_id + " AND user_id = " + req.body.user_id + ";";
     console.log(queryText);
-    async function test() {
+    async function deletePhoto() {
         result = await db.query(queryText);
         queryText = "DELETE FROM photos WHERE photo_id = " + req.body.photo_id + ";";
         console.log(queryText);
         result = await db.query(queryText); 
         getres.send("Delete was a success!");
     }
-    test();
+    deletePhoto();
+    // db.query(queryText)
+    //   .then(res => {
+    //     // console.log(res.rows);
+    //     // getres.send(res.rows);
+    //     queryText = "DELETE FROM photos WHERE photo_id = " + req.body.photo_id + ";";
+    //     console.log(queryText);
+    //     db.query(queryText).then(res => {
+    //         getres.send("Delete was a success");
+    //     })
+    //   })
+    //   .catch(e => console.error(e.stack))
+  });
+
+  /**
+   * Deletes the video id passed in that belongs to that user
+   * TODO: Remove from FS
+   */
+  app.post('/user/videos/delete', (req, getres) => {
+    console.log("POST - delete video");
+    console.log(req.body);
+    let queryText = "DELETE FROM user_video WHERE video_id = " + req.body.video_id + " AND user_id = " + req.body.user_id + ";";
+    console.log(queryText);
+    async function deleteVideo() {
+        result = await db.query(queryText);
+        queryText = "DELETE FROM videos WHERE video_id = " + req.body.video_id + ";";
+        console.log(queryText);
+        result = await db.query(queryText); 
+        getres.send("Delete was a success!");
+    }
+    deleteVideo();
     // db.query(queryText)
     //   .then(res => {
     //     // console.log(res.rows);
@@ -341,6 +393,21 @@ module.exports = function(app) {
     console.log("GET - user profile display photos");
     var id = req.query.id;
     let queryText = "SELECT * FROM PHOTOS WHERE photo_id in (SELECT photo_id FROM USER_PHOTO WHERE user_ID = " +  id + " AND status = 'done') AND display = true;";
+    db.query(queryText)
+      .then(res => {
+        console.log(res.rows);
+        getres.send(res.rows);
+      })
+      .catch(e => console.error(e.stack))
+  });
+
+  /**
+   * Returns videos the user chooses to display on their profile
+   */
+  app.get('/user/videos/display', (req, getres) => {
+    console.log("GET - user profile display videos");
+    var id = req.query.id;
+    let queryText = "SELECT * FROM VIDEOS WHERE video_id in (SELECT video_id FROM user_video WHERE user_ID = " +  id + " AND status = 'done') AND display = true;";
     db.query(queryText)
       .then(res => {
         console.log(res.rows);

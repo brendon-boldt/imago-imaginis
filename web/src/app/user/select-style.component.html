@@ -11,7 +11,6 @@ It is routed to when the user clicks on a router link-->
 			<div class="card-deck" id="card-deck">
 				<div class="card">
 					<video *ngIf="this.gen.isVideoUpload" width="320" height="240" controls style="margin: auto">
-						<!-- TODO: Make video display properly -->
 						<source [src]="this.gen.uploadedImage" type="video/mp4">
 						Your browser does not support the video tag.
 					</video>

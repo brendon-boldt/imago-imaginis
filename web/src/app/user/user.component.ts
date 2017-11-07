@@ -61,7 +61,7 @@ export class UserComponent {
             this.profilePhoto = res
           }
         });
-
+        // Get the user's photos to display on profile
         this.db.getProfilePhotos(this.user.user_id).then(res => {
           console.log("WEB: Get user's profile display photos");
           res = res.json();
@@ -70,6 +70,16 @@ export class UserComponent {
             this.photos.push(photo);
           }
         });
+        // Get the user's videos to display on profile
+        this.db.getProfileVideos(this.user.user_id).then(res => {
+          console.log("WEB: Get user's profile display videos");
+          res = res.json();
+          for(var video of res){
+            console.log(video);
+            this.photos.push(video);
+          }
+        });
+
         // // Get the user's profile photo
         // this.db.getProfilePhoto(this.user_id).then(res => {
         //   if(res._body == "[]"){ // The user had no profile picture
@@ -111,6 +121,15 @@ export class UserComponent {
           for(var photo of res){
             console.log(photo);
             this.photos.push(photo);
+          }
+        });
+        // Get the user's videos to display on profile
+        this.db.getProfileVideos(this.user.user_id).then(res => {
+          console.log("WEB: Get user's profile display videos");
+          res = res.json();
+          for(var video of res){
+            console.log(video);
+            this.photos.push(video);
           }
         });
       }
