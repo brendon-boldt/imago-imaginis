@@ -81,18 +81,6 @@ export class UserSettingsComponent {
       this.modalText = "Profile Picture Updated!";
       window.scrollTo(0, 0);
       this.modal.show();
-      // Update the profile picture
-      // location.reload();
-      // this.db.getProfilePhoto(this.user.user_id).then(res => {
-      //   if(res.json()[0].profile_photo == null){ // The user had no profile picture
-      //     console.log("User has no profile picture");
-      //   }
-      //   else{
-      //     this.profilePhoto = this.db.url + res.json()[0].profile_photo;
-      //     console.log(res.json());
-      //     console.log(this.profilePhoto);
-      //   }
-      // });
     });
   }
 }

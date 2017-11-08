@@ -95,6 +95,10 @@ export class UserComponent {
         console.log("WEB: Looking up user...")
         // Params were passed, so set the page info to the user id's info so we can display it
         // Do DB call that returns user info given ID
+        if(params.user_id == this.user.user_id){
+          this.router.navigate(['user']);
+        }
+        else{
         this.db.getUser(params.user_id).then(res => {
           this.first_name = res[0].first_name;
           this.last_name = res[0].last_name;
@@ -122,7 +126,7 @@ export class UserComponent {
           }
         });
         // Get the user's videos to display on profile
-        this.db.getProfileVideos(this.user.user_id).then(res => {
+        this.db.getProfileVideos(params.user_id).then(res => {
           console.log("WEB: Get user's profile display videos");
           res = res.json();
           for(var video of res){
@@ -130,6 +134,7 @@ export class UserComponent {
             this.photos.push(video);
           }
         });
+        }
       }
     });
   }

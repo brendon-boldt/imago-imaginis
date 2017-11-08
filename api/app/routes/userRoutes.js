@@ -75,7 +75,7 @@ module.exports = function(app) {
         var email = req.body.email;
         var password = req.body.password; // Hash password
         // Verify email is unique
-        var queryText = "SELECT * FROM ASP_USERS WHERE email = '" + email + "';";
+        var queryText = "SELECT * FROM ASP_USERS WHERE email = '" + email + "' AND user_id != " + id + ";";
         console.log(queryText);
         db.query(queryText)
             .then(res => {

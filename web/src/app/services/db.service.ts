@@ -339,6 +339,7 @@ export class DBService {
         headers.append('Content-Type', 'application/x-www-form-urlencoded');
 
         let body = new URLSearchParams();
+        body.append("id", userId);
         body.append("firstName", firstName);
         body.append("lastName", lastName);
         body.append("email", email);
