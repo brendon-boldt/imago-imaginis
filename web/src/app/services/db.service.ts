@@ -10,7 +10,7 @@ import 'rxjs/add/operator/toPromise';
 @Injectable()
 export class DBService {
     // This is the url of the Express server that is serving as the connection for the DB to the open world
-    url = `http://10.10.7.189:8001`;
+    url = `http://10.10.7.189:8000`;
     // url = `http://localhost:8000`;
     constructor(private http: Http){}
 
@@ -455,6 +455,22 @@ export class DBService {
         return this.http.post(deletePhoto, body, options)
         .toPromise()
         .then(response => response)
+        .catch(this.handleError);
+    }
+
+    /**
+     * Performs a get on all system stats
+     */
+    getSystemStats(): Promise<any> {
+        console.log("Performing GET of system stats");
+        let stats = this.url + '/system/stats';
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        let params = new URLSearchParams();
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.get(stats, options)
+        .toPromise()
+        .then(response => response.json()　as Object)
         .catch(this.handleError);
     }
 

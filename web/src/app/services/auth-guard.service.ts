@@ -1,12 +1,22 @@
 import { Injectable }     from '@angular/core';
 import { CanActivate, Router, ActivatedRouteSnapshot, RouterStateSnapshot }    from '@angular/router';
 import { AuthService } from './auth.service';
+import { UserService } from './user.service';
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-    constructor(private authService: AuthService, private router: Router){}
+    constructor(private authService: AuthService, private router: Router, private user: UserService){}
     canActivate(route: ActivatedRouteSnapshot, state: RouterStateSnapshot) {
-        console.log(route.queryParams);
+        // Check to see if user is trying to access admin portion of website
+        // If so, make sure they're an admin
+        // console.log(route.firstChild.routeConfig.path);
+        console.log(route);
+        if(route.firstChild != null){
+            var routeComponent = route.firstChild.routeConfig.path;
+            if(routeComponent == "system-stats"){
+                return this.user.isAdmin;
+            }
+        }
         // Check to see if the user is looking up a profile (not their own) and allow it
         if(route.queryParams.user_id != null){
             return true;

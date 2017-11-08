@@ -37,6 +37,9 @@ export class LibraryComponent {
     // this.photoArrTwo = [];
     // this.photoArrThree = [];
     // this.photoArrFour = [];
+    // this.getPictures();
+  }
+  ngOnInit() {
     this.getPictures();
   }
   getPictures(): void {
@@ -128,6 +131,7 @@ export class LibraryComponent {
    * Sets the displayed photo to be displayed on the user's profile
    */
   displayPictureProfile() {
+    console.log("HWEY");
     if(this.modalPhoto['display']){
       this.db.setPhotoToDisplay(this.modalPhoto, "false").then(res => {
         this.buttonDisplay = "lightgrey";

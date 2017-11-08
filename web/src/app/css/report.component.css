@@ -1,28 +1,36 @@
 .wrapper {
-    background-image: url("../assets/starrynight_blur.jpg");
-    height: 100vh;
+    /* background-image: url("../assets/starrynight_blur.jpg"); */
+    /* height: 100vh;
     background-repeat: no-repeat;
-    background-attachment: fixed;
+    background-attachment: fixed; */
 
 }
 
-html {
+/* html {
     background-color: black;
-}
+} */
 
-h1 {
+/* h1 {
     color: ghostwhite;
     padding-top: 100px;
     font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif; 
     font-size: 35pt;
     font-weight: 400;
+} */
+
+/* h3 {
+    color: ghostwhite;
 }
 
-hr {
+form {
+    color: ghostwhite;
+} */
+
+/* hr {
   max-width: 50px;
   border-width: 3px;
   border-color: ghostwhite; 
-}
+} */
 
 table {
     border-collapse: collapse;
@@ -54,8 +62,6 @@ th {
     background-color: cornflowerblue;
     color: white;
 }
-
-
 
 
 
