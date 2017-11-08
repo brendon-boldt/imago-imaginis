@@ -1,6 +1,7 @@
 const fs = require('fs');
 //const request = require('request');
 const request = require('request-promise-native');
+const formDataModule = require('form-data');
 const config = require('../../config.js');
 const stylizer = require('../stylizer');
 
@@ -65,6 +66,7 @@ module.exports = {
   // Load an image into the database
   insertImage: async function(outputFPath, runInfo) {
     //let imagePath = `${config.outputPath}/${photo_id}.jpg`;
+    console.log("Reading: " + outputFPath);
     fs.readFile(outputFPath, async (err, data) => {
       if (err) {
         console.log(`Could not read image ${outputFPath}.`);
@@ -72,15 +74,15 @@ module.exports = {
       }
 
       options = { 
-        form: {
-          imageData: data,
+        qs: {
           photo_id: runInfo.photo_id,
           user_id: runInfo.user_id
         },
+        body: data,
         url: `${config.dbUrl}/${insertImagePath}`,
         encoding: null,
         method: 'POST',
-        headers: { 'Content-Type': 'multipart/form-data'},
+        headers: { 'Content-Type': 'application/octet-stream'},
       };
 
       await request(options, (err, res, body) => {
@@ -89,7 +91,9 @@ module.exports = {
         }
         console.log('send complete');
       });
+
     });
+
 
     return 0;
   },
@@ -151,10 +155,10 @@ module.exports = {
     for (let i = 0; i < R.length; ++i) {
       // If is only for testing
       //if (R[i].unfiltered_photo_id >= 33 && R[i].unfiltered_photo_id <= 40) {
-        console.log(R[i]);
+      if (R[i].photo_id === 106) {
         this.doRun(R[i]);
         break;
-      //}
+      }
     }
     //this.doRun(runInfo);
   },
