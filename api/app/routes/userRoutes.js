@@ -68,6 +68,7 @@ module.exports = function(app) {
                         user_id: res.rows[0].user_id,
                         first_name: res.rows[0].first_name,
                         last_name: res.rows[0].last_name,
+                        isAdmin: res.rows[0].admin,
                         email: email,
                     };
                     var token = jwt.sign(payload, "thisisthekey", {

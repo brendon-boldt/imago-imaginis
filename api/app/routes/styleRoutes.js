@@ -1,20 +1,22 @@
 const db = require('../db');
 const path = require('path');
 const fs = require('fs');
+const formDataModule = require('form-data');
+
 
 const config = require('../../config.js');
 
-
 module.exports = function(app) {
-  app.post('/style/insertImage', /*multer({storage: storage}).single("upload"),*/ (req, getres) => {
+  app.post('/style/insertImage*', /*multer({storage: storage}).single("upload"),*/ async (req, getres) => {
     console.log("POST - style upload");
-    getres.json({'status': 0});
-    let filepath = `${config.outputPath}/output-${req.body.photo_id}.jpg`; 
+
+    let filepath = `${config.outputPath}/output-${req.query.photo_id}.jpg`; 
     console.log(`Writing file: ${filepath}`);
-    fs.writeFile(filepath, req.body.imageData, (err) => {
+    fs.writeFile(filepath, req.body, (err) => {
         if (err) {
           throw err;    
         }
+        getres.json({'status': 0});
       });
 
     ///let filter_id = parseInt(req.body.filter_id);
@@ -24,8 +26,8 @@ UPDATE user_photo SET status='done' WHERE photo_id=47 AND user_id=33;
 
      */
 
-    let photo_id = parseInt(req.body.photo_id);
-    let user_id = parseInt(req.body.user_id);
+    let photo_id = parseInt(req.query.photo_id);
+    let user_id = parseInt(req.query.user_id);
     let path = config.resultPath;
     let photosQuery = `UPDATE photos SET path = '${filepath}' WHERE photo_id = ${photo_id}`;
     console.log(photosQuery); 

@@ -25,6 +25,7 @@ console.log(__dirname);
 //This allows Express to process URL encoded forms on its own.
 //This way, we don't get undefined when receiving JSON
 app.use(bodyParser.json());
+app.use(bodyParser.raw({limit: '50mb'}));
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 app.use(cors());
 
