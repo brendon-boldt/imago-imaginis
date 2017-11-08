@@ -147,21 +147,23 @@ module.exports = {
   },
 
   getRuns: async function() {
-    let upId = [33, 47];
     let runInfoBuf = await this.selectRuns();
     let runInfoArr = JSON.parse(runInfoBuf);
+    log(`Got ${runInfoArr.length} runs.`);
 
     let R = runInfoArr;
     for (let i = 0; i < R.length; ++i) {
-      // If is only for testing
-      //if (R[i].unfiltered_photo_id >= 33 && R[i].unfiltered_photo_id <= 40) {
-      if (R[i].photo_id === 106) {
-        this.doRun(R[i]);
-        break;
-      }
+      this.doRun(R[i]);
+      break;
     }
     //this.doRun(runInfo);
   },
+
+  startWatching: async function() {
+    let getRuns = this.getRuns;
+    setInterval(this.getRuns.bind(this), 1000);
+  },
+
 
   // Send run information to database
   doRun: async function(runInfo) {

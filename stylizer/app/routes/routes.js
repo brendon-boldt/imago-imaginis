@@ -8,6 +8,8 @@ const config = require('../../config.js');
 
 const log = (msg) => {console.log("ROUTES: " + msg)};
 
+db.startWatching();
+
 module.exports = function(app) {
 
   app.get('/test/doRun', async (req, res) => {
