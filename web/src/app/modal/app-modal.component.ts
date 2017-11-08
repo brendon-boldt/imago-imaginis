@@ -7,7 +7,7 @@ import { Component, Input } from '@angular/core';
   selector: 'app-modal',
   template: `
   <div (click)="onContainerClicked($event)" class="modal fade" tabindex="-1" [ngClass]="{'show': visibleAnimate}"
-       [ngStyle]="{'display': visible ? 'block' : 'none', 'color': 'black'}">
+       [ngStyle]="{'display': visible ? 'block' : 'none', 'color': 'black', 'overflow': 'scroll'}">
     <div class="modal-dialog">
       <div class="modal-content" style="background: rgba(255, 255, 255, .9)">
         <div class="modal-header">

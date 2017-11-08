@@ -36,6 +36,45 @@
                     <br style="clear: left;" />
                 </div>
             </div>
+            <app-modal #reportmodal [clickOutsideToHide] = "true">
+                <div class="app-modal-header">
+                    <!--Error-->&nbsp;
+                </div>
+                <div class="app-modal-body preview">
+                    <!-- <img [src]="this.db.url + this.modalPhoto.path" id="modal-img"> -->
+                    <img *ngIf="this.modalPhoto.photo_id != null" [src]="this.db.url + this.modalPhoto.path" class="image" id="modal-img report">
+                    <video *ngIf="this.modalPhoto.video_id != null" controls id="video" style="margin: auto" id="report">
+                        <source [src]="this.db.url + this.modalPhoto.path" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                    <hr>
+                    <h3>Report Content</h3>
+                    <label>Flag images that have offensive content</label>
+                    <br>
+                    <span>
+                    <form action="">
+                      <input type="radio" name="reason" value="Nudity"> Nudity<br>
+                      <input type="radio" name="reason" value="Offensive content"> Offensive content<br>
+                      <input type="radio" name="reason" value="Other"> Other<br>
+                    </form> 
+                    </span><br>
+                    <button type="button" class="btn btn-warning btn-lg" (click)="reportmodal.hide(); confirmmodal.show();">Report</button>
+                </div>
+                <div class="app-modal-footer">
+                    <button type="button" class="btn btn-default" (click)="reportmodal.hide();">Close</button>
+                </div>
+            </app-modal>
+            <app-modal #confirmmodal [clickOutsideToHide] = "true">
+                <div class="app-modal-header">
+                        <!--Error-->&nbsp;
+                    </div>
+                <div class="app-modal-body preview">
+                    Image was reported!
+                </div>
+                <div class="app-modal-footer">
+                    <button type="button" class="btn btn-default" (click)="confirmmodal.hide();">Close</button>
+                </div>
+            </app-modal>
             <picture-modal #modal [clickOutsideToHide] = "true">
                 <div class="app-modal-header">
                     <!--Error-->&nbsp;
@@ -49,6 +88,7 @@
                     </video>
                 </div>
                 <div class="app-modal-footer">
+                    <button *ngIf="this.user_id != this.user.user_id" type="button" class="btn btn-warning" (click)="modal.hide(); reportmodal.show()">Report</button>
                     <button type="button" class="btn btn-default" (click)="modal.hide();">Close</button>
                 </div>
             </picture-modal>

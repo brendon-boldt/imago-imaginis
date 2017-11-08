@@ -20,6 +20,8 @@ import { PictureModalComponent } from '../modal/picture-modal.component';
 })
 export class UserComponent {
   @ViewChild('modal') modal;
+  @ViewChild('reportmodal') reportmodal;
+  @ViewChild('confirmmodal') confirmmodal;
   public user_id: number;
   public first_name: string;
   public last_name: string;
@@ -41,20 +43,12 @@ export class UserComponent {
   }
   ngOnInit() {
     console.log("INIT");
-    // this.route.queryParams.subscribe(params => {
-    //   if(params.user_id == this.user.user_id){
-    //     console.log("NAVIGATING TO DEFAULT PROFILE");
-    //     this.photos = [];
-    //     this.router.navigate(['user']);
-    //   }
-    // });
     this.route.queryParams.subscribe(params => {
       console.log(params);
       this.user_id = null;
       this.photos = [];
       // No params were passed, or the user id is the current user's id, so display the logged in user's profile
       if(params.user_id == null){
-        // this.router.navigate(['user']);
         this.user_id = this.user.user_id;
         this.first_name = this.user.first_name;
         this.last_name = this.user.last_name;
