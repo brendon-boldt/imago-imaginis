@@ -1,16 +1,6 @@
 <!--This is the register component, which is displayed underneath the app component.
   Allows for the user to register for an account to the platform.
 It is routed to when the user clicks on a router link-->
-<!-- <div class="container-fluid center-text">
-  <h3>Please Enter Your Details Below To</h3>
-  <h3>Register For An Account</h3>
-  <br>
-  <input class="input-box" name="user-name" placeholder="Name"><br><br>
-  <input class="input-box" name="user-email" placeholder="Email"><br><br>
-  <input class="input-box" name="user-password" placeholder="Password"><br><br>
-  <input class="input-box" name="user-confirm-password" placeholder="Confirm password"><br><br>
-	<input class="button" type="submit" value="Login"> -->
-	
 <header class="masthead" style="height:1300px;">
 	<div class="header-content">
 	<div class="header-content-inner">
@@ -42,6 +32,10 @@ It is routed to when the user clicks on a router link-->
 						<label class="control-label" name="user-confirm-password">Confirm Password</label>
 						<input type="password" class="form-control" name="confirm-password" placeholder="Confirm Password" [(ngModel)]="this.confirmPassword">
 					</div>
+					<div class="form-group">
+						<label class="control-label" name="user-age-gate">Over 18?</label>
+						<input [(ngModel)]="age" type="checkbox" class="form-control" name="age-gate">
+					</div>
 					<button type="button" class="button btn btn-primary btn-xl js-scroll-trigger center-block" (click)="this.register();">Register</button>
 				</form>
 			</div>
@@ -69,6 +63,17 @@ It is routed to when the user clicks on a router link-->
 			Style and Share!
 		</div>
 	</div>
+	<app-modal #modal [clickOutsideToHide] = "true">
+		<div class="app-modal-header">
+				<!--Error-->&nbsp;
+			</div>
+		<div class="app-modal-body preview">
+			Age must be over 18
+		</div>
+		<div class="app-modal-footer">
+			<button type="button" class="btn btn-default" (click)="modal.hide();">Close</button>
+		</div>
+	</app-modal>
 	</div>
 	</div>
 </header>

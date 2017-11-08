@@ -162,7 +162,7 @@ module.exports = function(app) {
     app.get('/user/search', (req, getres) => {
         console.log("GET - search");
         var searchString = req.query.searchString;
-        let queryText = "SELECT * FROM ASP_USERS WHERE first_name::text || last_name::text LIKE '%" + searchString + "%'";
+        let queryText = "SELECT * FROM ASP_USERS WHERE LOWER(first_name::text || last_name::text) LIKE LOWER('%" + searchString + "%')";
         db.query(queryText)
             .then(res => {
                 console.log(res.rows);
