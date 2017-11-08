@@ -1,10 +1,30 @@
 <!--This is the report component, which is displayed underneath the app component.
 Ability to report images
 It is routed to when the user clicks on a router link-->
-<!-- <div class="container-fluid center-text">
-  <h3>Report Image</h3>
-  <h4>Flag images that have offensive content</h4> -->
-<div class = "wrapper">
+<header class="masthead">
+  <div class="header-content">
+    <div class="header-content-inner">
+      <h1 id="homeHeading">Report Image</h1>
+      <hr>
+      <p>Flag images that have offensive content</p>
+      <span><br>
+        <img src="http://cumbrianrun.co.uk/wp-content/uploads/2014/02/default-placeholder-300x300.png" alt="Image caption" height="100" width="100">
+      </span><br><br>
+      <span>
+      <form action="">
+        <input type="radio" name="reason" value="Nudity"> Nudity<br>
+        <input type="radio" name="reason" value="Offensive content"> Offensive content<br>
+        <input type="radio" name="reason" value="Other"> Other<br>
+      </form> 
+      </span><br>
+      <!-- <input class="button" type="submit" value="Report"> -->
+      <button type="button" class="btn btn-warning btn-lg">Report</button>
+      <br><br>  
+    </div>
+  </div>
+</header>
+  
+<!-- <div class = "wrapper">
 <div class="container-fluid">
   <div class="center-text">
     <div class="page-header">
@@ -22,10 +42,9 @@ It is routed to when the user clicks on a router link-->
 	  <input type="radio" name="reason" value="Other"> Other<br>
 	</form> 
   </span><br>
-  <!-- <input class="button" type="submit" value="Report"> -->
   <button type="button" class="btn btn-warning btn-lg">Report</button>
   <br><br>  
   </div>
   
 </div>
-</div>
+</div> -->

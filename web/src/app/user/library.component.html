@@ -167,16 +167,22 @@
                 </video>
             </div>
             <div class="app-modal-footer">
-                <div *ngIf="this.modalPhoto.photo_id != null">
+                <!-- <div *ngIf="this.modalPhoto.photo_id != null">
                     <button *ngIf="this.modalPhoto.unfiltered_photo_id == null" type="button" class="btn btn-danger" (click)="this.deletePhoto();">Delete</button>
                     <button *ngIf="this.modalPhoto.unfiltered_photo_id == null" type="button" class="btn btn-info" [style.background-color]="this.buttonDisplay" (click)="this.displayPictureProfile();">Display on Profile</button>
                     <button type="button" class="btn btn-default" (click)="modal.hide();">Close</button>
-                </div>
-                <div *ngIf="this.modalPhoto.photo_id == null">
-                    <button *ngIf="this.modalPhoto.unfiltered_video_id == null" type="button" class="btn btn-danger" (click)="this.deleteVideo();">Delete</button>
-                    <button *ngIf="this.modalPhoto.unfiltered_video_id == null" type="button" class="btn btn-info" [style.background-color]="this.buttonDisplay" (click)="this.displayVideoProfile();">Display on Profile</button>
-                    <button type="button" class="btn btn-default" (click)="modal.hide();">Close</button>
-                </div>
+                </div> -->
+                <div *ngIf="this.modalPhoto.photo_id != null && this.modalPhoto.unfiltered_photo_id == null;then photostyled else photounstyled"></div>
+                <ng-template #photostyled>
+                    <button type="button" class="btn btn-danger" (click)="this.deletePhoto();">Delete</button>
+                    <button type="button" class="btn btn-info" [style.background-color]="this.buttonDisplay" (click)="this.displayPictureProfile();">Display on Profile</button>
+                </ng-template>
+                <div *ngIf="this.modalPhoto.video_id != null && this.modalPhoto.unfiltered_video_id == null;then videostyled else videounstyled"></div>
+                <ng-template #videostyled>
+                    <button type="button" class="btn btn-danger" (click)="this.deleteVideo();">Delete</button>
+                    <button type="button" class="btn btn-info" [style.background-color]="this.buttonDisplay" (click)="this.displayVideoProfile();">Display on Profile</button>
+                </ng-template>
+                <button type="button" class="btn btn-default" (click)="modal.hide();">Close</button>
             </div>
         </picture-modal>
       </div>

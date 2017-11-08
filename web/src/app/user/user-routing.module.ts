@@ -15,17 +15,18 @@ import { AuthGuard } from '../services/auth-guard.service';
 
 //The different routes correspond to different components to load based on the route selected
 const userRoutes: Routes = [
-  {
-    path: '',
-    canActivate: [AuthGuard],
-    children: [
-      { path: 'user', component: UserComponent },
-      { path: 'user-settings', component: UserSettingsComponent },
-      { path: 'upload', component: UploadComponent }, // user needs to log in before navigating to this page
-      { path: 'library', component: LibraryComponent },
-      { path: 'select-style', component: SelectStyleComponent },
-    ]
-  }
+  // {
+    // path: '',
+    // canActivate: [AuthGuard],
+    // children: [
+      { path: '', redirectTo:'/home', pathMatch:'full'},
+      { path: 'user', component: UserComponent, canActivate: [AuthGuard]},
+      { path: 'user-settings', component: UserSettingsComponent, canActivate: [AuthGuard]},
+      { path: 'upload', component: UploadComponent, canActivate: [AuthGuard] }, // user needs to log in before navigating to this page
+      { path: 'library', component: LibraryComponent, canActivate: [AuthGuard] },
+      { path: 'select-style', component: SelectStyleComponent, canActivate: [AuthGuard] }
+    // ]
+  // }
 ];
 
 @NgModule({

@@ -30,6 +30,9 @@ components, such as the home page and the profile page, while keeping the top he
 			</div>
 			</ul>
 		</li>
+		<li class="nav-item" *ngIf="this.user.isAdmin">
+			<a class="nav-link" routerLink="/system-stats" routerLinkActive="active">System</a>
+		</li>
 		<li class="nav-item">
 			<div *ngIf="!this.auth.isLoggedIn;then login else logout"></div>
 			<ng-template #login><a *ngIf="!this.auth.isLoggedIn" class="nav-link" routerLink="/login" routerLinkActive="active">Log In</a></ng-template>

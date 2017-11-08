@@ -9,7 +9,7 @@ import { HomeComponent } from './home.component';
 import { LoginComponent } from './login.component';
 import { ReportComponent } from './report.component';
 import { RegisterComponent } from './register.component';
-import { SystemStatsComponent } from './system-stats.component';
+import { SystemStatsComponent } from './admin/system-stats.component';
 import { SearchComponent } from './search.component';
 
 // Import the route guard to prevent users not logged in from going places they aren't allowed ti

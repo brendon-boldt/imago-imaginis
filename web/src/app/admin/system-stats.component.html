@@ -1,0 +1,125 @@
+<header class="masthead" id="searchMasthead">
+  <div class="header-content">
+    <div class="header-content-inner">
+      <h1 id="homeHeading">System Usage Report</h1>
+      <hr>
+      <br>
+      <!--Table results go here-->
+      <div class="table-responsive" style="overflow: auto; max-height: 500px;">
+        <table style="float: none; margin: 0 auto;" id="statsTable" class="table-striped" height=4>
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Stat Type</th>
+              <th>User ID</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let stat of stats">
+              <td>{{stat.timestamp}}</td>
+              <td>{{stat.stat_name}}</td>
+              <td>{{stat.user_id}}</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+      <br><br>
+      <div class="table-responsive" style="overflow: auto; max-height: 500px;">
+        <table style="float: none; margin: 0 auto;" id="statsTable" class="table-striped" height=4>
+          <thead>
+            <tr>
+              <th>Timestamp</th>
+              <th>Disk Avail</th>
+              <th>Upload Count</th>
+              <th>Request Count</th>
+              <th>Processing Time</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td>2017-11-10T00:29:15:800Z</td>
+              <td>409000MB</td>
+              <td>592</td>
+              <td>14382</td>
+              <td>8439</td>
+            </tr>
+            <tr>
+              <td>2017-11-09T00:29:15:800Z</td>
+              <td>500000MB</td>
+              <td>472</td>
+              <td>10302</td>
+              <td>6840</td>
+            </tr>
+            <tr>
+              <td>2017-11-08T00:29:15:800Z</td>
+              <td>5090000MB</td>
+              <td>382</td>
+              <td>9438</td>
+              <td>4239</td>
+            </tr>
+            <!-- <tr *ngFor="let stat of stats">
+              <td>{{user.email}}</td>
+              <td>{{user.first_name}}</td>
+              <td>{{user.last_name}}</td>
+              <td>{{user.date_joined}}</td>
+              <td>{{user.status}}</td>
+            </tr> -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</header>
+  
+
+<!-- <div class = "wrapper">
+<div class="container-fluid">
+	<div class="center-text">
+		<div class="page-header">
+			<h1 class="display-2">System Usage Report</h1>
+		</div>
+		<hr>
+  <br>
+    <div style="overflow-x:auto;">
+        <table style="margin:0 auto;">
+          <tr>
+            <th>Date&Time</th>
+            <th>Disk Avail</th>
+            <th>Upload Count</th>
+            <th>Request Count</th>
+            <th>Processing Time</th>
+          </tr>
+          <tr>
+            <td>EXZ</td>
+            <td>EXZ</td>
+            <td>EXZ</td>
+            <td>EXZ</td>
+            <td>EXZ</td>
+          </tr>
+          <tr>
+            <td>EXZ</td>
+            <td>EXZ</td>
+            <td>EXZ</td>
+            <td>EXZ</td>
+            <td>EXZ</td>
+          </tr>
+          <tr>
+            <td>EXZ</td>
+            <td>EXZ</td>
+            <td>EXZ</td>
+            <td>EXZ</td>
+            <td>EXZ</td>
+          </tr>
+          <tr>
+            <td>EXZ</td>
+            <td>EXZ</td>
+            <td>EXZ</td>
+            <td>EXZ</td>
+            <td>EXZ</td>
+          </tr>
+        </table>
+      <br> 
+    </div>
+
+</div>
+</div> -->

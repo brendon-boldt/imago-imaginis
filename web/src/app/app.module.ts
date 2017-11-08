@@ -9,6 +9,7 @@ import { AppRoutingModule } from './app-routing.module'; // This module allows f
 import { HttpModule } from '@angular/http'; // This module allows us to make HTTP calls
 import { FormsModule } from '@angular/forms'; // This module allows us to have two-way data binding in forms
 import { UserModule } from './user/user.module';
+import { AdminModule } from './admin/admin.module';
 
 //References to all the components in the application
 import { AppComponent } from './app.component';
@@ -17,7 +18,6 @@ import { HomeComponent } from './home.component';
 import { LoginComponent } from './login.component';
 import { ReportComponent } from './report.component';
 import { RegisterComponent } from './register.component';
-import { SystemStatsComponent } from './system-stats.component';
 import { SearchComponent } from './search.component';
 
 // References to custom directives
@@ -38,12 +38,12 @@ import { GeneralService } from './services/general.service';
     LoginComponent,
     ReportComponent,
     RegisterComponent,
-    SystemStatsComponent,
     SearchComponent,
     FocusDirective
   ],
   imports: [
     UserModule,
+    AdminModule,
     BrowserModule,
     AppRoutingModule,
     HttpModule,

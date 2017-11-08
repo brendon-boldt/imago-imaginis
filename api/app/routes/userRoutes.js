@@ -134,6 +134,7 @@ module.exports = function(app) {
                         user_id: res.rows[0].user_id,
                         first_name: res.rows[0].first_name,
                         last_name: res.rows[0].last_name,
+                        isAdmin: res.rows[0].admin,
                         email: email,
                     };
                     var token = jwt.sign(payload, "thisisthekey", {
@@ -226,15 +227,15 @@ module.exports = function(app) {
      * Takes in the request query's parameters
      */
     app.get('/user/photos/unstyled', (req, getres) => {
-        console.log("GET - user unstyled photos");
-        var id = req.query.id;
-        let queryText = "SELECT * FROM unfiltered_photo WHERE unfiltered_photo_id IN (SELECT unfiltered_photo_id FROM USER_PHOTO WHERE user_ID = " + id + " AND status = 'waiting')";
-        db.query(queryText)
-            .then(res => {
-                console.log(res.rows);
-                getres.send(res.rows);
-            })
-            .catch(e => console.error(e.stack))
+      console.log("GET - user unstyled photos");
+      var id = req.query.id;
+      let queryText = "SELECT * FROM unfiltered_photo WHERE unfiltered_photo_id IN (SELECT unfiltered_photo_id FROM USER_PHOTO WHERE user_ID = " + id + " AND (status = 'waiting' OR status = 'processing'))";
+      db.query(queryText)
+          .then(res => {
+              console.log(res.rows);
+              getres.send(res.rows);
+          })
+          .catch(e => console.error(e.stack))
     });
 
     /**
@@ -244,7 +245,7 @@ module.exports = function(app) {
     app.get('/user/videos/unstyled', (req, getres) => {
         console.log("GET - user unstyled video");
         var id = req.query.id;
-        let queryText = "SELECT * FROM unfiltered_video WHERE unfiltered_video_id IN (SELECT unfiltered_video_id FROM user_video WHERE user_ID = " + id + " AND status = 'waiting')";
+        let queryText = "SELECT * FROM unfiltered_video WHERE unfiltered_video_id IN (SELECT unfiltered_video_id FROM user_video WHERE user_ID = " + id + " AND (status = 'waiting' OR status = 'processing'))";
         db.query(queryText)
             .then(res => {
                 console.log(res.rows);
