@@ -31,11 +31,6 @@ export class UserComponent {
   modalPhoto: Object = {};
   constructor(private user: UserService, private route: ActivatedRoute, private router: Router, private db: DBService){
     this.photos = [];
-    this.route.queryParams.subscribe(params => {
-      if(params.user_id == this.user.user_id){
-        this.router.navigate(['user']);
-      }
-    });
   }
   /** 
    * Displays picture that was clicked in a pop-up modal
@@ -45,8 +40,18 @@ export class UserComponent {
     this.modal.show();
   }
   ngOnInit() {
+    console.log("INIT");
+    // this.route.queryParams.subscribe(params => {
+    //   if(params.user_id == this.user.user_id){
+    //     console.log("NAVIGATING TO DEFAULT PROFILE");
+    //     this.photos = [];
+    //     this.router.navigate(['user']);
+    //   }
+    // });
     this.route.queryParams.subscribe(params => {
       console.log(params);
+      this.user_id = null;
+      this.photos = [];
       // No params were passed, or the user id is the current user's id, so display the logged in user's profile
       if(params.user_id == null){
         // this.router.navigate(['user']);
@@ -79,7 +84,6 @@ export class UserComponent {
             this.photos.push(video);
           }
         });
-
         // // Get the user's profile photo
         // this.db.getProfilePhoto(this.user_id).then(res => {
         //   if(res._body == "[]"){ // The user had no profile picture

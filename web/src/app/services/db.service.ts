@@ -56,8 +56,8 @@ export class DBService {
         // formData.append("email", email);
         // formData.append("password", password);
         let body = new URLSearchParams();
-        body.append("first_name", firstName);
-        body.append("last_name", lastName);
+        body.append("firstName", firstName);
+        body.append("lastName", lastName);
         body.append("email", email);
         body.append("password", password);
 

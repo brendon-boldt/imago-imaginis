@@ -19,7 +19,7 @@ import { PictureModalComponent } from '../modal/picture-modal.component';
 export class LibraryComponent {
   @ViewChild('modal') modal;
   @ViewChild('video') video;
-  // All the photos pulled from the database
+  // Holder for photos pulled from the database
   photos: Array<Object> = [];
   public placeholder: String = "../assets/placeholder.jpg";
   // These are used for displaying the photos properly on the page
