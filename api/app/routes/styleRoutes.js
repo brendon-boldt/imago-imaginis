@@ -74,7 +74,7 @@ let user_photoQuery = `UPDATE user_photo SET status='done' WHERE photo_id=${phot
     let user_id = parseInt(req.body.user_id);
     let photo_id = parseInt(req.body.photo_id);
     let queryText =
-      'SELECT * FROM user_photo WHERE status=\'waiting\'';
+      'SELECT * FROM user_photo NATURAL JOIN unfiltered_photo WHERE status=\'waiting\'';
 
     console.log("QUERYING: " + queryText);
     db.query(queryText)
