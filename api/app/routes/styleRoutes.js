@@ -44,9 +44,13 @@ let user_photoQuery = `UPDATE user_photo SET status='done' WHERE photo_id=${phot
   app.post('/style/selectImage', (req, res) => {
     console.log("Received: ", req.body);
     let filepath = 'UNSET';
-    if (req.body.type === 'content')
+    if (req.body.type === 'content') {
+    // TODO: This should be its own route, but I do not have time for that now
       filepath = `${config.contentPath}/upload-${req.body.photo_id}.${req.body.fileType}`;
-    else
+      let processingQuery = `UPDATE user_photo SET status='processing' WHERE unfiltered_photo_id=${req.body.photo_id}`;
+      console.log(processingQuery); 
+      db.query(processingQuery); 
+    } else
       filepath = `${config.stylePath}/filter-${req.body.photo_id}.${req.body.fileType}`;
     console.log('Sending: ' + filepath);
     res.sendFile(filepath);
