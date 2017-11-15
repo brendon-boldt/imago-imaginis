@@ -93,7 +93,7 @@ export class UserComponent {
             this.first_name = res[0].first_name;
             this.last_name = res[0].last_name;
             this.email = res[0].email;
-            this.dateJoined = res[0].dateJoined;
+            this.dateJoined = res[0].date_joined;
             console.log(res);
           });
           // Get that user's profile photo
