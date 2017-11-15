@@ -19,15 +19,13 @@ import { ModalComponent } from './modal/app-modal.component';
 export class RegisterComponent {
   @ViewChild('modal') modal;
   age: any;
+  errorText: String;
   constructor(private router: Router, private user: UserService, private db: DBService, private auth: AuthService){}
   public keyboard: String = "../assets/keyboard.jpg";
   public upload: String = "../assets/upload.jpg";
   public style: String = "../assets/style.jpg";
 
-  firstName: String;
-  lastName: String;
-  email: String;
-  password: String;
+  form: any = {};
 
   /**
    * Registers the user
@@ -35,29 +33,23 @@ export class RegisterComponent {
   register(): void{
     // Create a new user entry in the database
     if(this.age){
-      this.db.createUser(this.firstName, this.lastName, this.email, this.password).then(result => {
-        // After user created, log them in and go to home
-        this.auth.login(this.email, this.password).then(result => {
-          this.router.navigate(['home']);
-        });
+      this.db.createUser(this.form.firstName, this.form.lastName, this.form.email, this.form.password).then(result => {
+        console.log(result);
+        if(result.status == 401){
+          this.errorText = "Sorry, this email is already registered.";
+          this.modal.show();
+        }
+        else{
+          // After user created, log them in and go to home
+          this.auth.login(this.form.email, this.form.password).then(result => {
+            this.router.navigate(['home']);
+          });
+        }
       })
     }
     else{
+      this.errorText = "Sorry. This website is restricted to ages 18 and over."
       this.modal.show();
-    }
-  }
-  /**
-   * Verifies if the user's passwords match up
-   */
-  verifyPassword(): void {
-
-  }
-  /**
-   * Submits form on enter key
-   */
-  onKey(event: any): void {
-    if(event.key == "Enter"){
-      this.register();
     }
   }
 }

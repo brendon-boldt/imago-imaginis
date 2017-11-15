@@ -56,7 +56,6 @@ export class LibraryComponent {
     this.timerSubscription = Observable.timer(5000).first().subscribe(() => this.loadPics(false));
   }
   ngOnDestroy() {
-    console.log("HEY");
     this.subscription.unsubscribe();
     this.timerSubscription.unsubscribe();
   }

@@ -42,6 +42,7 @@ module.exports = function(app) {
                     getres.send("Create account failed");
                 } else if (res.rowCount > 0) {
                     console.log("Email already registered to account");
+                    getres.status(401);
                     getres.send("Email already registered to account");
                 } else {
                     // Email is unique

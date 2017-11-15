@@ -11,32 +11,50 @@ It is routed to when the user clicks on a router link-->
 		<div class="row">
 			<div class="col"></div>
 			<div class="col-md-4">
-				<form class="form-horizontal" role="form" data-toggle="validator" (keyup)="onKey($event);">
+				<form class="form-horizontal" role="form" data-toggle="validator" #registerForm="ngForm">
 					<div class="form-group">
-						<label class="control-label" name="user-first-name">First Name</label>
-						<input type="text" class="form-control" name="first-name" placeholder="First Name" [(ngModel)]="this.firstName">
+						<label class="control-label" name="user-first-name">First Name<font color="red">*</font></label>
+						<input type="text" class="form-control" name="firstName" placeholder="First Name" [(ngModel)]="form.firstName" #firstName="ngModel" required>
+						<div [hidden]="firstName.valid || firstName.pristine" class="alert alert-danger">
+							First name is required
+						</div>
 					</div>
 					<div class="form-group">
-						<label class="control-label" name="user-last-name">Last Name</label>
-						<input type="text" class="form-control" name="last-name" placeholder="Last Name" [(ngModel)]="this.lastName">
+						<label class="control-label" name="user-last-name">Last Name<font color="red">*</font></label>
+						<input type="text" class="form-control" name="lastName" placeholder="Last Name" [(ngModel)]="form.lastName" #lastName="ngModel" required>
+						<div [hidden]="lastName.valid || lastName.pristine" class="alert alert-danger">
+							Last name is required
+						</div>
 					</div>
 					<div class="form-group">
-						<label class="control-label" name="user-email">Email</label>
-						<input type="email" class="form-control" name="email" placeholder="Email" [(ngModel)]="this.email">
+						<label class="control-label" name="user-email">Email<font color="red">*</font></label>
+						<input type="email" class="form-control" name="email" placeholder="Email" [(ngModel)]="form.email" #email="ngModel" email required>
+						<div [hidden]="email.valid || email.pristine" class="alert alert-danger">
+							Email is required
+						</div>
 					</div>
 					<div class="form-group">
-						<label class="control-label" name="user-password">Password</label>
-						<input type="password" class="form-control" name="password" placeholder="Password" [(ngModel)]="this.password">
+						<label class="control-label" name="user-password">Password<font color="red">*</font></label>
+						<input type="password" class="form-control" name="password" placeholder="Password" [(ngModel)]="form.password" #password="ngModel" required>
+						<div [hidden]="password.valid || password.pristine" class="alert alert-danger">
+							Password is required
+						</div>
 					</div>
 					<div class="form-group">
-						<label class="control-label" name="user-confirm-password">Confirm Password</label>
-						<input type="password" class="form-control" name="confirm-password" placeholder="Confirm Password" [(ngModel)]="this.confirmPassword">
+						<label class="control-label" name="user-confirm-password">Confirm Password<font color="red">*</font></label>
+						<input type="password" class="form-control" name="confirm" placeholder="Confirm Password" [(ngModel)]="form.confirm" #confirm="ngModel" required>
+						<div [hidden]="form.password == form.confirm || confirm.pristine" class="alert alert-danger">
+							Passwords must match
+						</div>
 					</div>
 					<div class="form-group">
-						<label class="control-label" name="user-age-gate">Over 18?</label>
-						<input [(ngModel)]="age" type="checkbox" class="form-control" name="age-gate">
+						<label class="custom-control custom-checkbox">
+							<input [(ngModel)]="age" type="checkbox" name="age-gate" class="custom-control-input" required>
+							<span class="custom-control-indicator"></span>
+							<span class="custom-control-description">I am over 18 years of age</span>
+						</label>
 					</div>
-					<button type="button" class="button btn btn-primary btn-xl js-scroll-trigger center-block" (click)="this.register();">Register</button>
+					<button type="submit" [disabled]="!registerForm.form.valid || (form.password != form.confirm || confirm.pristine)" class="button btn btn-primary btn-xl js-scroll-trigger center-block" (click)="this.register();">Register</button>
 				</form>
 			</div>
 			<div class="col"></div>
@@ -68,7 +86,7 @@ It is routed to when the user clicks on a router link-->
 				<!--Error-->&nbsp;
 			</div>
 		<div class="app-modal-body preview">
-			Age must be over 18
+			{{errorText}}
 		</div>
 		<div class="app-modal-footer">
 			<button type="button" class="btn btn-default" (click)="modal.hide();">Close</button>

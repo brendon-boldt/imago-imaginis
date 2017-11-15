@@ -475,8 +475,9 @@ export class DBService {
         .catch(this.handleError);
     }
 
-    private handleError(error: any): Promise<any> {
-		console.error('WEB: An error occurred', error); // for demo purposes only
-		return Promise.reject(error.message || error);
+    private handleError(error: any) {
+        console.error('WEB: An error occurred', error); 
+        return error;
+		// return Promise.reject(error.message || error);
 	}
 }

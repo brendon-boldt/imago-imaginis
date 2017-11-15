@@ -14,9 +14,7 @@ import { UserService } from '../services/user.service';
 
 @Injectable()
 export class LibraryService {
-
     subject = new Subject<any>();
-
     photos: any  = [];
     photoArrOne: any = [];
     photoArrTwo: any = [];
