@@ -7,10 +7,10 @@ const formDataModule = require('form-data');
 const config = require('../../config.js');
 
 module.exports = function(app) {
-  app.post('/style/insertImage*', /*multer({storage: storage}).single("upload"),*/ async (req, getres) => {
-    console.log("POST - style upload");
+  app.post('/style/insert/:type*', async (req, getres) => {
+    console.log("Upload of type: " + req.params.type);
 
-    let filepath = `${config.outputPath}/output-${req.query.photo_id}.${req.query.fileType}`; 
+    let filepath = `${config.outputPath}/output-${req.query.resource_id}.${req.query.fileType}`; 
     console.log(`Writing file: ${filepath}`);
     fs.writeFile(filepath, req.body, (err) => {
         if (err) {
@@ -19,21 +19,15 @@ module.exports = function(app) {
         getres.json({'status': 0});
       });
 
-    ///let filter_id = parseInt(req.body.filter_id);
-    /*
-
-UPDATE user_photo SET status='done' WHERE photo_id=47 AND user_id=33;
-
-     */
-
-    let photo_id = parseInt(req.query.photo_id);
+    let resource_id = parseInt(req.query.resource_id);
+    console.log(resource_id);
     let user_id = parseInt(req.query.user_id);
     let path = config.resultPath;
-    let photosQuery = `UPDATE photos SET path = '${filepath}' WHERE photo_id = ${photo_id}`;
+    let photosQuery = `UPDATE photos SET path = '${filepath}' WHERE photo_id = ${resource_id}`;
     console.log(photosQuery); 
     db.query(photosQuery); 
 
-let user_photoQuery = `UPDATE user_photo SET status='done' WHERE photo_id=${photo_id} AND user_id=${user_id}`;
+let user_photoQuery = `UPDATE user_photo SET status='done' WHERE photo_id=${resource_id} AND user_id=${user_id}`;
     console.log(user_photoQuery); 
     db.query(user_photoQuery); 
     return 0;
@@ -41,22 +35,22 @@ let user_photoQuery = `UPDATE user_photo SET status='done' WHERE photo_id=${phot
 
 
 
-  app.post('/style/selectImage', (req, res) => {
+  app.post('/style/select/image', (req, res) => {
     console.log("Received: ", req.body);
     let filepath = 'UNSET';
     if (req.body.type === 'content') {
     // TODO: This should be its own route, but I do not have time for that now
-      filepath = `${config.contentPath}/upload-${req.body.photo_id}.${req.body.fileType}`;
-      let processingQuery = `UPDATE user_photo SET status='processing' WHERE unfiltered_photo_id=${req.body.photo_id}`;
+      filepath = `${config.contentPath}/upload-${req.body.resource_id}.${req.body.fileType}`;
+      let processingQuery = `UPDATE user_photo SET status='processing' WHERE unfiltered_photo_id=${req.body.resource_id}`;
       console.log(processingQuery); 
       db.query(processingQuery); 
     } else
-      filepath = `${config.stylePath}/filter-${req.body.photo_id}.${req.body.fileType}`;
+      filepath = `${config.stylePath}/filter-${req.body.resource_id}.${req.body.fileType}`;
     console.log('Sending: ' + filepath);
     res.sendFile(filepath);
   });
 
-  app.post('/style/selectRun', (req, getres) => {
+  app.post('/style/select/run', (req, getres) => {
     let user_id = parseInt(req.body.user_id);
     let photo_id = parseInt(req.body.photo_id);
     let queryText =
@@ -74,7 +68,7 @@ let user_photoQuery = `UPDATE user_photo SET status='done' WHERE photo_id=${phot
   });
 
   // Multiple runs
-  app.post('/style/selectRuns', (req, getres) => {
+  app.post('/style/select/runs', (req, getres) => {
     let user_id = parseInt(req.body.user_id);
     let photo_id = parseInt(req.body.photo_id);
     let queryText =
