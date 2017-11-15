@@ -33,7 +33,7 @@ export class LoginComponent {
     }
   }
   login(): void {
-    async function test(auth, email, password, modal) {
+    async function func(auth, email, password, modal) {
       var login = await auth.login(email, password);
       if(!login){
         console.log('WEB: Login failed');
@@ -43,14 +43,7 @@ export class LoginComponent {
         console.log('WEB: Login was a success!');
       }
     }
-    test(this.auth, this.email, this.password, this.modal);
-    // if(!this.auth.login(this.email, this.password)){
-    //   console.log('WEB: Login failed');
-    //   this.modal.show();
-    // }
-    // else{
-    //   console.log('WEB: Login was a success!');
-    // }
+    func(this.auth, this.email, this.password, this.modal);
   }
   /**
    * Submits the form when pressing the enter key

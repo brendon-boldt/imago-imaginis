@@ -71,6 +71,7 @@ export class AuthService {
                 // Get the user's profile photo
                 this.user.getProfilePhoto();
                 // Navigate the user to home
+                this.user.justLoggedIn = true;
                 this.router.navigate(['home']);
                 userFound = true;
                 return userFound;
@@ -79,9 +80,11 @@ export class AuthService {
     }
     /**
      * Redirects the user to the homepage when logging out
+     * Clears out session
      */
     logout(): void {
         this.isLoggedIn = false;
+        sessionStorage.clear();
         this.router.navigate(['home']);
     }
 }

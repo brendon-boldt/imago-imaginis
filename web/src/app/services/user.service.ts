@@ -20,7 +20,8 @@ export class UserService {
     public last_name: string;
     public email: string;
     public profilePhoto: string = '../../assets/placeholder.jpg';
-    public isAdmin: boolean = false;;
+    public isAdmin: boolean = false;
+    public justLoggedIn: boolean = false;
     jwtHelper: JwtHelper = new JwtHelper();
     constructor(private db: DBService){
         // Get the user profile picture

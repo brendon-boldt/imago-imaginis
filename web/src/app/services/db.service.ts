@@ -82,15 +82,19 @@ export class DBService {
 
         let formData: any = new FormData();
         formData.append("upload", file);
+        formData.append('filter_id', filterId+"");
+        formData.append('user_id', id+"");
+        formData.append('height', img.width+"");
+        formData.append('width', img.height+"");
         console.log("WEB: File that will be uploaded with filter id " + filterId + ":");
         console.log(file);
 
         // TODO: USE PROPER BODY POSTING
         let params = new URLSearchParams();
-        params.set('filter_id', filterId+"");
-        params.set('user_id', id+"");
-        params.set('height', img.width+"");
-        params.set('width', img.height+"");
+        // params.set('filter_id', filterId+"");
+        // params.set('user_id', id+"");
+        // params.set('height', img.width+"");
+        // params.set('width', img.height+"");
         let options = new RequestOptions({headers: headers, search: params});
         return this.http.post(upload, formData, options)
         .toPromise()

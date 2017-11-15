@@ -27,6 +27,7 @@ export class SelectStyleComponent {
   // uploadedImage: File = null;
   filterToUpload: File;
   video: any;
+  modalText: String;
   constructor(private us: UserService, private router: Router, private db: DBService, private gen: GeneralService){
     // Checks to see if the user uploaded a photo from the previous page
     if(this.us.uploadedPhoto != null){
@@ -92,18 +93,35 @@ export class SelectStyleComponent {
             // res._body returns the filter id that was just added
             // TODO: Display loading animation while uploading, stop when response received.
             this.db.uploadPhoto(this.us.user_id, this.us.uploadedPhoto, res._body, img).then(result => {
-              this.router.navigate(['library']);
+              if(result.status == 501){
+                // File size was too large
+                this.modalText = "Max image file size exceeded! 7MB max.";
+                this.uploading.hide();
+                this.modal.show();
+              }
+              else{
+                this.router.navigate(['library']);
+              }
             });
           });
         }
         else{
           this.db.uploadPhoto(this.us.user_id, this.us.uploadedPhoto, this.selectedStyle['filter_id'], img).then(result => {
-            this.router.navigate(['library']);
+            if(result.status == 501){
+              // File size was too large
+              this.modalText = "Max image file size exceeded! 7MB max.";
+              this.uploading.hide();
+              this.modal.show();
+            }
+            else{
+              this.router.navigate(['library']);
+            }
           });
         }
       }
     }
     else{
+      this.modalText = "Please select a style!";
       this.modal.show();
     }
   }

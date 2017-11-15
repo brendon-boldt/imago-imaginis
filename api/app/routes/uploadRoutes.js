@@ -5,6 +5,8 @@ const jwt = require('jsonwebtoken');
 
 const config = require('../../config.js');
 
+const MAX_PHOTO_UPLOAD_SIZE = 7340032; // 7 MB is max photo upload size
+
 
 module.exports = function(app) {
   /**
@@ -27,29 +29,84 @@ module.exports = function(app) {
         cb(null, filename);
     }
   });
-  app.post('/upload/photo', multer({storage: storage}).single("upload"), (req, getres) => {
-    // Do verification that this is indeed a photo upload
-    console.log("POST - upload");
-    console.log(req.file);
-    async function upload() {
-      var path = config.uploadsPath + "/" + req.file.filename;
-      // Update record in DB to have file size and path
-      let queryText = "UPDATE unfiltered_photo SET (size, height, width, path) = (" + req.file.size + ", "+req.query.height+", "+req.query.width+", '" + path + "') WHERE unfiltered_photo_id = " + req.file.unfiltered_photo_id + ";";
-      console.log("Query: " + queryText);
-      result = await db.query(queryText);
-      // Need to generate entry in Photos to have photo id so we can create entry in user_photo
-      queryText = "INSERT INTO photos (size, creation_date, path, process_time, flag, display, height, width) VALUES (.00000001, '1970-01-01', '', 0, false, false, 0, 0) RETURNING photo_id;";
-      console.log("Query: " + queryText);
-      result = await db.query(queryText); 
-      var photo_id = result.rows[0].photo_id;
-      // We also need to create a new entry in User_Photo. Need to use generated unfiltered_photo_id
-      queryText = "INSERT INTO user_photo (user_id, photo_id, filter_id, status, wait_time, unfiltered_photo_id) VALUES (" + req.query.user_id + ", " + photo_id + ", " + req.query.filter_id + ", 'waiting', 0, " + req.file.unfiltered_photo_id + ");";
-      console.log("Query: " + queryText);
-      db.query(queryText); 
-      getres.send("Upload complete!");
+  var photoUpload = multer({storage: storage, limits: { fileSize: MAX_PHOTO_UPLOAD_SIZE }, fileFilter: function (req, file, cb) { 
+    if(!(file.mimetype == 'image/png' || file.mimetype == 'image/jpeg')){
+      console.log(file.mimetype);
+      req.fileValidationError = 'goes wrong on the mimetype';
+      return cb(null, false, new Error('goes wrong on the mimetype'));
     }
-    upload();
+    cb(null, true); 
+  }}).single("upload");
+  // app.post('/upload/photo', photoUpload, (req, getres) => {
+  app.post('/upload/photo', function (req, res) {
+    photoUpload(req, res, function(err) {
+      // File type validation check
+      // TODO: test this
+      if(req.fileValidationError){
+        res.status(502);
+        res.statusMessage = "Image must be JPG or PNG";
+        res.send("Image must be JPG or PNG");
+        return;
+      }
+      // File size validation check
+      if(err){
+        console.log(err);
+        res.status(501);
+        res.statusMessage = "File size limit exceeded! 7MB max";
+        res.send("File size limit exceeded! 7MB max");
+        return;
+      }
+      console.log("POST - upload");
+      console.log(req.file);
+      async function upload() {
+        var path = config.uploadsPath + "/" + req.file.filename;
+        // Update record in DB to have file size and path
+        let queryText = "UPDATE unfiltered_photo SET (size, height, width, path) = (" + req.file.size + ", "+req.body.height+", "+req.body.width+", '" + path + "') WHERE unfiltered_photo_id = " + req.file.unfiltered_photo_id + ";";
+        console.log("Query: " + queryText);
+        result = await db.query(queryText);
+        // Need to generate entry in Photos to have photo id so we can create entry in user_photo
+        queryText = "INSERT INTO photos (size, creation_date, path, process_time, flag, display, height, width) VALUES (.00000001, '1970-01-01', '', 0, false, false, 0, 0) RETURNING photo_id;";
+        console.log("Query: " + queryText);
+        result = await db.query(queryText); 
+        var photo_id = result.rows[0].photo_id;
+        // We also need to create a new entry in User_Photo. Need to use generated unfiltered_photo_id
+        queryText = "INSERT INTO user_photo (user_id, photo_id, filter_id, status, wait_time, unfiltered_photo_id) VALUES (" + req.body.user_id + ", " + photo_id + ", " + req.body.filter_id + ", 'waiting', 0, " + req.file.unfiltered_photo_id + ");";
+        console.log("Query: " + queryText);
+        db.query(queryText); 
+        res.send("Upload complete!");
+      }
+      upload();
+    })
   });
+  //   photoUpload(req, getres, ( err ) => {
+  //     console.log("what the fuck?");
+  //     if(err){
+  //       console.log("FK ME");
+  //       return getres.status(501).send("File too big.");
+  //     }
+  //   });
+  //   // Do verification that this is indeed a photo upload
+  //   console.log("POST - upload");
+  //   console.log(req.file);
+  //   async function upload() {
+  //     var path = config.uploadsPath + "/" + req.file.filename;
+  //     // Update record in DB to have file size and path
+  //     let queryText = "UPDATE unfiltered_photo SET (size, height, width, path) = (" + req.file.size + ", "+req.body.height+", "+req.body.width+", '" + path + "') WHERE unfiltered_photo_id = " + req.file.unfiltered_photo_id + ";";
+  //     console.log("Query: " + queryText);
+  //     result = await db.query(queryText);
+  //     // Need to generate entry in Photos to have photo id so we can create entry in user_photo
+  //     queryText = "INSERT INTO photos (size, creation_date, path, process_time, flag, display, height, width) VALUES (.00000001, '1970-01-01', '', 0, false, false, 0, 0) RETURNING photo_id;";
+  //     console.log("Query: " + queryText);
+  //     result = await db.query(queryText); 
+  //     var photo_id = result.rows[0].photo_id;
+  //     // We also need to create a new entry in User_Photo. Need to use generated unfiltered_photo_id
+  //     queryText = "INSERT INTO user_photo (user_id, photo_id, filter_id, status, wait_time, unfiltered_photo_id) VALUES (" + req.body.user_id + ", " + photo_id + ", " + req.body.filter_id + ", 'waiting', 0, " + req.file.unfiltered_photo_id + ");";
+  //     console.log("Query: " + queryText);
+  //     db.query(queryText); 
+  //     getres.send("Upload complete!");
+  //   }
+  //   upload();
+  // });
 
   /**
    * Performs a video upload

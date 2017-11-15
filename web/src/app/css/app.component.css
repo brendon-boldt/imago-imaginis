@@ -81,7 +81,7 @@ body {
 
 #mainNav {
   border-color: rgba(34, 34, 34, 0.05);
-  background-color: rgba(255,255,255,.1);
+  background-color: rgba(255,255,255,.4);
   font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
   -webkit-transition: all 0.2s;
   -moz-transition: all 0.2s;
@@ -110,10 +110,11 @@ body {
   #mainNav .navbar-nav > li.nav-item > a.nav-link:focus,
   #mainNav .navbar-nav > li.nav-item > .dropdown-menu > .dropdown-content > li.nav-item > a.nav-link,
   #mainNav .navbar-nav > li.nav-item > a.nav-link {
+    text-shadow: 0px 3px grey;
     font-size: 13px;
     font-weight: 700;
     text-transform: uppercase;
-    color: #222222; }
+    color: lightgrey; }
     #mainNav .navbar-nav > li.nav-item > a.nav-link:focus:hover,
     #mainNav .navbar-nav > li.nav-item > a.nav-link:hover {
       color: lightskyblue; }
@@ -126,6 +127,7 @@ body {
         background-color: transparent; }
   @media (min-width: 992px) {
     #mainNav {
+      background-color: rgba(255,255,255,.1);
       border-color: rgba(255, 255, 255, 0.3);
       /*background-color: transparent;*/ }
       #mainNav .navbar-brand {
@@ -138,6 +140,7 @@ body {
       #mainNav .navbar-nav > li.nav-item > a.nav-link,
       #mainNav .navbar-nav > li.nav-item > .dropdown-menu > .dropdown-content > li.nav-item > a.nav-link,
       #mainNav .navbar-nav > li.nav-item > a.nav-link:focus {
+        text-shadow: none;
         font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
         font-weight: 700;
         font-size: 12px;
@@ -338,6 +341,7 @@ margin: 50px auto 0; }
   .btn-default.active, .btn-default:active,
   .open > .btn-default.dropdown-toggle {
     color: #222222;
+    /* color: lightgrey; */
     border-color: #e0e0e0;
     background-color: #e6e6e6; }
     .btn-default.active.focus, .btn-default.active:focus, .btn-default.active:hover, .btn-default:active.focus, .btn-default:active:focus, .btn-default:active:hover,

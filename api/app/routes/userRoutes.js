@@ -166,7 +166,6 @@ module.exports = function(app) {
         let queryText = "SELECT * FROM ASP_USERS WHERE LOWER(first_name::text || last_name::text) LIKE LOWER('%" + searchString + "%')";
         db.query(queryText)
             .then(res => {
-                console.log(res.rows);
                 getres.send(res.rows);
             })
             .catch(e => console.error(e.stack))
@@ -182,7 +181,6 @@ module.exports = function(app) {
         let queryText = "SELECT * FROM ASP_USERS WHERE user_ID = " + id + ";";
         db.query(queryText)
             .then(res => {
-                console.log(res.rows);
                 getres.send(res.rows);
             })
             .catch(e => console.error(e.stack))
@@ -200,7 +198,6 @@ module.exports = function(app) {
         console.log(queryText);
         db.query(queryText)
             .then(res => {
-                console.log(res.rows);
                 getres.send(res.rows);
             })
             .catch(e => console.error(e.stack))
@@ -217,7 +214,6 @@ module.exports = function(app) {
         let queryText = "SELECT profile_photo FROM asp_users WHERE user_id = " + id + ";";
         db.query(queryText)
             .then(res => {
-                console.log(res.rows);
                 getres.send(res.rows);
             })
             .catch(e => console.error(e.stack))
@@ -233,7 +229,6 @@ module.exports = function(app) {
       let queryText = "SELECT * FROM unfiltered_photo WHERE unfiltered_photo_id IN (SELECT unfiltered_photo_id FROM USER_PHOTO WHERE user_ID = " + id + " AND (status = 'waiting' OR status = 'processing'))";
       db.query(queryText)
           .then(res => {
-              console.log(res.rows);
               getres.send(res.rows);
           })
           .catch(e => console.error(e.stack))
@@ -249,7 +244,6 @@ module.exports = function(app) {
         let queryText = "SELECT * FROM unfiltered_video WHERE unfiltered_video_id IN (SELECT unfiltered_video_id FROM user_video WHERE user_ID = " + id + " AND (status = 'waiting' OR status = 'processing'))";
         db.query(queryText)
             .then(res => {
-                console.log(res.rows);
                 getres.send(res.rows);
             })
             .catch(e => console.error(e.stack))
@@ -338,7 +332,6 @@ module.exports = function(app) {
         let queryText = "SELECT * FROM VIDEOS WHERE video_id IN (SELECT video_id FROM USER_VIDEO WHERE user_ID = " + id + " AND status = 'done')";
         db.query(queryText)
             .then(res => {
-                console.log(res.rows);
                 getres.send(res.rows);
             })
             .catch(e => console.error(e.stack))
@@ -354,7 +347,6 @@ module.exports = function(app) {
         let queryText = "SELECT * FROM PHOTOS WHERE photo_id in (SELECT photo_id FROM USER_PHOTO WHERE user_ID = " + id + " AND status = 'done')";
         db.query(queryText)
             .then(res => {
-                console.log(res.rows);
                 getres.send(res.rows);
             })
             .catch(e => console.error(e.stack))
@@ -379,7 +371,6 @@ module.exports = function(app) {
         deletePhoto();
         // db.query(queryText)
         //   .then(res => {
-        //     // console.log(res.rows);
         //     // getres.send(res.rows);
         //     queryText = "DELETE FROM photos WHERE photo_id = " + req.body.photo_id + ";";
         //     console.log(queryText);
@@ -409,7 +400,6 @@ module.exports = function(app) {
         deleteVideo();
         // db.query(queryText)
         //   .then(res => {
-        //     // console.log(res.rows);
         //     // getres.send(res.rows);
         //     queryText = "DELETE FROM photos WHERE photo_id = " + req.body.photo_id + ";";
         //     console.log(queryText);
@@ -429,7 +419,6 @@ module.exports = function(app) {
         let queryText = "SELECT * FROM PHOTOS WHERE photo_id in (SELECT photo_id FROM USER_PHOTO WHERE user_ID = " + id + " AND status = 'done') AND display = true;";
         db.query(queryText)
             .then(res => {
-                console.log(res.rows);
                 getres.send(res.rows);
             })
             .catch(e => console.error(e.stack))
@@ -444,7 +433,6 @@ module.exports = function(app) {
         let queryText = "SELECT * FROM VIDEOS WHERE video_id in (SELECT video_id FROM user_video WHERE user_ID = " + id + " AND status = 'done') AND display = true;";
         db.query(queryText)
             .then(res => {
-                console.log(res.rows);
                 getres.send(res.rows);
             })
             .catch(e => console.error(e.stack))
