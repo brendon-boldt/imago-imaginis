@@ -30,15 +30,15 @@ module.exports = {
     // query: (text, params, callback) => {
     //     return pool.query(text, params, callback)
     // }
-    // query: function(text, params) {
-    //     const query = {
-    //         text: text,
-    //         values: params
-    //     }
-    //     console.log("Params: " +params);
-    //     console.log("Performing a query");
-    //     return pool.query(text, params);
-    // },
+    param_query: function(text, params) {
+        // const query = {
+        //     text: text,
+        //     values: params
+        // }
+        console.log("Params: " +params);
+        console.log("Performing a query");
+        return pool.query(text, params);
+    },
     // no_param_query: function(text){
     //     return pool.query(text);
     // },

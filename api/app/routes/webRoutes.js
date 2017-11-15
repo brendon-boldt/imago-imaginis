@@ -5,10 +5,6 @@ const jwt = require('jsonwebtoken');
 
 const config = require('../../config.js');
 
-// const uploadsPath = '/images/uploads/';
-// const uploadsPath = '/home/administrator/files/images/uploads/';
-// const uploadsPath = 'C:/Users/KaiWong/';
-
 module.exports = function(app) {
   
   /**
