@@ -5,13 +5,16 @@ const formDataModule = require('form-data');
 const config = require('../../config.js');
 const stylizer = require('../stylizer');
 
-const selectImagePath = 'style/selectImage';
-const insertImagePath = 'style/insertImage';
-const selectRunPath = 'style/selectRun';
-const selectRunsPath = 'style/selectRuns';
+const baseUrl = 'style';
+const urlSelectImage = baseUrl + '/select/image';
+const urlSelectVideo = baseUrl + '/select/video';
+const urlSelectImageRuns  = baseUrl + '/selectRuns/images';
+const urlSelectVideoRuns  = baseUrl + '/selectRuns/videos';
+const urlInsertImage = baseUrl + '/insert/image';
+const urlInsertVideo = baseUrl + '/insert/video';
 //const insertRunPath = 'style/insertRun';
 
-const log = (msg) => {console.log("DB: " + msg)};
+const log = (msg) => {console.log("DB: ", msg)};
 
 module.exports = {
 
@@ -19,26 +22,22 @@ module.exports = {
    * Retrieve an image from the database
    * type: [ 'content' | 'style' ]
    */
-  selectImage: async function(imageType, photo_id) {
+  selectResource: async function(url, useType, fileType, resource_id) {
     let options = {
       form: {
-        photo_id: photo_id,
-        type: imageType
+        resource_id: resource_id,
+        type: useType,
+        fileType: fileType
       },
-      url: config.dbUrl +'/'+ selectImagePath,
+      //url: config.dbUrl +'/'+ urlSelectImage,
+      url: url,
       method: 'POST',
       encoding: null,
       headers: { 'Content-Type': 'multipart/form-data'}
     };
 
     let filename = 'UNSET';
-    if (imageType === 'content') {
-      filename = `${config.contentPath}/${photo_id}.jpg`;
-    } else if (imageType === 'style') {
-      filename = `${config.stylePath}/${photo_id}.jpg`;
-    } else {
-      throw new Error('Unknown type: ' + imageType);
-    }
+
     await request(options, async (err, res, body) => {
 
       // TODO: The error handling here does not work for DB side error
@@ -50,21 +49,39 @@ module.exports = {
         return;
       }
       
-      log(`Writing ${filename}`);
-      await fs.writeFile(filename, body, (err) => {
-        if (err) {
-          log(err);
-          return -1;
+      if (fileType === 'mp4') {
+        if (useType === 'content') {
+          filename = `${config.contentPathVideo}`;
+        } else if (useType === 'style') {
+          filename = `${config.stylePathVideo}`;
+        } else {
+          throw new Error('Unknown type: ' + useType);
         }
+      } else if (['jpg','png'].includes(fileType)) {
+        if (useType === 'content') {
+          filename = `${config.contentPath}`;
+        } else if (useType === 'style') {
+          filename = `${config.stylePath}`;
+        } else {
+          throw new Error('Unknown type: ' + useType);
+        }
+      } else {
+        throw new Error('Unknown file type: ' + fileType);
+      }
+      filename += `/${resource_id}.${fileType}`;
+      log(`Writing ${filename}`);
+
+      await fs.writeFile(filename, body, (err) => {
+        if (err) { log(err); return -1; }
         return;
       });
-      return;
+      return filename;
     });
     return filename;
   },
 
   // Load an image into the database
-  insertImage: async function(outputFPath, runInfo) {
+  insertResource: async function(url, outputFPath, fileType, runInfo) {
     //let imagePath = `${config.outputPath}/${photo_id}.jpg`;
     console.log("Reading: " + outputFPath);
     fs.readFile(outputFPath, async (err, data) => {
@@ -73,13 +90,16 @@ module.exports = {
         return;
       }
 
+      let resource_id = (runInfo.photo_id) ? runInfo.photo_id : runInfo.video_id; 
       options = { 
         qs: {
-          photo_id: runInfo.photo_id,
-          user_id: runInfo.user_id
+          resource_id: resource_id,
+          user_id: runInfo.user_id,
+          fileType: fileType
         },
         body: data,
-        url: `${config.dbUrl}/${insertImagePath}`,
+        //url: `${config.dbUrl}/${urlInsertImage}`,
+        url: url,
         encoding: null,
         method: 'POST',
         headers: { 'Content-Type': 'application/octet-stream'},
@@ -123,10 +143,18 @@ module.exports = {
   },
 
   // Multiple runs
-  selectRuns: async function(upId) {
+  selectRuns: async function(type) {
+    let url;
+    if (type === 'image')
+      url = config.dbUrl +'/'+ urlSelectImageRuns; 
+    else if (type === 'video')
+      url = config.dbUrl +'/'+ urlSelectVideoRuns; 
+    else
+      throw new Error('Type not recognized: ' + type);
+
     let options = {
       form: {},
-      url: config.dbUrl +'/'+ selectRunsPath,
+      url: url,
       method: 'POST',
       encoding: null,
       headers: { 'Content-Type': 'multipart/form-data'}
@@ -146,14 +174,17 @@ module.exports = {
     return result;
   },
 
-  getRuns: async function() {
-    let runInfoBuf = await this.selectRuns();
+  getRuns: async function(type) {
+    let runInfoBuf = await this.selectRuns(type);
     let runInfoArr = JSON.parse(runInfoBuf);
     log(`Got ${runInfoArr.length} runs.`);
 
     let R = runInfoArr;
     for (let i = 0; i < R.length; ++i) {
-      this.doRun(R[i]);
+      if (type === 'image')
+        this.doRun(R[i]);
+      else
+        this.doVideoRun(R[i]);
       break;
     }
     //this.doRun(runInfo);
@@ -161,19 +192,57 @@ module.exports = {
 
   startWatching: async function() {
     let getRuns = this.getRuns;
-    setInterval(this.getRuns.bind(this), 1000);
+    //setInterval(this.getRuns.bind(this), 1000);
+    this.getRuns('video');
   },
+  
+  // Send run information to database
+  doVideoRun: async function(runInfo) {
+    // User - photo ID
+    let contentFT = runInfo.uvpath.substr(-3);
+    let styleFT = runInfo.fpath.substr(-3);
+    let promContentFPath = this.selectResource(
+        `${config.dbUrl}/${urlSelectVideo}`,
+        'content', contentFT, runInfo.unfiltered_video_id);
+    let promStyleFPath = this.selectResource(
+        `${config.dbUrl}/${urlSelectImage}`,
+        'style', styleFT, runInfo.filter_id);
+    let contentFPath = await promContentFPath;
+    let styleFPath = await promStyleFPath;
 
+    let upIdString = runInfo.user_id + '-' + runInfo.video_id;
+    //let outputFPath = `${config.outputPath}/${runInfo.photo_id}.jpg`;
+    let testRunParams = {
+      upId : upIdString,
+      video_id : runInfo.video_id,
+      contentPath : contentFPath,
+      contentSize : 16,
+      stylePath : styleFPath,
+      styleSize : 16,
+      outputName : `${runInfo.video_id}.${contentFT}`
+    };
+
+    let outputFPath = await stylizer.startStyleVideo(testRunParams);
+
+
+    await this.insertResource(
+        `${config.dbUrl}/${urlInsertVideo}`,
+        outputFPath, contentFT, runInfo);
+  },
 
   // Send run information to database
   doRun: async function(runInfo) {
     // User - photo ID
-    let promContentFPath = this.selectImage('content',runInfo.unfiltered_photo_id);
-    let promStyleFPath = this.selectImage('style',runInfo.filter_id);
+    let contentFT = runInfo.uppath.substr(-3);
+    let styleFT = runInfo.fpath.substr(-3);
+    let promContentFPath = this.selectResource(
+        `${config.dbUrl}/${urlSelectImage}`,
+        'content', contentFT, runInfo.unfiltered_photo_id);
+    let promStyleFPath = this.selectResource(
+        `${config.dbUrl}/${urlSelectImage}`,
+        'style', styleFT, runInfo.filter_id);
     let contentFPath = await promContentFPath;
     let styleFPath = await promStyleFPath;
-    log(contentFPath);
-    log(styleFPath);
 
     let upIdString = runInfo.user_id + '-' + runInfo.photo_id;
     //let outputFPath = `${config.outputPath}/${runInfo.photo_id}.jpg`;
@@ -184,11 +253,13 @@ module.exports = {
       contentSize : 16,
       stylePath : styleFPath,
       styleSize : 16,
-      outputName : `${runInfo.photo_id}.jpg`
+      outputName : `${runInfo.photo_id}.${contentFT}`
     };
 
     let outputFPath = await stylizer.startStyle(testRunParams);
 
-    await this.insertImage(outputFPath, runInfo);
+    await this.insertResource(
+        `${config.dbUrl}/${urlInsertImage}`,
+        outputFPath, contentFT, runInfo);
   }
 }
