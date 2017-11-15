@@ -25,6 +25,7 @@ import { UserService } from '../services/user.service';
 import { AuthService } from '../services/auth.service';
 import { AuthGuard } from '../services/auth-guard.service';
 import { GeneralService } from '../services/general.service';
+import { LibraryService } from '../services/library.service';
 
 @NgModule({
   declarations: [
@@ -47,7 +48,8 @@ import { GeneralService } from '../services/general.service';
     UserService,
     AuthService,
     AuthGuard,
-    GeneralService
+    GeneralService,
+    LibraryService
   ],
   exports: [
     ModalComponent
