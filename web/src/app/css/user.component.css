@@ -52,3 +52,31 @@
     max-width: 256px;
     max-height: 256px;
 }
+
+#favimg {
+    background-color: rgba(177, 208, 238,.7);
+    padding: 5px;
+    border: 5px transparent;
+    border-radius: 10px;
+}
+
+p {
+    /* line-height: 5px; */
+    /* text-align: left; */
+    /* text-justify: auto; */
+    max-width: 100%;
+}
+
+#bginfo {
+    margin: auto;
+    background-color: rgba(177,208,238,.3);
+    border: 5px transparent;
+    border-radius: 10px;
+    padding: 10px;
+    max-width: 200px;
+    min-width: 200px;
+}
+
+#bginfo p {
+    max-width: 100%;
+}

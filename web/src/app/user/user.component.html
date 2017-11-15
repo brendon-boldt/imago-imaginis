@@ -14,11 +14,15 @@
                     <div class="col-md-6">
                         <br>
                         <img [src]="this.profilePhoto" class="img-border" alt="profile picture" style="width: 200px; height: auto">
-                        <br>
-                        <p class="lead">{{this.first_name}} {{this.last_name}}</p>
+                        <br><br>
+                        <div id="bginfo" class="justify-content-center">
+                            <p class="lead" ><strong>First Name:</strong><br>{{this.first_name}}ooooooooooo</p>
+                            <p class="lead"><strong>Last Name:</strong><br>{{this.last_name}}</p>
+                            <p class="lead"><strong>Email:</strong><br>{{this.email}}</p>
+                        </div>
                     </div>
                     <div class="col-md-5">
-                        <p class="lead">Favorite Images</p>
+                        <label id="favimg">Favorite Images</label>
                         <hr>
                         <div id="divMain" class="library-container">
                             <div class="container-one">

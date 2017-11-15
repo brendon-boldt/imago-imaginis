@@ -5,7 +5,7 @@
          <hr>
          <p *ngIf="this.photoArrOne.length == 0">You have no stylized photos</p>
          <p *ngIf="this.photoArrOne.length != 0">These are the photos you have stylized:</p>
-         <div id="divMain" class="library-container">
+         <div id="divMain" class="library-container d-flex justify-content-center scrollbar scrollbar-primary">
             <div class="container-one">
                 <div *ngFor="let photo of photoArrOne">
                     <div class="card">
@@ -22,7 +22,7 @@
                                 <p class="process">Processing</p>
                             </div>
                             <div id="picture">
-                                <video height="250" id="video">
+                                <video id="video">
                                     <source [src]="this.db.url + photo.path" type="video/mp4">
                                     Your browser does not support the video tag.
                                 </video>
@@ -32,7 +32,7 @@
                             <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)">
                         </div>
                         <div *ngIf="photo.video_id != null" id="photo">
-                            <video height="250" id="video" (click)="this.showPicture(photo)">
+                            <video id="video" (click)="this.showPicture(photo)">
                                 <source [src]="this.db.url + photo.path" type="video/mp4">
                                 Your browser does not support the video tag.
                             </video>
@@ -58,7 +58,7 @@
                             </div>
                             <div id="picture">
                                 <!-- <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)"> -->
-                                <video height="250" id="video">
+                                <video id="video">
                                     <source [src]="this.db.url + photo.path" type="video/mp4">
                                     Your browser does not support the video tag.
                                 </video>
@@ -68,7 +68,7 @@
                             <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)">
                         </div>
                         <div *ngIf="photo.video_id != null" id="photo">
-                            <video height="250" id="video" (click)="this.showPicture(photo)">
+                            <video id="video" (click)="this.showPicture(photo)">
                                 <source [src]="this.db.url + photo.path" type="video/mp4">
                                 Your browser does not support the video tag.
                             </video>
@@ -94,7 +94,7 @@
                             </div>
                             <div id="picture">
                                 <!-- <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)"> -->
-                                <video height="250" id="video">
+                                <video id="video">
                                     <source [src]="this.db.url + photo.path" type="video/mp4">
                                     Your browser does not support the video tag.
                                 </video>
@@ -104,7 +104,7 @@
                             <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)">
                         </div>
                         <div *ngIf="photo.video_id != null" id="photo">
-                            <video height="250" id="video" (click)="this.showPicture(photo)">
+                            <video id="video" (click)="this.showPicture(photo)">
                                 <source [src]="this.db.url + photo.path" type="video/mp4">
                                 Your browser does not support the video tag.
                             </video>
@@ -130,7 +130,7 @@
                             </div>
                             <div id="picture">
                                 <!-- <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)"> -->
-                                <video height="250" id="video">
+                                <video id="video">
                                     <source [src]="this.db.url + photo.path" type="video/mp4">
                                     Your browser does not support the video tag.
                                 </video>
@@ -140,7 +140,7 @@
                             <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)">
                         </div>
                         <div *ngIf="photo.video_id != null" id="photo">
-                            <video height="250" id="video" (click)="this.showPicture(photo)">
+                            <video id="video" (click)="this.showPicture(photo)">
                                 <source [src]="this.db.url + photo.path" type="video/mp4">
                                 Your browser does not support the video tag.
                             </video>

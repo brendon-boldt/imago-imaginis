@@ -226,7 +226,7 @@ module.exports = function(app) {
     app.get('/user/photos/unstyled', (req, getres) => {
       console.log("GET - user unstyled photos");
       var id = req.query.id;
-      let queryText = "SELECT * FROM unfiltered_photo WHERE unfiltered_photo_id IN (SELECT unfiltered_photo_id FROM USER_PHOTO WHERE user_ID = " + id + " AND (status = 'waiting' OR status = 'processing'))";
+      let queryText = "SELECT * FROM unfiltered_photo WHERE unfiltered_photo_id IN (SELECT unfiltered_photo_id FROM USER_PHOTO WHERE user_ID = " + id + " AND (status = 'waiting' OR status = 'processing')) ORDER BY unfiltered_photo_id;";
       db.query(queryText)
           .then(res => {
               getres.send(res.rows);
@@ -241,7 +241,7 @@ module.exports = function(app) {
     app.get('/user/videos/unstyled', (req, getres) => {
         console.log("GET - user unstyled video");
         var id = req.query.id;
-        let queryText = "SELECT * FROM unfiltered_video WHERE unfiltered_video_id IN (SELECT unfiltered_video_id FROM user_video WHERE user_ID = " + id + " AND (status = 'waiting' OR status = 'processing'))";
+        let queryText = "SELECT * FROM unfiltered_video WHERE unfiltered_video_id IN (SELECT unfiltered_video_id FROM user_video WHERE user_ID = " + id + " AND (status = 'waiting' OR status = 'processing')) ORDER BY unfiltered_video_id;";
         db.query(queryText)
             .then(res => {
                 getres.send(res.rows);
@@ -329,7 +329,7 @@ module.exports = function(app) {
     app.get('/user/videos', (req, getres) => {
         console.log("GET - user videos");
         var id = req.query.id;
-        let queryText = "SELECT * FROM VIDEOS WHERE video_id IN (SELECT video_id FROM USER_VIDEO WHERE user_ID = " + id + " AND status = 'done')";
+        let queryText = "SELECT * FROM VIDEOS WHERE video_id IN (SELECT video_id FROM USER_VIDEO WHERE user_ID = " + id + " AND status = 'done') ORDER BY video_id;";
         db.query(queryText)
             .then(res => {
                 getres.send(res.rows);
@@ -344,7 +344,7 @@ module.exports = function(app) {
     app.get('/user/photos', (req, getres) => {
         console.log("GET - user photos");
         var id = req.query.id;
-        let queryText = "SELECT * FROM PHOTOS WHERE photo_id in (SELECT photo_id FROM USER_PHOTO WHERE user_ID = " + id + " AND status = 'done')";
+        let queryText = "SELECT * FROM PHOTOS WHERE photo_id in (SELECT photo_id FROM USER_PHOTO WHERE user_ID = " + id + " AND status = 'done') ORDER BY photo_id";
         db.query(queryText)
             .then(res => {
                 getres.send(res.rows);

@@ -19,7 +19,7 @@ import { Subscription } from 'rxjs/Subscription';
 @Component({
   selector: 'library',
   templateUrl: './library.component.html',
-  styleUrls: ['../css/app.component.css', '../css/library.component.css']
+  styleUrls: ['../css/app.component.css', '../css/library.component.css', '../css/scrollbar.css']
 })
 export class LibraryComponent {
   @ViewChild('modal') modal;
@@ -42,6 +42,10 @@ export class LibraryComponent {
     this.loadPics(true);
   }
   loadPics(firstload: boolean) {
+    // if(this.subscription != null){
+    //   this.subscription.unsubscribe();
+    //   this.timerSubscription.unsubscribe();
+    // }
     this.subscription = this.lib.getPictures(firstload).subscribe(res => {
         this.photoArraysArray = res;
         this.photoArrOne = this.photoArraysArray[0];
@@ -56,6 +60,7 @@ export class LibraryComponent {
     this.timerSubscription = Observable.timer(5000).first().subscribe(() => this.loadPics(false));
   }
   ngOnDestroy() {
+    // Prevent memory leaks
     this.subscription.unsubscribe();
     this.timerSubscription.unsubscribe();
   }
@@ -63,7 +68,6 @@ export class LibraryComponent {
    * Displays picture that was clicked in a pop-up modal
   */
   showPicture(photo: Object): void {
-    console.log(photo);
     this.modalPhoto = photo;
     if(photo['display']){
       this.buttonDisplay = "lightgreen";

@@ -45,19 +45,15 @@ export class LibraryService {
                     this.db.getUnStyledVideos(this.user.user_id).then(res => {
                         var unStyledVidRes = res.json();
                         for(var photo of unStyledRes){
-                            console.log(photo);
                             this.photos.push(photo);
                         }
                         for(var photo of unStyledVidRes){
-                            console.log(photo);
                             this.photos.push(photo);
                         }
                         for(var photo of styledRes){
-                            console.log(photo);
                             this.photos.push(photo);
                         }
                         for(var photo of styledVidRes){
-                            console.log(photo);
                             this.photos.push(photo);
                         }
                         // Now, split the user's photos into 4 different arrays for display
