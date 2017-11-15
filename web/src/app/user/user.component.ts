@@ -26,6 +26,7 @@ export class UserComponent {
   public first_name: string;
   public last_name: string;
   public email: string;
+  public dateJoined: any;
   public placeholder: String = "../assets/placeholder.jpg";
   outside: boolean = true;
   photos: Array<Object> = []; // array of filepaths of images
@@ -53,6 +54,7 @@ export class UserComponent {
         this.first_name = this.user.first_name;
         this.last_name = this.user.last_name;
         this.email = this.user.email;
+        this.dateJoined = this.user.dateJoined;
         var test = Observable.fromPromise(this.user.getProfilePhoto());
         test.subscribe(res => {
           console.log(res);
@@ -91,6 +93,7 @@ export class UserComponent {
             this.first_name = res[0].first_name;
             this.last_name = res[0].last_name;
             this.email = res[0].email;
+            this.dateJoined = res[0].dateJoined;
             console.log(res);
           });
           // Get that user's profile photo

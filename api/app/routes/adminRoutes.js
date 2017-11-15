@@ -16,7 +16,6 @@ module.exports = function(app) {
     let queryText = "SELECT * FROM USAGE INNER JOIN STAT_TYPES ON USAGE.stat_id = STAT_TYPES.stat_id";
     db.query(queryText)
         .then(res => {
-            console.log(res.rows);
             getres.send(res.rows);
         })
         .catch(e => console.error(e.stack))

@@ -27,7 +27,6 @@ module.exports = function(app) {
     let queryText = 'SELECT * FROM filters WHERE preset = true';
     db.query(queryText)
       .then(res => {
-        console.log(res.rows);
         getres.send(res.rows);
       })
       .catch(e => console.error(e.stack))
@@ -44,7 +43,6 @@ module.exports = function(app) {
     let queryText = "SELECT path FROM FILTERS WHERE filter_id = " + id;
     db.query(queryText)
         .then(res => {
-            console.log(res.rows);
             getres.send(res.rows);
         })
         .catch(e => console.error(e.stack))

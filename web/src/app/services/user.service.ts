@@ -22,6 +22,7 @@ export class UserService {
     public profilePhoto: string = '../../assets/placeholder.jpg';
     public isAdmin: boolean = false;
     public justLoggedIn: boolean = false;
+    public dateJoined: any;
     jwtHelper: JwtHelper = new JwtHelper();
     constructor(private db: DBService){
         // Get the user profile picture
@@ -44,6 +45,7 @@ export class UserService {
         this.last_name = jwt.last_name;
         this.email = jwt.email;
         this.isAdmin = jwt.isAdmin;
+        this.dateJoined = jwt.dateJoined;
         this.getProfilePhoto();
     }
     getProfilePhoto(): Promise<any> { 

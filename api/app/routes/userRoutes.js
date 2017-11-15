@@ -136,6 +136,7 @@ module.exports = function(app) {
                         first_name: res.rows[0].first_name,
                         last_name: res.rows[0].last_name,
                         isAdmin: res.rows[0].admin,
+                        dateJoined: res.rows[0].date_joined,
                         email: email,
                     };
                     var token = jwt.sign(payload, "thisisthekey", {
