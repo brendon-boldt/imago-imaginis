@@ -175,12 +175,19 @@ module.exports = function(app) {
     app.get('/user/info', (req, getres) => {
         console.log("GET - info");
         var id = req.query.id;
-        let queryText = "SELECT * FROM ASP_USERS WHERE user_ID = " + id + ";";
-        db.query(queryText)
-            .then(res => {
-                getres.send(res.rows);
-            })
-            .catch(e => console.error(e.stack))
+        // let queryText = "SELECT * FROM ASP_USERS WHERE user_ID = " + id + ";";
+        let queryText = "SELECT * FROM ASP_USERS WHERE user_ID = $1;";
+        let values = [id];
+        db.param_query(queryText, values)
+        .then(res => {
+            getres.send(res.rows);
+        })
+        .catch(e => console.error(e.stack))
+        // db.query(queryText)
+        //     .then(res => {
+        //         getres.send(res.rows);
+        //     })
+        //     .catch(e => console.error(e.stack))
     });
 
     /**

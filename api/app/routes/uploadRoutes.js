@@ -7,7 +7,6 @@ const config = require('../../config.js');
 
 const MAX_PHOTO_UPLOAD_SIZE = 7340032; // 7 MB is max photo upload size
 
-
 module.exports = function(app) {
   /**
    * Performs a photo upload
