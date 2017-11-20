@@ -30,9 +30,9 @@ module.exports = function(app) {
         password = hash.digest('hex');
         var date = new Date(Date.now()).toLocaleDateString();
         // Verify email is unique
-        var queryText = "SELECT * FROM ASP_USERS WHERE email = '" + email + "';";
-        console.log(queryText);
-        db.query(queryText)
+        var queryText = "SELECT * FROM ASP_USERS WHERE email = $1;";
+        let values = [email];
+        db.param_query(queryText, values)
             .then(res => {
                 if (res == undefined) {
                     getres.send("Create account failed");
@@ -43,9 +43,10 @@ module.exports = function(app) {
                 } else {
                     // Email is unique
                     console.log("Email is unique");
-                    let queryText = "INSERT INTO asp_users (first_name, last_name, email, password, date_joined, status) VALUES ('" + firstName + "', '" + lastName + "', '" + email + "', '" + password + "', '" + date + "', true);";
+                    let queryText = "INSERT INTO asp_users (first_name, last_name, email, password, date_joined, status) VALUES ($1, $2, $3, $4, $5, true);";
                     console.log("Query: " + queryText);
-                    db.query(queryText)
+                    let values = [firstName, lastName, email, password, date];
+                    db.param_query(queryText, values)
                         .then(res => {
                             if (res != undefined) {
                                 console.log("Account creation successful!");
@@ -72,9 +73,10 @@ module.exports = function(app) {
         var email = req.body.email;
         var password = req.body.password; // Hash password
         // Verify email is unique
-        var queryText = "SELECT * FROM ASP_USERS WHERE email = '" + email + "' AND user_id != " + id + ";";
+        var queryText = "SELECT * FROM ASP_USERS WHERE email = $1 AND user_id != $2;";
         console.log(queryText);
-        db.query(queryText)
+        let values = [email, id];
+        db.param_query(queryText, values)
             .then(res => {
                 if (res == undefined) {
                     getres.send("Alter account failed");
@@ -92,10 +94,11 @@ module.exports = function(app) {
                         const hash = crypto.createHash('sha256');
                         hash.update(password);
                         password = hash.digest('hex');
-                        queryText = "UPDATE asp_users SET (first_name, last_name, email, password) = ('" + firstName + "', '" + lastName + "', '" + email + "', '" + password + "') WHERE user_id = " + id + ";";
+                        queryText = "UPDATE asp_users SET (first_name, last_name, email, password) = ($1, $2, $3, $4) WHERE user_id = $5;";
                     }
-                    console.log("Query: " + queryText);
-                    db.query(queryText)
+                    console.log("new Query: " + queryText);
+                    let values = [firstName, lastName, email, password, id];
+                    db.param_query(queryText, values)
                         .then(res => {
                             if (res != undefined) {
                                 console.log("Account update successful!");
@@ -122,8 +125,9 @@ module.exports = function(app) {
         const hash = crypto.createHash('sha256');
         hash.update(password);
         password = hash.digest('hex');
-        let queryText = "SELECT * FROM asp_users WHERE email = '" + email + "' AND password = '" + password + "';";
-        db.query(queryText)
+        let queryText = "SELECT * FROM asp_users WHERE email = $1 AND password = $2;";
+        let values = [email, password];
+        db.param_query(queryText, values)
             .then(res => {
                 if (res.rows[0] != null) {
                     // Puts various user information into the JWT
@@ -159,9 +163,10 @@ module.exports = function(app) {
      */
     app.get('/user/search', (req, getres) => {
         console.log("GET - search");
-        var searchString = req.query.searchString;
-        let queryText = "SELECT * FROM ASP_USERS WHERE LOWER(first_name::text || last_name::text) LIKE LOWER('%" + searchString + "%')";
-        db.query(queryText)
+        var searchString = "%" + req.query.searchString + "%";
+        let queryText = "SELECT * FROM ASP_USERS WHERE LOWER(first_name::text || last_name::text) LIKE LOWER($1)";
+        let values = [searchString];
+        db.param_query(queryText, values)
             .then(res => {
                 getres.send(res.rows);
             })
@@ -175,48 +180,9 @@ module.exports = function(app) {
     app.get('/user/info', (req, getres) => {
         console.log("GET - info");
         var id = req.query.id;
-        // let queryText = "SELECT * FROM ASP_USERS WHERE user_ID = " + id + ";";
         let queryText = "SELECT * FROM ASP_USERS WHERE user_ID = $1;";
         let values = [id];
         db.param_query(queryText, values)
-        .then(res => {
-            getres.send(res.rows);
-        })
-        .catch(e => console.error(e.stack))
-        // db.query(queryText)
-        //     .then(res => {
-        //         getres.send(res.rows);
-        //     })
-        //     .catch(e => console.error(e.stack))
-    });
-
-    /**
-     * Return user that matches passed email (used for account creation verification)
-     * Takes in the request query's parameters
-     */
-    // todo: DELETE!
-    app.get('/user/email/info', (req, getres) => {
-        console.log("GET - info");
-        var email = req.query.email;
-        let queryText = "SELECT * FROM ASP_USERS WHERE email = '" + email + "';";
-        console.log(queryText);
-        db.query(queryText)
-            .then(res => {
-                getres.send(res.rows);
-            })
-            .catch(e => console.error(e.stack))
-    });
-
-    /**
-     * Returns user profile picture for user with id
-     * Takes in the request query's parameters
-     */
-    // todo: DELETE!
-    app.get('/user/profile-picture', (req, getres) => {
-        console.log("GET - profile picture");
-        var id = req.query.id;
-        let queryText = "SELECT profile_photo FROM asp_users WHERE user_id = " + id + ";";
-        db.query(queryText)
             .then(res => {
                 getres.send(res.rows);
             })
@@ -228,14 +194,15 @@ module.exports = function(app) {
      * Takes in the request query's parameters
      */
     app.get('/user/photos/unstyled', (req, getres) => {
-      console.log("GET - user unstyled photos");
-      var id = req.query.id;
-      let queryText = "SELECT * FROM unfiltered_photo WHERE unfiltered_photo_id IN (SELECT unfiltered_photo_id FROM USER_PHOTO WHERE user_ID = " + id + " AND (status = 'waiting' OR status = 'processing')) ORDER BY unfiltered_photo_id;";
-      db.query(queryText)
-          .then(res => {
-              getres.send(res.rows);
-          })
-          .catch(e => console.error(e.stack))
+        console.log("GET - user unstyled photos");
+        var id = req.query.id;
+        let queryText = "SELECT * FROM unfiltered_photo WHERE unfiltered_photo_id IN (SELECT unfiltered_photo_id FROM USER_PHOTO WHERE user_ID = $1 AND (status = 'waiting' OR status = 'processing')) ORDER BY unfiltered_photo_id;";
+        let values = [id];
+        db.param_query(queryText, values)
+            .then(res => {
+                getres.send(res.rows);
+            })
+            .catch(e => console.error(e.stack))
     });
 
     /**
@@ -245,8 +212,9 @@ module.exports = function(app) {
     app.get('/user/videos/unstyled', (req, getres) => {
         console.log("GET - user unstyled video");
         var id = req.query.id;
-        let queryText = "SELECT * FROM unfiltered_video WHERE unfiltered_video_id IN (SELECT unfiltered_video_id FROM user_video WHERE user_ID = " + id + " AND (status = 'waiting' OR status = 'processing')) ORDER BY unfiltered_video_id;";
-        db.query(queryText)
+        let queryText = "SELECT * FROM unfiltered_video WHERE unfiltered_video_id IN (SELECT unfiltered_video_id FROM user_video WHERE user_ID = $1 AND (status = 'waiting' OR status = 'processing')) ORDER BY unfiltered_video_id;";
+        let values = [id];
+        db.param_query(queryText, values)
             .then(res => {
                 getres.send(res.rows);
             })
@@ -260,15 +228,17 @@ module.exports = function(app) {
     app.post('/user/paid', (req, getres) => {
         console.log("Post - create paid user");
         var id = req.body.id;
-        var queryText = "SELECT * FROM Paid_Users WHERE user_id = '" + id + "';";
-        db.query(queryText)
+        var queryText = "SELECT * FROM Paid_Users WHERE user_id = $1;";
+        let values = [id];
+        db.param_query(queryText, values)
             .then(res => {
                 if (res == undefined) {
                     getres.send("Paid user creation failed");
                 }
                 if (res.rowCount === 0) {
-                    queryText = "INSERT INTO Paid_Users (user_ID) VALUES ('" + id + "');";
-                    db.query(queryText).then(res => {
+                    queryText = "INSERT INTO Paid_Users (user_ID) VALUES ($1);";
+                    let values = [id];
+                    db.param_query(queryText, values).then(res => {
                         if (res != undefined) {
                             console.log("Paid user created");
                             getres.send("Paid user created");
@@ -290,9 +260,10 @@ module.exports = function(app) {
         console.log("POST - set photo to display");
         var id = req.body.photo_id;
         var display = req.body.display;
-        var queryText = "UPDATE PHOTOS SET display = " + req.body.display + " WHERE photo_id = " + id + ";";
+        var queryText = "UPDATE PHOTOS SET display = $1 WHERE photo_id = $2;";
+        let values = [display, id];
         console.log(queryText);
-        db.query(queryText)
+        db.param_query(queryText, values)
             .then(res => {
                 if (res != undefined) {
                     console.log("Photo profile display successful! Changed to " + req.body.display);
@@ -312,9 +283,10 @@ module.exports = function(app) {
         console.log("POST - set video to display");
         var id = req.body.video_id;
         var display = req.body.display;
-        var queryText = "UPDATE VIDEOS SET display = " + req.body.display + " WHERE video_id = " + id + ";";
+        var queryText = "UPDATE VIDEOS SET display = $1 WHERE video_id = $2;";
+        let values = [display, id];
         console.log(queryText);
-        db.query(queryText)
+        db.param_query(queryText, values)
             .then(res => {
                 if (res != undefined) {
                     console.log("Photo profile display successful! Changed to " + req.body.display);
@@ -333,8 +305,9 @@ module.exports = function(app) {
     app.get('/user/videos', (req, getres) => {
         console.log("GET - user videos");
         var id = req.query.id;
-        let queryText = "SELECT * FROM VIDEOS WHERE video_id IN (SELECT video_id FROM USER_VIDEO WHERE user_ID = " + id + " AND status = 'done') ORDER BY video_id;";
-        db.query(queryText)
+        let queryText = "SELECT * FROM VIDEOS WHERE video_id IN (SELECT video_id FROM USER_VIDEO WHERE user_ID = $1 AND status = 'done') ORDER BY video_id;";
+        let values = [id];
+        db.param_query(queryText, values)
             .then(res => {
                 getres.send(res.rows);
             })
@@ -348,8 +321,9 @@ module.exports = function(app) {
     app.get('/user/photos', (req, getres) => {
         console.log("GET - user photos");
         var id = req.query.id;
-        let queryText = "SELECT * FROM PHOTOS WHERE photo_id in (SELECT photo_id FROM USER_PHOTO WHERE user_ID = " + id + " AND status = 'done') ORDER BY photo_id";
-        db.query(queryText)
+        let queryText = "SELECT * FROM PHOTOS WHERE photo_id in (SELECT photo_id FROM USER_PHOTO WHERE user_ID = $1 AND status = 'done') ORDER BY photo_id";
+        let values = [id];
+        db.param_query(queryText, values)
             .then(res => {
                 getres.send(res.rows);
             })
@@ -362,27 +336,20 @@ module.exports = function(app) {
      */
     app.post('/user/photos/delete', (req, getres) => {
         console.log("POST - delete photo");
-        console.log(req.body);
-        let queryText = "DELETE FROM user_photo WHERE photo_id = " + req.body.photo_id + " AND user_id = " + req.body.user_id + ";";
+        var photoId = req.body.photo_id;
+        var userId = req.body.user_id;
+        var queryText = "DELETE FROM user_photo WHERE photo_id = $1 AND user_id = $2;";
         console.log(queryText);
         async function deletePhoto() {
-            result = await db.query(queryText);
-            queryText = "DELETE FROM photos WHERE photo_id = " + req.body.photo_id + ";";
+            var values = [photoId, userId];
+            result = await db.param_query(queryText, values);
+            queryText = "DELETE FROM photos WHERE photo_id = $1;";
+            values = [photoId];
             console.log(queryText);
-            result = await db.query(queryText);
+            result = await db.param_query(queryText, values);
             getres.send("Delete was a success!");
         }
         deletePhoto();
-        // db.query(queryText)
-        //   .then(res => {
-        //     // getres.send(res.rows);
-        //     queryText = "DELETE FROM photos WHERE photo_id = " + req.body.photo_id + ";";
-        //     console.log(queryText);
-        //     db.query(queryText).then(res => {
-        //         getres.send("Delete was a success");
-        //     })
-        //   })
-        //   .catch(e => console.error(e.stack))
     });
 
     /**
@@ -392,26 +359,20 @@ module.exports = function(app) {
     app.post('/user/videos/delete', (req, getres) => {
         console.log("POST - delete video");
         console.log(req.body);
-        let queryText = "DELETE FROM user_video WHERE video_id = " + req.body.video_id + " AND user_id = " + req.body.user_id + ";";
+        var videoId = req.body.video_id;
+        var userId = req.body.user_id;
+        var queryText = "DELETE FROM user_video WHERE video_id = $1 AND user_id = $2;";
         console.log(queryText);
         async function deleteVideo() {
-            result = await db.query(queryText);
-            queryText = "DELETE FROM videos WHERE video_id = " + req.body.video_id + ";";
+            var values = [videoId, userId];
+            result = await db.param_query(queryText, values);
+            queryText = "DELETE FROM videos WHERE video_id = $1;";
             console.log(queryText);
-            result = await db.query(queryText);
+            values = [videoId];
+            result = await db.param_query(queryText, values);
             getres.send("Delete was a success!");
         }
         deleteVideo();
-        // db.query(queryText)
-        //   .then(res => {
-        //     // getres.send(res.rows);
-        //     queryText = "DELETE FROM photos WHERE photo_id = " + req.body.photo_id + ";";
-        //     console.log(queryText);
-        //     db.query(queryText).then(res => {
-        //         getres.send("Delete was a success");
-        //     })
-        //   })
-        //   .catch(e => console.error(e.stack))
     });
 
     /**
@@ -420,8 +381,9 @@ module.exports = function(app) {
     app.get('/user/photos/display', (req, getres) => {
         console.log("GET - user profile display photos");
         var id = req.query.id;
-        let queryText = "SELECT * FROM PHOTOS WHERE photo_id in (SELECT photo_id FROM USER_PHOTO WHERE user_ID = " + id + " AND status = 'done') AND display = true;";
-        db.query(queryText)
+        let queryText = "SELECT * FROM PHOTOS WHERE photo_id in (SELECT photo_id FROM USER_PHOTO WHERE user_ID = $1 AND status = 'done') AND display = true;";
+        let values = [id];
+        db.param_query(queryText, values)
             .then(res => {
                 getres.send(res.rows);
             })
@@ -434,40 +396,13 @@ module.exports = function(app) {
     app.get('/user/videos/display', (req, getres) => {
         console.log("GET - user profile display videos");
         var id = req.query.id;
-        let queryText = "SELECT * FROM VIDEOS WHERE video_id in (SELECT video_id FROM user_video WHERE user_ID = " + id + " AND status = 'done') AND display = true;";
-        db.query(queryText)
+        let queryText = "SELECT * FROM VIDEOS WHERE video_id in (SELECT video_id FROM user_video WHERE user_ID = $1 AND status = 'done') AND display = true;";
+        let values = [id];
+        db.param_query(queryText, values)
             .then(res => {
                 getres.send(res.rows);
             })
             .catch(e => console.error(e.stack))
     });
 
-    /**
-     * Creates a paid user with id
-     * Takes in the request body's parameters
-     */
-    app.post('/user/paid', (req, getres) => {
-        console.log("Post - create paid user");
-        var id = req.body.id;
-        var queryText = "SELECT * FROM Paid_Users WHERE user_id = '" + id + "';";
-        db.query(queryText)
-            .then(res => {
-                if (res == undefined) {
-                    getres.send("Paid user creation failed");
-                }
-                if (res.rowCount === 0) {
-                    queryText = "INSERT INTO Paid_Users (user_ID) VALUES ('" + id + "');";
-                    db.query(queryText).then(res => {
-                        if (res != undefined) {
-                            console.log("Paid user created");
-                            getres.send("Paid user created");
-                        }
-                    })
-                } else {
-                    console.log("User is already paid account");
-                    getres.send("User is already paid account");
-                }
-            })
-            .catch(e => console.error(e.stack))
-    });
 }

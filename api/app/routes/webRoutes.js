@@ -1,66 +1,69 @@
 const db = require('../db');
-const multer = require('multer'); 
+const multer = require('multer');
 const path = require('path');
 const jwt = require('jsonwebtoken');
 
 const config = require('../../config.js');
 
 module.exports = function(app) {
-  
-  /**
-   * Test route
-   */
-  app.post('/test', (req, res) => {
-    console.log(req.query);
-    res.send('Hello');
-  });
 
-  /**
-   * Returns all filter ids and their names
-   */
-  app.get('/filters', (req, getres) => {
-    console.log("GET - filters");
-    let queryText = 'SELECT * FROM filters WHERE preset = true';
-    db.query(queryText)
-      .then(res => {
-        getres.send(res.rows);
-      })
-      .catch(e => console.error(e.stack))
-  });
+    /**
+     * Test route
+     */
+    app.post('/test', (req, res) => {
+        console.log(req.query);
+        res.send('Hello');
+    });
 
-  
-  /**
-   * Get filter path based on passed filter_id
-   * Takes in the request query's parameters
-   */
-  app.get('/filter', (req, getres) => {
-    console.log("GET - filter path for id");
-    var id = req.query.id;
-    let queryText = "SELECT path FROM FILTERS WHERE filter_id = " + id;
-    db.query(queryText)
-        .then(res => {
-            getres.send(res.rows);
-        })
-        .catch(e => console.error(e.stack))
-  });
+    /**
+     * Returns all filter ids and their names
+     */
+    app.get('/filters', (req, getres) => {
+        console.log("GET - filters");
+        let queryText = 'SELECT * FROM filters WHERE preset = true';
+        db.query(queryText)
+            .then(res => {
+                getres.send(res.rows);
+            })
+            .catch(e => console.error(e.stack))
+    });
 
-  /**
+
+    /**
+     * Get filter path based on passed filter_id
+     * Takes in the request query's parameters
+     */
+    app.get('/filter', (req, getres) => {
+        console.log("GET - filter path for id");
+        var id = req.query.id;
+        let queryText = "SELECT path FROM FILTERS WHERE filter_id = $1";
+        let values = [id];
+        db.param_query(queryText, values)
+            .then(res => {
+                getres.send(res.rows);
+            })
+            .catch(e => console.error(e.stack))
+    });
+
+    /**
      * Set a photo as reported on passed photo_id
      * Takes in the request body's parameters
      */
-  app.post('/report/photo', (req, getres) => {
-    console.log("POST - set photo reported with id");
-    var id = req.body.id;
-    var queryText = "UPDATE PHOTOS SET flag = TRUE WHERE photo_id = '" + id + "';";
-    db.query(queryText)
-        .then(res => {
-            if (res != undefined) {
-                console.log("Photo flagging successful!");
-                getres.send("Photo flagging successful!");
-            } else {
-                getres.send("Photo flagging failed");
-            }
-        })
-        .catch(e => console.error(e.stack))
-  });
+    app.post('/report/photo', (req, getres) => {
+        console.log("POST - set photo reported with id");
+        var id = req.body.id;
+        var queryText = "UPDATE PHOTOS SET flag = TRUE WHERE photo_id = $1;";
+        let values = [id];
+        db.param_query(queryText, values)
+            .then(res => {
+                if (res != undefined) {
+                    console.log("Photo flagging successful!");
+                    getres.send("Photo flagging successful!");
+                } else {
+                    getres.send("Photo flagging failed");
+                }
+            })
+            .catch(e => console.error(e.stack))
+    });
+	
 }
