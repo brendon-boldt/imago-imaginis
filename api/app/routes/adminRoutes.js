@@ -121,14 +121,26 @@ app.get('/system/stats/db/spaceused', (req, getres) => {
         .catch(e => console.error(e.stack))
   });
     
-// Get diskspace used by filesystem: free, used, and total (as well as health status)
+// Get diskspace used by linux filesystem: free, used, and total (as well as health status)
 app.get('/system/stats/filesystem/spaceused', (req, getres) => {
     console.log("GET - space used by filesystem");
       
-    diskspace.check('C', function (err, result)
+    diskspace.check('/', function (err, result)
     {
         getres.send(result);
     });
   }); 
+    
+
+// Get diskspace used by Windows filesystem: free, used, and total (as well as health status)
+//app.get('/system/stats/filesystem/spaceused', (req, getres) => {
+//    console.log("GET - space used by filesystem");
+//      
+//    diskspace.check('C', function (err, result)
+//    {
+//        getres.send(result);
+//    });
+//  }); 
+  
   
 }
