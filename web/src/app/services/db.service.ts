@@ -285,10 +285,13 @@ export class DBService {
      */
     getFilters(): Promise<any> {
         console.log("Performing GET of filters");
+        // Pass in JWT for Express to verify if valid
+        let jwt = sessionStorage.getItem('jwt');
         let filters = this.url + '/filters';
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
         let params = new URLSearchParams();
+        params.append("jwt", jwt);
         let options = new RequestOptions({headers: headers, search: params});
         return this.http.get(filters, options)
         .toPromise()

@@ -5,6 +5,7 @@ const jwt = require('jsonwebtoken');
 
 const config = require('../../config.js');
 
+// HIDE ALL FROM PUBLIC
 module.exports = function(app) {
 
   /**

@@ -7,6 +7,24 @@ const config = require('../../config.js');
 
 const MAX_PHOTO_UPLOAD_SIZE = 7340032; // 7 MB is max photo upload size
 
+/**
+ * Performs JWT verification. Returns true if JWT is valid, otherwise returns error
+ * Used for authenticated routes
+ */
+var verify = function(req, getres){
+  var token = req.query.jwt;
+  try{
+      var decoded = jwt.verify(token, "thisisthekey");
+      return true;
+  }
+  catch(err){
+      getres.status(800);
+      getres.statusMessage = "Invalid JWT token. Please pass a valid JWT token.";
+      getres.send("Invalid JWT token. Please pass a valid JWT token.");
+      return false;
+  }
+}
+
 module.exports = function(app) {
   /**
    * Performs a photo upload
@@ -38,6 +56,9 @@ module.exports = function(app) {
   }}).single("upload");
   // app.post('/upload/photo', photoUpload, (req, getres) => {
   app.post('/upload/photo', function (req, res) {
+    if(!verify(req, getres)){
+      return;
+    }
     photoUpload(req, res, function(err) {
       // File type validation check
       // TODO: test this
@@ -127,6 +148,9 @@ module.exports = function(app) {
     }
   });
   app.post('/upload/video', multer({storage: storage}).single("upload"), (req, getres) => {
+    if(!verify(req, getres)){
+      return;
+    }
     // Do verification that this is indeed a photo upload
     console.log("POST - upload");
     console.log(req.file);
@@ -170,6 +194,9 @@ module.exports = function(app) {
     }
   });
   app.post('/filter/upload', multer({storage: storage}).single("upload"), (req, getres) => {
+    if(!verify(req, getres)){
+      return;
+    }
     // Do verification that this is indeed a photo upload
     console.log("POST - upload");
     console.log(req.body);
@@ -200,6 +227,9 @@ module.exports = function(app) {
     }
   });
   app.post('/user/upload/profile', multer({storage: storage}).single("upload"), (req, getres) => {
+    if(!verify(req, getres)){
+      return;
+    }
     // TODO: Do verification that this is indeed a photo upload
     console.log("POST - upload");
     console.log(req.file);

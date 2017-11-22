@@ -6,6 +6,24 @@ const crypto = require('crypto');
 
 const config = require('../../config.js');
 
+/**
+ * Performs JWT verification. Returns true if JWT is valid, otherwise returns error
+ * Used for authenticated routes
+ */
+var verify = function(req, getres){
+    var token = req.query.jwt;
+    try{
+        var decoded = jwt.verify(token, "thisisthekey");
+        return true;
+    }
+    catch(err){
+        getres.status(800);
+        getres.statusMessage = "Invalid JWT token. Please pass a valid JWT token.";
+        getres.send("Invalid JWT token. Please pass a valid JWT token.");
+        return false;
+    }
+}
+
 module.exports = function(app) {
     /**
      * Test route
@@ -67,6 +85,9 @@ module.exports = function(app) {
      */
     app.post('/user/alter', (req, getres) => {
         console.log("POST - alter account");
+        if(!verify(req, getres)){
+            return;
+        }
         var id = req.body.id;
         var firstName = req.body.firstName;
         var lastName = req.body.lastName;
@@ -148,9 +169,12 @@ module.exports = function(app) {
                     //   rows: res.rows[0]
                     // });
                     // Return the token to the user
+                    getres.statusMessage = "Login success";
                     getres.send(token);
                     // getres.send(res.rows[0]);
                 } else {
+                    getres.status(405);
+                    getres.statusMessage = "Login failed: User not found.";
                     getres.send("User not found");
                 }
             })
@@ -225,6 +249,7 @@ module.exports = function(app) {
      * Creates a paid user with id
      * Takes in the request body's parameters
      */
+    //HIDE FROM PUBLIC
     app.post('/user/paid', (req, getres) => {
         console.log("Post - create paid user");
         var id = req.body.id;
@@ -258,6 +283,9 @@ module.exports = function(app) {
      */
     app.post('/user/photos/set-display', (req, getres) => {
         console.log("POST - set photo to display");
+        if(!verify(req, getres)){
+            return;
+        }
         var id = req.body.photo_id;
         var display = req.body.display;
         var queryText = "UPDATE PHOTOS SET display = $1 WHERE photo_id = $2;";
@@ -281,6 +309,9 @@ module.exports = function(app) {
      */
     app.post('/user/videos/set-display', (req, getres) => {
         console.log("POST - set video to display");
+        if(!verify(req, getres)){
+            return;
+        }
         var id = req.body.video_id;
         var display = req.body.display;
         var queryText = "UPDATE VIDEOS SET display = $1 WHERE video_id = $2;";
@@ -336,6 +367,9 @@ module.exports = function(app) {
      */
     app.post('/user/photos/delete', (req, getres) => {
         console.log("POST - delete photo");
+        if(!verify(req, getres)){
+            return;
+        }
         var photoId = req.body.photo_id;
         var userId = req.body.user_id;
         var queryText = "DELETE FROM user_photo WHERE photo_id = $1 AND user_id = $2;";
@@ -358,7 +392,9 @@ module.exports = function(app) {
      */
     app.post('/user/videos/delete', (req, getres) => {
         console.log("POST - delete video");
-        console.log(req.body);
+        if(!verify(req, getres)){
+            return;
+        }
         var videoId = req.body.video_id;
         var userId = req.body.user_id;
         var queryText = "DELETE FROM user_video WHERE video_id = $1 AND user_id = $2;";
