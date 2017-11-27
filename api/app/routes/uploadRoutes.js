@@ -9,6 +9,7 @@ const MAX_PHOTO_UPLOAD_SIZE = 7340032; // 7 MB is max photo upload size
 
 /**
  * Performs JWT verification. Returns true if JWT is valid, otherwise returns error
+ * Also verifies if the user is passing in their user id
  * Used for authenticated routes
  */
 var verify = function(req, getres){
@@ -22,6 +23,22 @@ var verify = function(req, getres){
   }
   try{
       var decoded = jwt.verify(token, "thisisthekey");
+      var passed_user_id;
+      if(req.query.user_id != null){
+        passed_user_id = req.query.user_id;
+      }
+      else if(req.body.user_id != null){
+        passed_user_id = req.body.user_id;
+      }
+      // See if passed user id matches the JWT they pass
+      if(passed_user_id != null){
+        if(passed_user_id != token.user_id){
+          getres.status(806);
+          getres.statusMessage = "Incorrect JWT token.";
+          getres.send("JWT does not match user id supplied. Please pass a valid JWT token for your user account.");
+          return false;
+        }
+      }
       return true;
   }
   catch(err){
@@ -49,15 +66,31 @@ var verifyPaid = function(req, getres){
       var decoded = jwt.verify(token, "thisisthekey");
       // Return true if jwt is paid user, else return false
       if(decoded.isPaid != null){
+        var passed_user_id;
+        if(req.query.user_id != null){
+          passed_user_id = req.query.user_id;
+        }
+        else if(req.body.user_id != null){
+          passed_user_id = req.body.user_id;
+        }
+        // See if passed user id matches the JWT they pass
+        if(passed_user_id != null){
+          if(passed_user_id != decoded.user_id){
+            getres.status(806);
+            getres.statusMessage = "Incorrect JWT token.";
+            getres.send("JWT does not match user id supplied. Please pass a valid JWT token for your user account.");
+            return false;
+          }
+        }
         return true;
       }
       return false;
   }
   catch(err){
-      getres.status(800);
-      getres.statusMessage = "Invalid JWT token. Please pass a valid JWT token.";
-      getres.send("Invalid JWT token. Please pass a valid JWT token.");
-      return false;
+    getres.status(800);
+    getres.statusMessage = "Invalid JWT token. Please pass a valid JWT token.";
+    getres.send("Invalid JWT token. Please pass a valid JWT token.");
+    return false;
   }
 }
 

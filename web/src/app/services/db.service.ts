@@ -56,8 +56,8 @@ export class DBService {
         // formData.append("email", email);
         // formData.append("password", password);
         let body = new URLSearchParams();
-        body.append("firstName", firstName);
-        body.append("lastName", lastName);
+        body.append("first_name", firstName);
+        body.append("last_name", lastName);
         body.append("email", email);
         body.append("password", password);
 
@@ -173,7 +173,7 @@ export class DBService {
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
         let params = new URLSearchParams();
-        params.set('id', id+"");
+        params.set('user_id', id+"");
         let options = new RequestOptions({headers: headers, search: params});
         return this.http.get(photos, options)
         .toPromise()
@@ -192,7 +192,7 @@ export class DBService {
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
         let params = new URLSearchParams();
-        params.set('id', id+"");
+        params.set('user_id', id+"");
         let options = new RequestOptions({headers: headers, search: params});
         return this.http.get(videos, options)
         .toPromise()
@@ -211,7 +211,7 @@ export class DBService {
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
         let params = new URLSearchParams();
-        params.set('id', id+"");
+        params.set('user_id', id+"");
         let options = new RequestOptions({headers: headers, search: params});
         return this.http.get(photos, options)
         .toPromise()
@@ -230,7 +230,7 @@ export class DBService {
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
         let params = new URLSearchParams();
-        params.set('id', id+"");
+        params.set('user_id', id+"");
         let options = new RequestOptions({headers: headers, search: params});
         return this.http.get(videos, options)
         .toPromise()
@@ -249,7 +249,7 @@ export class DBService {
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
         let params = new URLSearchParams();
-        params.set('id', id+"");
+        params.set('user_id', id+"");
         let options = new RequestOptions({headers: headers, search: params});
         return this.http.get(photos, options)
         .toPromise()
@@ -267,7 +267,7 @@ export class DBService {
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
         let params = new URLSearchParams();
-        params.set('id', id+"");
+        params.set('user_id', id+"");
         let options = new RequestOptions({headers: headers, search: params});
         return this.http.get(videos, options)
         .toPromise()
@@ -283,7 +283,7 @@ export class DBService {
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
         let params = new URLSearchParams();
-        params.set('id', id+"");
+        params.set('user_id', id+"");
         let options = new RequestOptions({headers: headers, search: params});
         return this.http.get(profilePicture, options)
         .toPromise()
@@ -341,7 +341,7 @@ export class DBService {
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
         let params = new URLSearchParams();
-        params.set('id', user_id);
+        params.set('user_id', user_id);
         let options = new RequestOptions({headers: headers, search: params});
         return this.http.get(getUser, options)
         .toPromise()
@@ -360,16 +360,16 @@ export class DBService {
         headers.append('Content-Type', 'application/x-www-form-urlencoded');
 
         let body = new URLSearchParams();
-        body.append("id", userId);
-        body.append("firstName", firstName);
-        body.append("lastName", lastName);
+        body.append("user_id", userId);
+        body.append("first_name", firstName);
+        body.append("last_name", lastName);
         body.append("email", email);
         body.append("password", password); // should this be encrypted?
         let jwt = sessionStorage.getItem('jwt');
         body.append('jwt', jwt+"");
 
         let params = new URLSearchParams();
-        params.set('userId', userId);
+        params.set('user_id', userId);
         let options = new RequestOptions({headers: headers, search: params});
         return this.http.post(createUser, body.toString(), options)
         .toPromise()

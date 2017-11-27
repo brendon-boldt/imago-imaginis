@@ -53,21 +53,21 @@ export class AuthService {
         // Take user information entered in fields and pass to DB service
         return this.db.login(email, password).then(res => {
             console.log(userFound);
-            console.log(res);
             if(res._body == "User not found"){
                 console.log("WEB: User not found");
                 userFound = false;
                 return userFound;
             }
             else{
+                console.log(res.json());
+                var res = res.json();
                 this.isLoggedIn = true;
                 // Take the JWT stored in the response and store it local storage
-                sessionStorage.setItem('jwt', res._body);
+                sessionStorage.setItem('jwt', res.token);
                 console.log(sessionStorage);
                 // Get info from JWT and store it in the user service
                 this.user.setInfo(sessionStorage.getItem('jwt'));
                 // Set info in user service
-                console.log(res.rows);
                 // Get the user's profile photo
                 this.user.getProfilePhoto();
                 // Navigate the user to home

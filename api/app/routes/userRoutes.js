@@ -6,8 +6,11 @@ const crypto = require('crypto');
 
 const config = require('../../config.js');
 
+const PROPER_ID = 1;
+
 /**
  * Performs JWT verification. Returns true if JWT is valid, otherwise returns error
+ * Verifies that the id the user is passing belongs to them.
  * Used for authenticated routes
  */
 var verify = function(req, getres){
@@ -21,6 +24,25 @@ var verify = function(req, getres){
     }
     try{
         var decoded = jwt.verify(token, "thisisthekey");
+        var passed_user_id;
+        if(req.query.user_id != null){
+          passed_user_id = req.query.user_id;
+        }
+        else if(req.body.user_id != null){
+          passed_user_id = req.body.user_id;
+        }
+        console.log("Checking IDs");
+        console.log(passed_user_id);
+        console.log(token.user_id);
+        // See if passed user id matches the JWT they pass
+        if(passed_user_id != null){
+            if(passed_user_id != decoded.user_id){
+                getres.status(806);
+                getres.statusMessage = "Incorrect JWT token.";
+                getres.send("JWT does not match user id supplied. Please pass a valid JWT token for your user account.");
+                return false;
+            }
+        }
         return true;
     }
     catch(err){
@@ -46,8 +68,8 @@ module.exports = function(app) {
      */
     app.post('/user/create', (req, getres) => {
         console.log("POST - create account");
-        var firstName = req.body.firstName;
-        var lastName = req.body.lastName;
+        var firstName = req.body.first_name;
+        var lastName = req.body.last_name;
         var email = req.body.email;
         var password = req.body.password; // Hash password
         const hash = crypto.createHash('sha256');
@@ -92,12 +114,13 @@ module.exports = function(app) {
      */
     app.post('/user/alter', (req, getres) => {
         console.log("POST - alter account");
+        // Throw error if user_id not passed
         if(!verify(req, getres)){
             return;
         }
-        var id = req.body.id;
-        var firstName = req.body.firstName;
-        var lastName = req.body.lastName;
+        var id = req.body.user_id;
+        var firstName = req.body.first_name;
+        var lastName = req.body.last_name;
         var email = req.body.email;
         var password = req.body.password; // Hash password
         // Verify email is unique
@@ -128,6 +151,7 @@ module.exports = function(app) {
                     let values = [firstName, lastName, email, password, id];
                     db.param_query(queryText, values)
                         .then(res => {
+                            console.log(res);
                             if (res != undefined) {
                                 console.log("Account update successful!");
                                 getres.send("Account update successful!");
@@ -174,15 +198,11 @@ module.exports = function(app) {
                         expiresIn: '1h'
                     }); // Sets the token to expire in an hour
                     var decoded = jwt.verify(token, "thisisthekey"); // For reference
-                    console.log(decoded);
-                    // console.log({
-                    //   token: token,
-                    //   rows: res.rows[0]
-                    // });
                     // Return the token to the user
                     getres.statusMessage = "Login success";
-                    getres.send(token);
-                    // getres.send(res.rows[0]);
+                    // Send the user their token and their user id
+                    getres.send({"user_id": res.rows[0].user_id, "token": token});
+                    // getres.send(token);
                 } else {
                     getres.status(405);
                     getres.statusMessage = "Login failed: User not found.";
@@ -214,7 +234,7 @@ module.exports = function(app) {
      */
     app.get('/user/info', (req, getres) => {
         console.log("GET - info");
-        var id = req.query.id;
+        var id = req.query.user_id;
         let queryText = "SELECT * FROM ASP_USERS WHERE user_ID = $1;";
         let values = [id];
         db.param_query(queryText, values)
@@ -230,7 +250,7 @@ module.exports = function(app) {
      */
     app.get('/user/photos/unstyled', (req, getres) => {
         console.log("GET - user unstyled photos");
-        var id = req.query.id;
+        var id = req.query.user_id;
         let queryText = "SELECT * FROM unfiltered_photo WHERE unfiltered_photo_id IN (SELECT unfiltered_photo_id FROM USER_PHOTO WHERE user_ID = $1 AND (status = 'waiting' OR status = 'processing')) ORDER BY unfiltered_photo_id;";
         let values = [id];
         db.param_query(queryText, values)
@@ -246,7 +266,7 @@ module.exports = function(app) {
      */
     app.get('/user/videos/unstyled', (req, getres) => {
         console.log("GET - user unstyled video");
-        var id = req.query.id;
+        var id = req.query.user_id;
         let queryText = "SELECT * FROM unfiltered_video WHERE unfiltered_video_id IN (SELECT unfiltered_video_id FROM user_video WHERE user_ID = $1 AND (status = 'waiting' OR status = 'processing')) ORDER BY unfiltered_video_id;";
         let values = [id];
         db.param_query(queryText, values)
@@ -263,7 +283,7 @@ module.exports = function(app) {
     //HIDE FROM PUBLIC
     app.post('/user/paid', (req, getres) => {
         console.log("Post - create paid user");
-        var id = req.body.id;
+        var id = req.body.user_id;
         var queryText = "SELECT * FROM Paid_Users WHERE user_id = $1;";
         let values = [id];
         db.param_query(queryText, values)
@@ -346,7 +366,7 @@ module.exports = function(app) {
      */
     app.get('/user/videos', (req, getres) => {
         console.log("GET - user videos");
-        var id = req.query.id;
+        var id = req.query.user_id;
         let queryText = "SELECT * FROM VIDEOS WHERE video_id IN (SELECT video_id FROM USER_VIDEO WHERE user_ID = $1 AND status = 'done') ORDER BY video_id;";
         let values = [id];
         db.param_query(queryText, values)
@@ -362,7 +382,7 @@ module.exports = function(app) {
      */
     app.get('/user/photos', (req, getres) => {
         console.log("GET - user photos");
-        var id = req.query.id;
+        var id = req.query.user_id;
         let queryText = "SELECT * FROM PHOTOS WHERE photo_id in (SELECT photo_id FROM USER_PHOTO WHERE user_ID = $1 AND status = 'done') ORDER BY photo_id";
         let values = [id];
         db.param_query(queryText, values)
@@ -427,7 +447,7 @@ module.exports = function(app) {
      */
     app.get('/user/photos/display', (req, getres) => {
         console.log("GET - user profile display photos");
-        var id = req.query.id;
+        var id = req.query.user_id;
         let queryText = "SELECT * FROM PHOTOS WHERE photo_id in (SELECT photo_id FROM USER_PHOTO WHERE user_ID = $1 AND status = 'done') AND display = true;";
         let values = [id];
         db.param_query(queryText, values)
@@ -442,7 +462,7 @@ module.exports = function(app) {
      */
     app.get('/user/videos/display', (req, getres) => {
         console.log("GET - user profile display videos");
-        var id = req.query.id;
+        var id = req.query.user_id;
         let queryText = "SELECT * FROM VIDEOS WHERE video_id in (SELECT video_id FROM user_video WHERE user_ID = $1 AND status = 'done') AND display = true;";
         let values = [id];
         db.param_query(queryText, values)
