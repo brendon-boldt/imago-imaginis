@@ -72,6 +72,7 @@ export class DBService {
 
     /**
      * Performs an upload of a photo to the database, taking in a file and a filter
+     * Must be user.
      * @param file 
      */
     uploadPhoto(id: number, file: File, filterId: number, img: any): Promise<any> {
@@ -79,13 +80,15 @@ export class DBService {
         let upload = this.url + '/upload/photo';
         let headers = new Headers();
         // headers.append('Content-Type', 'image/jpeg');
-
+        // Pass in JWT for Express to verify if valid
+        let jwt = sessionStorage.getItem('jwt');
         let formData: any = new FormData();
         formData.append("upload", file);
         formData.append('filter_id', filterId+"");
         formData.append('user_id', id+"");
         formData.append('height', img.width+"");
         formData.append('width', img.height+"");
+        formData.append('jwt', jwt+"");
         console.log("WEB: File that will be uploaded with filter id " + filterId + ":");
         console.log(file);
 
@@ -104,6 +107,7 @@ export class DBService {
 
     /**
      * Performs an upload of a video to the database, taking in a file and a filter
+     * Must be paid user
      * @param file 
      */
     uploadVideo(id: number, file: File, filterId: number): Promise<any> {
@@ -114,12 +118,16 @@ export class DBService {
 
         let formData: any = new FormData();
         formData.append("upload", file);
+        formData.append('filter_id', filterId+"");
+        formData.append('user_id', ""+id);
+        let jwt = sessionStorage.getItem('jwt');
+        formData.append('jwt', jwt+"");
         console.log("WEB: File that will be uploaded with filter id " + filterId + ":");
         console.log(file);
 
         let params = new URLSearchParams();
-        params.set('filter_id', filterId+"");
-        params.set('user_id', ""+id);
+        // params.set('filter_id', filterId+"");
+        // params.set('user_id', ""+id);
         let options = new RequestOptions({headers: headers, search: params});
         return this.http.post(videoUpload, formData, options)
         .toPromise()
@@ -129,6 +137,7 @@ export class DBService {
 
     /**
      * Performs an upload of a profile photo to the database, taking in a file
+     * Must be user
      * @param file 
      */
     uploadProfilePhoto(id: number, file: File): Promise<any> {
@@ -139,11 +148,14 @@ export class DBService {
 
         let formData: any = new FormData();
         formData.append("upload", file);
+        formData.append('user_id', ""+id);
+        let jwt = sessionStorage.getItem('jwt');
+        formData.append('jwt', jwt+"");
         console.log("WEB: Profile photo that will be uploaded: ");
         console.log(file);
 
         let params = new URLSearchParams();
-        params.set('user_id', ""+id);
+        // params.set('user_id', ""+id);
         let options = new RequestOptions({headers: headers, search: params});
         return this.http.post(uploadProfile, formData, options)
         .toPromise()
@@ -282,6 +294,7 @@ export class DBService {
 
     /**
      * Gets list of all filters
+     * Must be user
      */
     getFilters(): Promise<any> {
         console.log("Performing GET of filters");
@@ -338,6 +351,7 @@ export class DBService {
 
     /**
      * Used for account information modification
+     * Must be user
      */
     saveUserSettings(userId, firstName, lastName, email, password): Promise<any> {
         console.log("WEB: Saving user settings");
@@ -350,7 +364,9 @@ export class DBService {
         body.append("firstName", firstName);
         body.append("lastName", lastName);
         body.append("email", email);
-        body.append("password", password);
+        body.append("password", password); // should this be encrypted?
+        let jwt = sessionStorage.getItem('jwt');
+        body.append('jwt', jwt+"");
 
         let params = new URLSearchParams();
         params.set('userId', userId);
@@ -363,6 +379,7 @@ export class DBService {
 
     /**
      * Sets a photo to be displayed on user's profile
+     * Must be user
      * @param photo 
      * @param display 
      */
@@ -373,6 +390,8 @@ export class DBService {
         let body = new URLSearchParams();
         body.append('photo_id', photo.photo_id+"");
         body.append('display', display+"");
+        let jwt = sessionStorage.getItem('jwt');
+        body.append('jwt', jwt+"");
         let params = new URLSearchParams();
         let options = new RequestOptions({headers: headers, search: params});
         return this.http.post(setToDisplay, body.toString(), options)
@@ -384,6 +403,7 @@ export class DBService {
 
     /**
      * Sets a photo to be displayed on user's profile
+     * Must be user
      * @param video 
      * @param display 
      */
@@ -394,6 +414,8 @@ export class DBService {
         let body = new URLSearchParams();
         body.append('video_id', video.video_id+"");
         body.append('display', display+"");
+        let jwt = sessionStorage.getItem('jwt');
+        body.append('jwt', jwt+"");
         let params = new URLSearchParams();
         let options = new RequestOptions({headers: headers, search: params});
         return this.http.post(setToDisplay, body.toString(), options)
@@ -404,6 +426,7 @@ export class DBService {
 
     /**
      * Performs the filter upload
+     * Must be paid user
      * @param file
      * @param id
      */
@@ -416,6 +439,8 @@ export class DBService {
         let formData: any = new FormData();
         formData.append("upload", file);
         formData.append("user_id", id);
+        let jwt = sessionStorage.getItem('jwt');
+        formData.append('jwt', jwt+"");
         console.log(file);
 
         let params = new URLSearchParams();
@@ -428,6 +453,7 @@ export class DBService {
 
     /**
      * Performs a photo delete for the user
+     * Only a user can delete their OWN photo
      */
     deletePhoto(user_id: number, photo_id: number): Promise<any> {
         console.log("WEB: Performing DELETE of photo");
@@ -437,6 +463,8 @@ export class DBService {
         let body = new URLSearchParams();
         body.append("user_id", ""+user_id);
         body.append("photo_id", ""+photo_id);
+        let jwt = sessionStorage.getItem('jwt');
+        body.append('jwt', jwt+"");
 
         let params = new URLSearchParams();
         let options = new RequestOptions({headers: headers, search: params});
@@ -447,7 +475,8 @@ export class DBService {
     }
 
     /**
-     * Performs a photo delete for the user
+     * Performs a video delete for the user
+     * Only a user can delete their OWN video
      */
     deleteVideo(user_id: number, video_id: number): Promise<any> {
         console.log("WEB: Performing DELETE of photo");
@@ -457,6 +486,8 @@ export class DBService {
         let body = new URLSearchParams();
         body.append("user_id", ""+user_id);
         body.append("video_id", ""+video_id);
+        let jwt = sessionStorage.getItem('jwt');
+        body.append('jwt', jwt+"");
 
         let params = new URLSearchParams();
         let options = new RequestOptions({headers: headers, search: params});
@@ -468,6 +499,7 @@ export class DBService {
 
     /**
      * Performs a get on all system stats
+     * Only admins
      */
     getSystemStats(): Promise<any> {
         console.log("Performing GET of system stats");
@@ -475,10 +507,147 @@ export class DBService {
         let headers = new Headers();
         headers.append('Content-Type', 'application/json');
         let params = new URLSearchParams();
+        let jwt = sessionStorage.getItem('jwt');
+        params.append('jwt', jwt+"");
         let options = new RequestOptions({headers: headers, search: params});
         return this.http.get(stats, options)
         .toPromise()
         .then(response => response.json()　as Object)
+        .catch(this.handleError);
+    }
+
+    getDiskSpaceUsed(): Promise<any> {
+        console.log("Performing GET of system space used");
+        let stats = this.url + '/system/stats/filesystem/spaceused';
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        let params = new URLSearchParams();
+        let jwt = sessionStorage.getItem('jwt');
+        params.append('jwt', jwt+"");
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.get(stats, options)
+        .toPromise()
+        .then(response => response as Object)
+        .catch(this.handleError);
+    }
+
+    getDBSpaceUsed(): Promise<any> {
+        console.log("Performing GET of database space used");
+        let stats = this.url + '/system/stats/db/spaceused';
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        let params = new URLSearchParams();
+        let jwt = sessionStorage.getItem('jwt');
+        params.append('jwt', jwt+"");
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.get(stats, options)
+        .toPromise()
+        .then(response => response as Object)
+        .catch(this.handleError);
+    }
+
+    getProcessingPhotos(): Promise<any> {
+        console.log("Performing GET of photos being processed");
+        let stats = this.url + '/system/stats/photos/processing';
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        let params = new URLSearchParams();
+        let jwt = sessionStorage.getItem('jwt');
+        params.append('jwt', jwt+"");
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.get(stats, options)
+        .toPromise()
+        .then(response => response as Object)
+        .catch(this.handleError);
+    }
+
+    getProcessingVideos(): Promise<any> {
+        console.log("Performing GET of videos being processed");
+        let stats = this.url + '/system/stats/videos/processing';
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        let params = new URLSearchParams();
+        let jwt = sessionStorage.getItem('jwt');
+        params.append('jwt', jwt+"");
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.get(stats, options)
+        .toPromise()
+        .then(response => response as Object)
+        .catch(this.handleError);
+    }
+
+    getFlaggedPhotos(): Promise<any> {
+        console.log("Performing GET of flagged photos");
+        let stats = this.url + '/system/stats/photos/flagged';
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        let params = new URLSearchParams();
+        let jwt = sessionStorage.getItem('jwt');
+        params.append('jwt', jwt+"");
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.get(stats, options)
+        .toPromise()
+        .then(response => response as Object)
+        .catch(this.handleError);
+    } 
+
+    getFlaggedVideos(): Promise<any> {
+        console.log("Performing GET of flagged videos");
+        let stats = this.url + '/system/stats/videos/flagged';
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        let params = new URLSearchParams();
+        let jwt = sessionStorage.getItem('jwt');
+        params.append('jwt', jwt+"");
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.get(stats, options)
+        .toPromise()
+        .then(response => response as Object)
+        .catch(this.handleError);
+    } 
+
+    getPastDayUploads(): Promise<any> {
+        console.log("Performing GET of uploads in past day");
+        let stats = this.url + '/system/stats/uploads/pastday';
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        let params = new URLSearchParams();
+        let jwt = sessionStorage.getItem('jwt');
+        params.append('jwt', jwt+"");
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.get(stats, options)
+        .toPromise()
+        .then(response => response as Object)
+        .catch(this.handleError);
+    }
+
+    getPastWeekUploads(): Promise<any> {
+        console.log("Performing GET of uploads in past day");
+        let stats = this.url + '/system/stats/uploads/pastweek';
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        let params = new URLSearchParams();
+        let jwt = sessionStorage.getItem('jwt');
+        params.append('jwt', jwt+"");
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.get(stats, options)
+        .toPromise()
+        .then(response => response as Object)
+        .catch(this.handleError);
+    }
+
+    getPastMonthUploads(): Promise<any> {
+        console.log("Performing GET of uploads in past day");
+        let stats = this.url + '/system/stats/uploads/pastmonth';
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        let params = new URLSearchParams();
+        let jwt = sessionStorage.getItem('jwt');
+        params.append('jwt', jwt+"");
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.get(stats, options)
+        .toPromise()
+        .then(response => response as Object)
         .catch(this.handleError);
     }
 

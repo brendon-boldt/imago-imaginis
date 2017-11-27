@@ -20,5 +20,10 @@ export class SystemStatsComponent {
       console.log(res);
       this.stats = res;
     });
+    this.db.getDiskSpaceUsed().then(res => {
+      console.log("WEB: Spaced used received:");
+      console.log(res);
+      // TODO: Complete
+    })
   }
 }

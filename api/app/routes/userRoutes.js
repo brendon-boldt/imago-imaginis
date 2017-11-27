@@ -11,7 +11,14 @@ const config = require('../../config.js');
  * Used for authenticated routes
  */
 var verify = function(req, getres){
-    var token = req.query.jwt;
+    var token;
+    // JWT is passed either in query or in body
+    if(req.query.jwt != null){
+        token = req.query.jwt;
+    }
+    else if(req.body.jwt != null){
+        token = req.body.jwt;
+    }
     try{
         var decoded = jwt.verify(token, "thisisthekey");
         return true;

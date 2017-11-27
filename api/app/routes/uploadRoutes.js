@@ -12,28 +12,16 @@ const MAX_PHOTO_UPLOAD_SIZE = 7340032; // 7 MB is max photo upload size
  * Used for authenticated routes
  */
 var verify = function(req, getres){
-  var token = req.query.jwt;
+  var token;
+  // JWT is passed either in query or in body
+  if(req.query.jwt != null){
+      token = req.query.jwt;
+  }
+  else if(req.body.jwt != null){
+      token = req.body.jwt;
+  }
   try{
       var decoded = jwt.verify(token, "thisisthekey");
-      return true;
-  }
-  catch(err){
-      getres.status(800);
-      getres.statusMessage = "Invalid JWT token. Please pass a valid JWT token.";
-      getres.send("Invalid JWT token. Please pass a valid JWT token.");
-      return false;
-  }
-}
-
-/**
- * Performs JWT verification. Returns true if JWT is valid and user is an admin, otherwise returns error
- * Used for authenticated routes that can be accessible only by an admin
- */
-var verifyAdmin = function(req, getres){
-  var token = req.query.jwt;
-  try{
-      var decoded = jwt.verify(token, "thisisthekey");
-      // TODO: return true if jwt is admin, else return false
       return true;
   }
   catch(err){
@@ -49,7 +37,14 @@ var verifyAdmin = function(req, getres){
  * Used for authenticated routes that can be accessible only by a paid user.
  */
 var verifyPaid = function(req, getres){
-  var token = req.query.jwt;
+  var token;
+  // JWT is passed either in query or in body
+  if(req.query.jwt != null){
+      token = req.query.jwt;
+  }
+  else if(req.body.jwt != null){
+      token = req.body.jwt;
+  }
   try{
       var decoded = jwt.verify(token, "thisisthekey");
       // Return true if jwt is paid user, else return false
@@ -231,7 +226,7 @@ module.exports = function(app) {
         result = await db.query(queryText); 
         var video_id = result.rows[0].video_id;
         // We also need to create a new entry in User_Video
-        queryText = "INSERT INTO user_video (user_id, video_id, filter_id, status, wait_time, unfiltered_video_id) VALUES (" + req.query.user_id + ", " + video_id + ", " + req.query.filter_id + ", 'waiting', 0, " + req.file.unfiltered_video_id + ");";
+        queryText = "INSERT INTO user_video (user_id, video_id, filter_id, status, wait_time, unfiltered_video_id) VALUES (" + req.body.user_id + ", " + video_id + ", " + req.body.filter_id + ", 'waiting', 0, " + req.file.unfiltered_video_id + ");";
         console.log("Query: " + queryText);
         db.query(queryText); 
         getres.send("Upload complete!");
@@ -328,7 +323,7 @@ module.exports = function(app) {
       async function upload() {
         var path = config.uploadsPath + "/" + req.file.filename;
         // var path = req.file.filename;
-        var queryText = "UPDATE asp_users SET (profile_photo) = ('" + path + "') WHERE user_id = " + req.query.user_id + ";";
+        var queryText = "UPDATE asp_users SET (profile_photo) = ('" + path + "') WHERE user_id = " + req.body.user_id + ";";
         console.log("Query: " + queryText);
         result = await db.query(queryText); 
       }
