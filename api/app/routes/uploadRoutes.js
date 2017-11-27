@@ -48,7 +48,10 @@ var verifyPaid = function(req, getres){
   try{
       var decoded = jwt.verify(token, "thisisthekey");
       // Return true if jwt is paid user, else return false
-      return true;
+      if(decoded.isPaid != null){
+        return true;
+      }
+      return false;
   }
   catch(err){
       getres.status(800);

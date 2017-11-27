@@ -22,7 +22,10 @@ var verifyAdmin = function(req, getres){
     try{
         var decoded = jwt.verify(token, "thisisthekey");
         // TODO: return true if jwt is admin, else return false
-        return true;
+        if(decoded.isAdmin != null){
+            return true;
+        }
+        return false;
     }
     catch(err){
         getres.status(800);

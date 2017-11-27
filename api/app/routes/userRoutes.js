@@ -153,11 +153,13 @@ module.exports = function(app) {
         const hash = crypto.createHash('sha256');
         hash.update(password);
         password = hash.digest('hex');
-        let queryText = "SELECT * FROM asp_users WHERE email = $1 AND password = $2;";
+        let queryText = "SELECT * FROM asp_users LEFT JOIN paid_users ON asp_users.user_id = paid_users.paid_id WHERE email = $1 AND password = $2;";
+        console.log(queryText);
         let values = [email, password];
         db.param_query(queryText, values)
             .then(res => {
                 if (res.rows[0] != null) {
+                    console.log(res.rows);
                     // Puts various user information into the JWT
                     var payload = {
                         user_id: res.rows[0].user_id,
@@ -165,12 +167,14 @@ module.exports = function(app) {
                         last_name: res.rows[0].last_name,
                         isAdmin: res.rows[0].admin,
                         dateJoined: res.rows[0].date_joined,
+                        isPaid: res.rows[0].paid_id,
                         email: email,
                     };
                     var token = jwt.sign(payload, "thisisthekey", {
                         expiresIn: '1h'
                     }); // Sets the token to expire in an hour
                     var decoded = jwt.verify(token, "thisisthekey"); // For reference
+                    console.log(decoded);
                     // console.log({
                     //   token: token,
                     //   rows: res.rows[0]
