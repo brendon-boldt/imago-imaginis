@@ -77,7 +77,9 @@ export class UserSettingsComponent {
     this.db.uploadProfilePhoto(this.user.user_id, this.fileToUpload).then(result => {
       // Post shouldn't return anything
       console.log(result);
-      this.user.getProfilePhoto();
+      // this.user.getProfilePhoto();
+      // Get the user's updated information
+      this.user.refreshInfo();
       this.modalText = "Profile Picture Updated!";
       window.scrollTo(0, 0);
       this.modal.show();

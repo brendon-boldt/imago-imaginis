@@ -26,15 +26,15 @@ export class UserService {
     jwtHelper: JwtHelper = new JwtHelper();
     constructor(private db: DBService){
         // Get the user profile picture
-        if(this.user_id != null){
-            this.db.getProfilePhoto(this.user_id).then(res => {
-                console.log("WEB: User service GET profile photo");
-                console.log(res.json());
-                if(res.json()[0].profile_photo != null){
-                    this.profilePhoto = res.json()[0].profile_photo;
-                }
-            });
-        }
+        // if(this.user_id != null){
+        //     this.db.getProfilePhoto(this.user_id).then(res => {
+        //         console.log("WEB: User service GET profile photo");
+        //         console.log(res.json());
+        //         if(res.json()[0].profile_photo != null){
+        //             this.profilePhoto = res.json()[0].profile_photo;
+        //         }
+        //     });
+        // }
     }
     setInfo(jwt): void {
         console.log("USERSERVICE - Setting info:");
@@ -46,19 +46,28 @@ export class UserService {
         this.email = jwt.email;
         this.isAdmin = jwt.isAdmin;
         this.dateJoined = jwt.dateJoined;
-        this.getProfilePhoto();
+        if(jwt.profilePhoto != null){ // Keep placeholder if user does not have a profile picture
+            this.profilePhoto = this.db.url + jwt.profilePhoto;
+        }
     }
-    getProfilePhoto(): Promise<any> { 
-        return this.db.getProfilePhoto(this.user_id).then(res => {
-            console.log("WEB: User service GET profile photo");
+    // getProfilePhoto(): Promise<any> { 
+    //     return this.db.getProfilePhoto(this.user_id).then(res => {
+    //         console.log("WEB: User service GET profile photo");
+    //         console.log(res.json());
+    //         if(res.json()[0].profile_photo != null){
+    //             this.profilePhoto = this.db.url + res.json()[0].profile_photo;
+    //             return this.db.url + res.json()[0].profile_photo;
+    //         }
+    //         else{
+    //             return null;
+    //         }
+    //     })
+    // }
+    // Refreshes the user info. Typically called after account update
+    refreshInfo(): Promise<any> {
+        return this.db.getUser(this.user_id).then(res => {
+            console.log("WEB: Refreshing user's information");
             console.log(res.json());
-            if(res.json()[0].profile_photo != null){
-                this.profilePhoto = this.db.url + res.json()[0].profile_photo;
-                return this.db.url + res.json()[0].profile_photo;
-            }
-            else{
-                return null;
-            }
         })
     }
 }

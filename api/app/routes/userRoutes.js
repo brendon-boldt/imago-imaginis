@@ -77,7 +77,7 @@ module.exports = function(app) {
         password = hash.digest('hex');
         var date = new Date(Date.now()).toLocaleDateString();
         // Verify email is unique
-        var queryText = "SELECT * FROM ASP_USERS WHERE email = $1;";
+        var queryText = "SELECT * FROM ASP_USERS WHERE email = LOWER($1);";
         let values = [email];
         db.param_query(queryText, values)
             .then(res => {
@@ -90,7 +90,7 @@ module.exports = function(app) {
                 } else {
                     // Email is unique
                     console.log("Email is unique");
-                    let queryText = "INSERT INTO asp_users (first_name, last_name, email, password, date_joined, status) VALUES ($1, $2, $3, $4, $5, true);";
+                    let queryText = "INSERT INTO asp_users (first_name, last_name, email, password, date_joined, status) VALUES ($1, $2, LOWER($3), $4, $5, true);";
                     console.log("Query: " + queryText);
                     let values = [firstName, lastName, email, password, date];
                     db.param_query(queryText, values)
@@ -193,6 +193,7 @@ module.exports = function(app) {
                         dateJoined: res.rows[0].date_joined,
                         isPaid: res.rows[0].paid_id,
                         email: email,
+                        profilePhoto: res.rows[0].profile_photo
                     };
                     var token = jwt.sign(payload, "thisisthekey", {
                         expiresIn: '1h'

@@ -55,13 +55,14 @@ export class UserComponent {
         this.last_name = this.user.last_name;
         this.email = this.user.email;
         this.dateJoined = this.user.dateJoined;
-        var test = Observable.fromPromise(this.user.getProfilePhoto());
-        test.subscribe(res => {
-          console.log(res);
-          if(res != null){
-            this.profilePhoto = res
-          }
-        });
+        this.profilePhoto = this.user.profilePhoto;
+        // var test = Observable.fromPromise(this.user.getProfilePhoto());
+        // test.subscribe(res => {
+        //   console.log(res);
+        //   if(res != null){
+        //     this.profilePhoto = res
+        //   }
+        // });
         // Get the user's photos to display on profile
         this.db.getProfilePhotos(this.user.user_id).then(res => {
           console.log("WEB: Get user's profile display photos");
@@ -81,6 +82,7 @@ export class UserComponent {
           }
         });
       }
+      // Looking up a user so display their information on the page
       else{
         console.log("WEB: Looking up user...")
         // Params were passed, so set the page info to the user id's info so we can display it
@@ -90,23 +92,26 @@ export class UserComponent {
         }
         else{
           this.db.getUser(params.user_id).then(res => {
+            console.log(res);
             this.first_name = res[0].first_name;
             this.last_name = res[0].last_name;
             this.email = res[0].email;
             this.dateJoined = res[0].date_joined;
-            console.log(res);
+            if(res[0].profile_photo != null){ // Show placeholder if they do not have a profile picture
+              this.profilePhoto = this.db.url + res[0].profile_photo;
+            }
           });
           // Get that user's profile photo
-          this.db.getProfilePhoto(params.user_id).then(res => {
-            if(res.json()[0].profile_photo == null){ // The user had no profile picture
-              console.log("User has no profile picture");
-            }
-            else{
-              this.profilePhoto = this.db.url + res.json()[0].profile_photo;
-              console.log(res.json());
-              console.log(this.profilePhoto);
-            }
-          });
+          // this.db.getProfilePhoto(params.user_id).then(res => {
+          //   if(res.json()[0].profile_photo == null){ // The user had no profile picture
+          //     console.log("User has no profile picture");
+          //   }
+          //   else{
+          //     this.profilePhoto = this.db.url + res.json()[0].profile_photo;
+          //     console.log(res.json());
+          //     console.log(this.profilePhoto);
+          //   }
+          // });
           // Get the photos that user wants to display on their profile
           this.db.getProfilePhotos(params.user_id).then(res => {
             console.log("WEB: Get user's profile display photos");

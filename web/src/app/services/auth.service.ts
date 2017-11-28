@@ -67,9 +67,8 @@ export class AuthService {
                 console.log(sessionStorage);
                 // Get info from JWT and store it in the user service
                 this.user.setInfo(sessionStorage.getItem('jwt'));
-                // Set info in user service
-                // Get the user's profile photo
-                this.user.getProfilePhoto();
+                // // Get the user's profile photo
+                // this.user.getProfilePhoto();
                 // Navigate the user to home
                 this.user.justLoggedIn = true;
                 this.router.navigate(['home']);

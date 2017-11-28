@@ -61,9 +61,6 @@ module.exports = function(app) {
      */
     app.get('/filters', (req, getres) => {
         console.log("GET - filters");
-        if(!verify(req, getres)){
-            return;
-        }
         let queryText = 'SELECT * FROM filters WHERE preset = true';
         db.query(queryText)
         .then(res => {
@@ -79,9 +76,6 @@ module.exports = function(app) {
      */
     app.get('/filter', (req, getres) => {
         console.log("GET - filter path for id");
-        if(!verify(req, getres)){
-            return;
-        }
         var id = req.query.id;
         let queryText = "SELECT path FROM FILTERS WHERE filter_id = $1";
         let values = [id];

@@ -275,22 +275,22 @@ export class DBService {
         .catch(this.handleError);
     }
     
-    /**
-     * Gets the user's profile photo based on passed user id
-     */
-    getProfilePhoto(id: number): Promise<any> {
-        let profilePicture = this.url + '/user/profile-picture';
-        let headers = new Headers();
-        headers.append('Content-Type', 'application/json');
-        let params = new URLSearchParams();
-        params.set('user_id', id+"");
-        let options = new RequestOptions({headers: headers, search: params});
-        return this.http.get(profilePicture, options)
-        .toPromise()
-        // .then(response => response.json()　as Object)
-        .then(response => response as Object)
-        .catch(this.handleError);
-    }
+    // /**
+    //  * Gets the user's profile photo based on passed user id
+    //  */
+    // getProfilePhoto(id: number): Promise<any> {
+    //     let profilePicture = this.url + '/user/profile-picture';
+    //     let headers = new Headers();
+    //     headers.append('Content-Type', 'application/json');
+    //     let params = new URLSearchParams();
+    //     params.set('user_id', id+"");
+    //     let options = new RequestOptions({headers: headers, search: params});
+    //     return this.http.get(profilePicture, options)
+    //     .toPromise()
+    //     // .then(response => response.json()　as Object)
+    //     .then(response => response as Object)
+    //     .catch(this.handleError);
+    // }
 
     /**
      * Gets list of all filters
