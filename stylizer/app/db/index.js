@@ -23,7 +23,9 @@ module.exports = {
 
   refreshProcessing: async function(type) {
     let options = {
-      form: { },
+      qs: {
+        token: config.styleApiToken,
+      },
       url: urlRefreshProcessing + '/' + type,
       method: 'GET',
     };
@@ -46,6 +48,9 @@ module.exports = {
         resource_id: resource_id,
         type: useType,
         fileType: fileType
+      },
+      qs: {
+        token: config.styleApiToken,
       },
       url: url,
       method: 'POST',
@@ -110,6 +115,7 @@ module.exports = {
       let resource_id = (runInfo.photo_id !== undefined) ? runInfo.photo_id : runInfo.video_id; 
       options = { 
         qs: {
+          token: config.styleApiToken,
           resource_id: resource_id,
           user_id: runInfo.user_id,
           fileType: fileType,
@@ -141,6 +147,7 @@ module.exports = {
     throw new Error('Deprecated');
     let options = {
       form: { user_id: upId[0], photo_id: upId[1] },
+      qs: { token: config.styleApiToken, },
       url: config.dbUrl +'/'+ selectRunPath,
       method: 'POST',
       encoding: null,
@@ -172,7 +179,7 @@ module.exports = {
       throw new Error('Type not recognized: ' + type);
 
     let options = {
-      form: {},
+      qs: {token: config.styleApiToken, },
       url: url,
       method: 'POST',
       encoding: null,

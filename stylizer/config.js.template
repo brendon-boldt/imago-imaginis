@@ -2,13 +2,16 @@
 
 var config = {};
 
+config.styleApiToken = '';
+
 config.thPath = '';
 config.stylizerPath = '';
 config.gpu = -1;
-config.contentSize = 32;
-config.styleSize = 32;
-config.contentSizeVideo = 16;
-config.styleSizeVideo = 16;
+config.contentSize = 512;
+config.styleSize = 512;
+config.contentSizeVideo = 256;
+config.styleSizeVideo = 256;
+config.maxRuns = 1;
 
 config.dbUrl = '';
 config.stylePath = '';
