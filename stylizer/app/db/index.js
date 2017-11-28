@@ -6,12 +6,13 @@ const config = require('../../config.js');
 const stylizer = require('../stylizer');
 
 const baseUrl = 'style';
-const urlSelectImage = baseUrl + '/select/image';
-const urlSelectVideo = baseUrl + '/select/video';
-const urlSelectImageRuns  = baseUrl + '/selectRuns/images';
-const urlSelectVideoRuns  = baseUrl + '/selectRuns/videos';
-const urlInsertImage = baseUrl + '/insert/image';
-const urlInsertVideo = baseUrl + '/insert/video';
+const urlSelectImage = config.dbUrl +'/'+ baseUrl + '/select/image';
+const urlSelectVideo = config.dbUrl +'/'+ baseUrl + '/select/video';
+const urlSelectImageRuns  = config.dbUrl +'/'+ baseUrl + '/selectRuns/images';
+const urlSelectVideoRuns  = config.dbUrl +'/'+ baseUrl + '/selectRuns/videos';
+const urlInsertImage = config.dbUrl +'/'+ baseUrl + '/insert/image';
+const urlInsertVideo = config.dbUrl +'/'+ baseUrl + '/insert/video';
+const urlRefreshProcessing = config.dbUrl +'/'+ baseUrl + '/refresh';
 //const insertRunPath = 'style/insertRun';
 
 const log = (msg) => {console.log("DB: ", msg)};
@@ -19,6 +20,21 @@ const log = (msg) => {console.log("DB: ", msg)};
 var currentCounter = 0;
 
 module.exports = {
+
+  refreshProcessing: async function(type) {
+    let options = {
+      form: { },
+      url: urlRefreshProcessing + '/' + type,
+      method: 'GET',
+    };
+
+    await request(options, (err, res, body) => {
+      if (err) {
+        log(err);
+      }
+      console.log('Refresh complete');
+    });
+  },
 
   /**
    * Retrieve an image from the database
@@ -31,7 +47,6 @@ module.exports = {
         type: useType,
         fileType: fileType
       },
-      //url: config.dbUrl +'/'+ urlSelectImage,
       url: url,
       method: 'POST',
       encoding: null,
@@ -97,7 +112,8 @@ module.exports = {
         qs: {
           resource_id: resource_id,
           user_id: runInfo.user_id,
-          fileType: fileType
+          fileType: fileType,
+          process_time: runInfo.process_time,
         },
         body: data,
         //url: `${config.dbUrl}/${urlInsertImage}`,
@@ -122,6 +138,7 @@ module.exports = {
 
   // Get run information from database
   selectRun: async function(upId) {
+    throw new Error('Deprecated');
     let options = {
       form: { user_id: upId[0], photo_id: upId[1] },
       url: config.dbUrl +'/'+ selectRunPath,
@@ -148,9 +165,9 @@ module.exports = {
   selectRuns: async function(type) {
     let url;
     if (type === 'image')
-      url = config.dbUrl +'/'+ urlSelectImageRuns; 
+      url = urlSelectImageRuns; 
     else if (type === 'video')
-      url = config.dbUrl +'/'+ urlSelectVideoRuns; 
+      url = urlSelectVideoRuns; 
     else
       throw new Error('Type not recognized: ' + type);
 
@@ -200,6 +217,7 @@ module.exports = {
   },
 
   startWatching: async function() {
+    this.refreshProcessing('both');
     let getRuns = this.getRuns;
     setInterval(this.getRuns.bind(this), 1000, 'image');
     setInterval(this.getRuns.bind(this), 1000, 'video');
@@ -213,10 +231,12 @@ module.exports = {
     let contentFT = runInfo.uvpath.substr(-3);
     let styleFT = runInfo.fpath.substr(-3);
     let promContentFPath = this.selectResource(
-        `${config.dbUrl}/${urlSelectVideo}`,
+        //`${config.dbUrl}/${urlSelectVideo}`,
+        urlSelectVideo,
         'content', contentFT, runInfo.unfiltered_video_id);
     let promStyleFPath = this.selectResource(
-        `${config.dbUrl}/${urlSelectImage}`,
+        //`${config.dbUrl}/${urlSelectImage}`,
+        urlSelectImage,
         'style', styleFT, runInfo.filter_id);
     let contentFPath = await promContentFPath;
     let styleFPath = await promStyleFPath;
@@ -233,10 +253,13 @@ module.exports = {
       outputName : `${runInfo.video_id}.${contentFT}`
     };
 
-    let outputFPath = await stylizer.startStyleVideo(testRunParams);
+    let styleOutputObj = await stylizer.startStyleVideo(testRunParams);
+    let outputFPath = styleOutputObj.filepath;
+    runInfo.process_time = styleOutputObj.process_time;
 
     await this.insertResource(
-        `${config.dbUrl}/${urlInsertVideo}`,
+        //`${config.dbUrl}/${urlInsertVideo}`,
+        urlInsertVideo,
         outputFPath, contentFT, runInfo);
 
     currentCounter -= 1;
@@ -249,10 +272,12 @@ module.exports = {
     let contentFT = runInfo.uppath.substr(-3);
     let styleFT = runInfo.fpath.substr(-3);
     let promContentFPath = this.selectResource(
-        `${config.dbUrl}/${urlSelectImage}`,
+        //`${config.dbUrl}/${urlSelectImage}`,
+        urlSelectImage,
         'content', contentFT, runInfo.unfiltered_photo_id);
     let promStyleFPath = this.selectResource(
-        `${config.dbUrl}/${urlSelectImage}`,
+        //`${config.dbUrl}/${urlSelectImage}`,
+        urlSelectImage,
         'style', styleFT, runInfo.filter_id);
     let contentFPath = await promContentFPath;
     let styleFPath = await promStyleFPath;
@@ -269,10 +294,14 @@ module.exports = {
       outputName : `${runInfo.photo_id}.${contentFT}`
     };
 
-    let outputFPath = await stylizer.startStyle(runParams);
+    let styleOutputObj = await stylizer.startStyle(runParams); 
+    let outputFPath = styleOutputObj.filepath;
+    runInfo.process_time = styleOutputObj.process_time;
+    
 
     await this.insertResource(
-        `${config.dbUrl}/${urlInsertImage}`,
+        //`${config.dbUrl}/${urlInsertImage}`,
+        urlInsertImage,
         outputFPath, contentFT, runInfo);
 
     currentCounter -= 1;

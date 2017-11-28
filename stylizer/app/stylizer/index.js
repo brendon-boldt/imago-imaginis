@@ -11,8 +11,7 @@ module.exports = {
   
 	// "Run" refers to a styling run
   startStyleVideo: async function(runParams) {
-    log("VIDEOS!!!!");
-    log(runParams);
+    //log(runParams);
 
     const options = [
       //stylizerPath + 'test.lua',
@@ -26,6 +25,7 @@ module.exports = {
 
     log(`video ${runParams.upId} started`);
     log('bash' + options.join(' '));
+    let start = new Date();
     await execFile('bash', options, {'cwd': config.stylizerPath})
       .catch((err) => {
         log(`The following error occurred with user_photo_id ${runParams.upId}`);
@@ -38,7 +38,10 @@ module.exports = {
         execFile('rm', [runParams.contentPath]);
       });
     log('done');
-    return `${config.outputPathVideo}/${runParams.outputName}`;
+    let obj = {};
+    obj.process_time = new Date() - start;
+    obj.filepath = `${config.outputPathVideo}/${runParams.outputName}`;
+    return obj;
   }, 
 
   startStyle: async function(runParams) {
@@ -56,6 +59,7 @@ module.exports = {
     ];
 
     log(`runId ${runParams.upId} started`);
+    let start = new Date();
     await execFile(config.thPath, options, {'cwd': config.stylizerPath})
       .catch((err) => {
         log(`The following error occurred with user_photo_id ${runParams.upId}`);
@@ -66,7 +70,10 @@ module.exports = {
         log(`Styling runId ${runParams.upId} completed succesfully.`);
         execFile('rm', [runParams.contentPath, runParams.stylePath]);
       });
-    return `${config.outputPath}/${runParams.outputName}`;
+    let obj = {};
+    obj.process_time = new Date() - start;
+    obj.filepath = `${config.outputPath}/${runParams.outputName}`;
+    return obj;
   }, 
 
   removeResource: function(path) {

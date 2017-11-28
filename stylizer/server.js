@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require('body-parser');
+const db = require('./app/db');
 
 try {
     require('./config.js');
@@ -25,8 +26,13 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.raw({limit: '50mb'}));
 
+/*
 require('./app/routes')(app);
 
 app.listen(port, () => {
     console.log('We are live on ' + port);
 })
+*/
+
+db.startWatching();
+
