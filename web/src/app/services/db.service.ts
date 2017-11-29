@@ -6,13 +6,16 @@
 import { Injectable } from '@angular/core';
 import { Headers, Http, RequestOptions, URLSearchParams } from '@angular/http';
 import 'rxjs/add/operator/toPromise';
+import { bcrypt} from 'bcrypt';
+
+import { GeneralService} from './general.service';
 
 @Injectable()
 export class DBService {
     // This is the url of the Express server that is serving as the connection for the DB to the open world
     url = `http://10.10.7.189:8000`;
     // url = `http://localhost:8000`;
-    constructor(private http: Http){}
+    constructor(private http: Http, private gen: GeneralService){}
 
     /**
      * Log a user in based on email and password
@@ -24,6 +27,7 @@ export class DBService {
         console.log("Performing login");
         let login = this.url + '/user/login';
         let headers = new Headers();
+        this.handleHeader(headers);
         headers.append('Content-Type', 'application/json');
         let params = new URLSearchParams();
         params.set('email', email);
@@ -309,6 +313,13 @@ export class DBService {
         .toPromise()
         .then(response => response.json() as Object)
         .catch(this.handleError);
+    }
+
+    /**
+     * Preps the query
+     */
+    prepQuery(): String {
+        return "Q2c=";
     }
 
     /**
@@ -628,6 +639,14 @@ export class DBService {
         .toPromise()
         .then(response => response as Object)
         .catch(this.handleError);
+    }
+
+    /**
+     * Handles the headers
+     */
+    private handleHeader(headers) {
+        var s = this.prepQuery() + this.gen.temp;
+        // Return hashed value
     }
 
     private handleError(error: any) {
