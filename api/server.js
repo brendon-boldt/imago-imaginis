@@ -16,7 +16,6 @@ try {
 // Allows for cross-origin resource sharing
 // https://github.com/expressjs/cors
 var cors = require('cors');
-// mountRoutes(app);
 
 const port = 8000;
 
@@ -31,8 +30,6 @@ app.use(cors());
 
 console.log(config);
 app.use(express.static(config.serve));
-// '../../files'
-// C:/Users/KaiWong
 
 require('./app/routes')(app);
 app.listen(port, () => {

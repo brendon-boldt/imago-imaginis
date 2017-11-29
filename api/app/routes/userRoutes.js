@@ -3,9 +3,59 @@ const multer = require('multer');
 const path = require('path');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
+const validator = require('validator');
 
 const config = require('../../config.js');
 const stat = require('./statRoutes');
+
+const PROPER_ID = 1;
+
+const MAX_PHOTO_UPLOADS_FREE = 2;
+
+/**
+ * Performs JWT verification. Returns true if JWT is valid, otherwise returns error
+ * Verifies that the id the user is passing belongs to them.
+ * Used for authenticated routes
+ */
+var verify = function(req, getres){
+    var token;
+    // JWT is passed either in query or in body
+    if(req.query.jwt != null){
+        token = req.query.jwt;
+    }
+    else if(req.body.jwt != null){
+        token = req.body.jwt;
+    }
+    try{
+        var decoded = jwt.verify(token, "thisisthekey");
+        var passed_user_id;
+        if(req.query.user_id != null){
+          passed_user_id = req.query.user_id;
+        }
+        else if(req.body.user_id != null){
+          passed_user_id = req.body.user_id;
+        }
+        console.log("Checking IDs");
+        console.log(passed_user_id);
+        console.log(token.user_id);
+        // See if passed user id matches the JWT they pass
+        if(passed_user_id != null){
+            if(passed_user_id != decoded.user_id){
+                getres.status(806);
+                getres.statusMessage = "Incorrect JWT token.";
+                getres.send("JWT does not match user id supplied. Please pass a valid JWT token for your user account.");
+                return false;
+            }
+        }
+        return true;
+    }
+    catch(err){
+        getres.status(800);
+        getres.statusMessage = "Invalid JWT token. Please pass a valid JWT token.";
+        getres.send("Invalid JWT token. Please pass a valid JWT token.");
+        return false;
+    }
+}
 
 module.exports = function(app) {
     /**
@@ -22,44 +72,60 @@ module.exports = function(app) {
      */
     app.post('/user/create', (req, getres) => {
         console.log("POST - create account");
-        var firstName = req.body.firstName;
-        var lastName = req.body.lastName;
-        var email = req.body.email;
-        var password = req.body.password; // Hash password
+        console.log(req.body);
+        // console.log(req);
+        var firstName = req.body.first_name.trim();
+        var lastName = req.body.last_name.trim();
+        var email = req.body.email.trim();
+        var password = req.body.password.trim(); // Hash password
+        if(firstName == null || lastName == null || email == null || password == null || firstName == "" || lastName == "" || email == "" || password == ""){
+          getres.status(406);
+          getres.statusMessage = "Missing info";
+          getres.send("Missing information. Refer to API documentation for all necessary information.");
+          return;
+        }
+        if(!validator.isEmail(email)){
+          console.log("Not a valid email")
+          getres.status(408);
+          getres.statusMessage = "Invalid email";
+          getres.send("Please enter a valid email.");
+          return;
+        }
         const hash = crypto.createHash('sha256');
         hash.update(password);
         password = hash.digest('hex');
         var date = new Date(Date.now()).toLocaleDateString();
         // Verify email is unique
-        var queryText = "SELECT * FROM ASP_USERS WHERE email = $1;";
+        var queryText = "SELECT * FROM ASP_USERS WHERE email = LOWER($1);";
         let values = [email];
         db.param_query(queryText, values)
-            .then(res => {
-                if (res == undefined) {
-                    getres.send("Create account failed");
-                } else if (res.rowCount > 0) {
-                    console.log("Email already registered to account");
-                    getres.status(401);
-                    getres.send("Email already registered to account");
-                } else {
-                    // Email is unique
-                    console.log("Email is unique");
-                    let queryText = "INSERT INTO asp_users (first_name, last_name, email, password, date_joined, status) VALUES ($1, $2, $3, $4, $5, true);";
-                    console.log("Query: " + queryText);
-                    let values = [firstName, lastName, email, password, date];
-                    db.param_query(queryText, values)
-                        .then(res => {
-                            if (res != undefined) {
-                                console.log("Account creation successful!");
-                                getres.send("Account creation successful!");
-                            } else {
-                                getres.send("Account creation failed");
-                            }
-                        })
-                        .catch(e => console.error(e.stack))
-                }
-            })
-            .catch(e => console.error(e.stack))
+          .then(res => {
+            if (res == undefined) {
+                getres.send("Create account failed");
+            } else if (res.rowCount > 0) {
+                console.log("Email already registered to account");
+                getres.status(401);
+                getres.statusMessage = "Email already registered";
+                getres.send("Email already registered to an account");
+            } else {
+              // Email is unique
+              console.log("Email is unique");
+              let queryText = "INSERT INTO asp_users (first_name, last_name, email, password, date_joined, status, admin) VALUES ($1, $2, LOWER($3), $4, $5, true, false);";
+              console.log("Query: " + queryText);
+              let values = [firstName, lastName, email, password, date];
+              db.param_query(queryText, values)
+                  .then(res => {
+                      if (res != undefined) {
+                          console.log("Account creation successful!");
+                          getres.send("Account creation successful!");
+                      } else {
+                          getres.send("Account creation failed");
+                      }
+                  })
+                  .catch(e => console.error(e.stack))
+              }
+          })
+          .catch(e => console.error(e.stack))
     });
 
     /**
@@ -68,50 +134,72 @@ module.exports = function(app) {
      */
     app.post('/user/alter', (req, getres) => {
         console.log("POST - alter account");
-        var id = req.body.id;
-        var firstName = req.body.firstName;
-        var lastName = req.body.lastName;
-        var email = req.body.email;
-        var password = req.body.password; // Hash password
+        // Throw error if user_id not passed
+        if(!verify(req, getres)){
+            return;
+        }
+        var id = req.body.user_id;
+        var firstName = req.body.first_name.trim();
+        var lastName = req.body.last_name.trim();
+        var email = req.body.email.trim();
+        var password = req.body.password.trim(); // Hash password
+        // Verify that they provided information to all the fields
+        if(id == null || firstName == null || lastName == null || email == null || firstName == "" || lastName == "" || email == ""){
+          getres.status(406);
+          getres.statusMessage = "Missing info";
+          getres.send("Missing user information. Please provide all user information. Password is optional");
+        }
+        if(!validator.isEmail(email)){
+          console.log(email)
+          console.log("Not a valid email")
+          getres.status(409);
+          getres.statusMessage = "Invalid email";
+          getres.send("Please enter a valid email.");
+          return;
+        }
         // Verify email is unique
         var queryText = "SELECT * FROM ASP_USERS WHERE email = $1 AND user_id != $2;";
         console.log(queryText);
         let values = [email, id];
         db.param_query(queryText, values)
-            .then(res => {
-                if (res == undefined) {
-                    getres.send("Alter account failed");
-                } else if (res.rowCount > 0) {
-                    console.log("Email already registered to account");
-                    getres.send("Email already registered to account");
-                } else {
-                    // Email is unique
-                    console.log("Email is unique");
-                    // If password is empty, leave it alone
-                    if (password == "" || password == null) {
-                        queryText = "UPDATE asp_users SET (first_name, last_name, email) = ('" + firstName + "', '" + lastName + "', '" + email + "') WHERE user_id = " + id + ";";
-                    } else {
-                        console.log(password);
-                        const hash = crypto.createHash('sha256');
-                        hash.update(password);
-                        password = hash.digest('hex');
-                        queryText = "UPDATE asp_users SET (first_name, last_name, email, password) = ($1, $2, $3, $4) WHERE user_id = $5;";
-                    }
-                    console.log("new Query: " + queryText);
-                    let values = [firstName, lastName, email, password, id];
-                    db.param_query(queryText, values)
-                        .then(res => {
-                            if (res != undefined) {
-                                console.log("Account update successful!");
-                                getres.send("Account update successful!");
-                            } else {
-                                getres.send("Account update failed");
-                            }
-                        })
-                        .catch(e => console.error(e.stack))
-                }
-            })
-            .catch(e => console.error(e.stack))
+          .then(res => {
+              if (res == undefined) {
+                  getres.send("Alter account failed");
+              } else if (res.rowCount > 0) {
+                  console.log("Email already registered to account");
+                  getres.status(401);
+                  getres.statusMessage = "Email already registered";
+                  getres.send("Email already registered to account");
+              } else {
+                  // Email is unique
+                  console.log("Email is unique");
+                  // If password is empty, leave it alone
+                  if (password == "" || password == null) {
+                      queryText = "UPDATE asp_users SET (first_name, last_name, email) = ($1, $2, $3) WHERE user_id = $4;";
+                      values = [firstName, lastName, email, id];
+                  } else {
+                      console.log(password);
+                      const hash = crypto.createHash('sha256');
+                      hash.update(password);
+                      password = hash.digest('hex');
+                      queryText = "UPDATE asp_users SET (first_name, last_name, email, password) = ($1, $2, $3, $4) WHERE user_id = $5;";
+                      values = [firstName, lastName, email, password, id];
+                  }
+                  console.log("new Query: " + queryText);
+                  db.param_query(queryText, values)
+                      .then(res => {
+                          console.log(res);
+                          if (res != undefined) {
+                              console.log("Account update successful!");
+                              getres.send("Account update successful!");
+                          } else {
+                              getres.send("Account update failed");
+                          }
+                      })
+                      .catch(e => console.error(e.stack))
+              }
+          })
+          .catch(e => console.error(e.stack))
     });
 
     /**
@@ -126,33 +214,31 @@ module.exports = function(app) {
         const hash = crypto.createHash('sha256');
         hash.update(password);
         password = hash.digest('hex');
-        let queryText = "SELECT * FROM asp_users WHERE email = $1 AND password = $2;";
+        let queryText = "SELECT * FROM asp_users LEFT JOIN paid_users ON asp_users.user_id = paid_users.paid_id WHERE email = $1 AND password = $2;";
+        console.log(queryText);
         let values = [email, password];
         db.param_query(queryText, values)
             .then(res => {
                 if (res.rows[0] != null) {
 					stat.logStatLogin(res.rows[0].user_id);
                     // Puts various user information into the JWT
+                    console.log(res.rows);
+                    // Put the user ID in the JWT payload
                     var payload = {
                         user_id: res.rows[0].user_id,
-                        first_name: res.rows[0].first_name,
-                        last_name: res.rows[0].last_name,
-                        isAdmin: res.rows[0].admin,
-                        dateJoined: res.rows[0].date_joined,
-                        email: email,
                     };
                     var token = jwt.sign(payload, "thisisthekey", {
                         expiresIn: '1h'
                     }); // Sets the token to expire in an hour
                     var decoded = jwt.verify(token, "thisisthekey"); // For reference
-                    // console.log({
-                    //   token: token,
-                    //   rows: res.rows[0]
-                    // });
                     // Return the token to the user
-                    getres.send(token);
-                    // getres.send(res.rows[0]);
+                    getres.statusMessage = "Login success";
+                    // Send the user their token and their user id
+                    getres.send({"user_id": res.rows[0].user_id, "token": token});
+                    // getres.send(token);
                 } else {
+                    getres.status(405);
+                    getres.statusMessage = "Login failed: User not found.";
                     getres.send("User not found");
                 }
             })
@@ -186,6 +272,8 @@ module.exports = function(app) {
 		var requesterUserId = req.query.requesterUserId;
 		stat.logStatRequest(requesterUserId);
         var id = req.query.id;
+        console.log("GET - info");
+        var id = req.query.user_id;
         let queryText = "SELECT * FROM ASP_USERS WHERE user_ID = $1;";
         let values = [id];
         db.param_query(queryText, values)
@@ -204,6 +292,7 @@ module.exports = function(app) {
 		var requesterUserId = req.query.requesterUserId;
 		stat.logStatRequest(requesterUserId);
         var id = req.query.id;
+        var id = req.query.user_id;
         let queryText = "SELECT * FROM unfiltered_photo WHERE unfiltered_photo_id IN (SELECT unfiltered_photo_id FROM USER_PHOTO WHERE user_ID = $1 AND (status = 'waiting' OR status = 'processing')) ORDER BY unfiltered_photo_id;";
         let values = [id];
         db.param_query(queryText, values)
@@ -222,6 +311,7 @@ module.exports = function(app) {
 		var requesterUserId = req.query.requesterUserId;
 		stat.logStatRequest(requesterUserId);
         var id = req.query.id;
+        var id = req.query.user_id;
         let queryText = "SELECT * FROM unfiltered_video WHERE unfiltered_video_id IN (SELECT unfiltered_video_id FROM user_video WHERE user_ID = $1 AND (status = 'waiting' OR status = 'processing')) ORDER BY unfiltered_video_id;";
         let values = [id];
         db.param_query(queryText, values)
@@ -234,12 +324,14 @@ module.exports = function(app) {
     /**
      * Creates a paid user with id
      * Takes in the request body's parameters
+     * TODO: How to hide from the public?
      */
     app.post('/user/paid', (req, getres) => {
         console.log("Post - create paid user");
 		var requesterUserId = req.body.requesterUserId;
 		stat.logStatRequest(requesterUserId);
         var id = req.body.id;
+        var id = req.body.user_id;
         var queryText = "SELECT * FROM Paid_Users WHERE user_id = $1;";
         let values = [id];
         db.param_query(queryText, values)
@@ -272,8 +364,17 @@ module.exports = function(app) {
         console.log("POST - set photo to display");
 		var requesterUserId = req.body.requesterUserId;
 		stat.logStatRequest(requesterUserId);
+        if(!verify(req, getres)){
+            return;
+        }
         var id = req.body.photo_id;
         var display = req.body.display;
+        if(id == null || display == null){
+          getres.status(406);
+          getres.statusMessage = "Missing info";
+          getres.send("Missing information. Refer to API documentation for all necessary information.");
+          return;
+        }
         var queryText = "UPDATE PHOTOS SET display = $1 WHERE photo_id = $2;";
         let values = [display, id];
         console.log(queryText);
@@ -286,7 +387,12 @@ module.exports = function(app) {
                     getres.send("Photo profile display change failed");
                 }
             })
-            .catch(e => console.error(e.stack))
+            .catch(e => {
+              console.error(e.stack); 
+              getres.status(402);
+              getres.statusMessage = "Error";
+              getres.send("Something went wrong. Please try again.");
+            })
     });
 
     /**
@@ -297,8 +403,17 @@ module.exports = function(app) {
         console.log("POST - set video to display");
 		var requesterUserId = req.body.requesterUserId;
 		stat.logStatRequest(requesterUserId);
+        if(!verify(req, getres)){
+            return;
+        }
         var id = req.body.video_id;
         var display = req.body.display;
+        if(id == null || display == null){
+          getres.status(406);
+          getres.statusMessage = "Missing info";
+          getres.send("Missing information. Refer to API documentation for all necessary information.");
+          return;
+        }
         var queryText = "UPDATE VIDEOS SET display = $1 WHERE video_id = $2;";
         let values = [display, id];
         console.log(queryText);
@@ -323,6 +438,13 @@ module.exports = function(app) {
 		var requesterUserId = req.query.requesterUserId;
 		stat.logStatRequest(requesterUserId);
         var id = req.query.id;
+        var id = req.query.user_id;
+        if(id == null){
+          getres.status(406);
+          getres.statusMessage = "Missing info";
+          getres.send("Missing information. Refer to API documentation for all necessary information.");
+          return;
+        }
         let queryText = "SELECT * FROM VIDEOS WHERE video_id IN (SELECT video_id FROM USER_VIDEO WHERE user_ID = $1 AND status = 'done') ORDER BY video_id;";
         let values = [id];
         db.param_query(queryText, values)
@@ -341,6 +463,13 @@ module.exports = function(app) {
 		var requesterUserId = req.query.requesterUserId;
 		stat.logStatRequest(requesterUserId);
         var id = req.query.id;
+        var id = req.query.user_id;
+        if(id == null){
+          getres.status(406);
+          getres.statusMessage = "Missing info";
+          getres.send("Missing information. Refer to API documentation for all necessary information.");
+          return;
+        }
         let queryText = "SELECT * FROM PHOTOS WHERE photo_id in (SELECT photo_id FROM USER_PHOTO WHERE user_ID = $1 AND status = 'done') ORDER BY photo_id";
         let values = [id];
         db.param_query(queryText, values)
@@ -358,8 +487,17 @@ module.exports = function(app) {
         console.log("POST - delete photo");
 		var requesterUserId = req.body.requesterUserId;
 		stat.logStatRequest(requesterUserId);
+        if(!verify(req, getres)){
+            return;
+        }
         var photoId = req.body.photo_id;
         var userId = req.body.user_id;
+        if(photoId == null || userId == null){
+          getres.status(406);
+          getres.statusMessage = "Missing info";
+          getres.send("Missing information. Refer to API documentation for all necessary information.");
+          return;
+        }
         var queryText = "DELETE FROM user_photo WHERE photo_id = $1 AND user_id = $2;";
         console.log(queryText);
         async function deletePhoto() {
@@ -383,8 +521,17 @@ module.exports = function(app) {
 		var requesterUserId = req.body.requesterUserId;
 		stat.logStatRequest(requesterUserId);
         console.log(req.body);
+        if(!verify(req, getres)){
+            return;
+        }
         var videoId = req.body.video_id;
         var userId = req.body.user_id;
+        if(videoId == null || userId == null){
+          getres.status(406);
+          getres.statusMessage = "Missing info";
+          getres.send("Missing information. Refer to API documentation for all necessary information.");
+          return;
+        }
         var queryText = "DELETE FROM user_video WHERE video_id = $1 AND user_id = $2;";
         console.log(queryText);
         async function deleteVideo() {
@@ -407,6 +554,13 @@ module.exports = function(app) {
 		var requesterUserId = req.query.requesterUserId;
 		stat.logStatRequest(requesterUserId);
         var id = req.query.id;
+        var id = req.query.user_id;
+        if(id == null){
+          getres.status(406);
+          getres.statusMessage = "Missing info";
+          getres.send("Missing information. Refer to API documentation for all necessary information.");
+          return;
+        }
         let queryText = "SELECT * FROM PHOTOS WHERE photo_id in (SELECT photo_id FROM USER_PHOTO WHERE user_ID = $1 AND status = 'done') AND display = true;";
         let values = [id];
         db.param_query(queryText, values)
@@ -424,6 +578,13 @@ module.exports = function(app) {
 		var requesterUserId = req.query.requesterUserId;
 		stat.logStatRequest(requesterUserId);
         var id = req.query.id;
+        var id = req.query.user_id;
+        if(id == null){
+          getres.status(406);
+          getres.statusMessage = "Missing info";
+          getres.send("Missing information. Refer to API documentation for all necessary information.");
+          return;
+        }
         let queryText = "SELECT * FROM VIDEOS WHERE video_id in (SELECT video_id FROM user_video WHERE user_ID = $1 AND status = 'done') AND display = true;";
         let values = [id];
         db.param_query(queryText, values)
@@ -432,5 +593,23 @@ module.exports = function(app) {
             })
             .catch(e => console.error(e.stack))
     });
+
+    /**
+     * Returns the number of photos the user has
+     */
+    app.get('/user/photos/num', async (req, getres) => {
+      console.log("GET - number of photos");
+      let queryText = "SELECT COUNT(*) FROM user_photo WHERE user_id = $1";
+      let values = [req.query.user_id];
+      result = await db.param_query(queryText, values)
+      console.log(result.rows[0])
+      if(result.rows[0].count >= MAX_PHOTO_UPLOADS_FREE){
+        getres.status(605);
+        getres.statusMessage = "Max uploads";
+        getres.send("You have reached your max of 2 uploaded images. Please remove images before continuing.");
+        return;
+      }
+      getres.send(result.rows[0]);
+    })
 
 }

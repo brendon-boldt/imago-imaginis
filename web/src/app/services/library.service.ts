@@ -36,13 +36,13 @@ export class LibraryService {
         this.photoArraysArray = [this.photoArrOne, this.photoArrTwo, this.photoArrThree, this.photoArrFour];
         // Get the user's styled photos and videos
         // Also, get their unstyled photos and videos, but overlay them with a processing image
-        this.db.getStyledPhotos(this.user.user_id).then(res => {
+        this.db.getStyledPhotos(this.user.userId).then(res => {
             var styledRes = res.json();
-            this.db.getUnStyledPhotos(this.user.user_id).then(res => {
+            this.db.getUnStyledPhotos(this.user.userId).then(res => {
                 var unStyledRes = res.json();
-                this.db.getStyledVideos(this.user.user_id).then(res => {
+                this.db.getStyledVideos(this.user.userId).then(res => {
                     var styledVidRes = res.json();
-                    this.db.getUnStyledVideos(this.user.user_id).then(res => {
+                    this.db.getUnStyledVideos(this.user.userId).then(res => {
                         var unStyledVidRes = res.json();
                         for(var photo of unStyledRes){
                             this.photos.push(photo);

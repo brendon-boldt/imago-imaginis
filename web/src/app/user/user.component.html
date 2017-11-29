@@ -7,7 +7,7 @@
 <header class="masthead">
     <div class="header-content">
         <div class="header-content-inner">
-			<h1 id="homeHeading">{{this.first_name}} {{this.last_name}}</h1>
+			<h1 id="homeHeading">{{this.firstName}} {{this.lastName}}</h1>
 			<hr>
             <div class="container center-text">
                 <div class="row">
@@ -16,8 +16,8 @@
                         <img [src]="this.profilePhoto" class="img-border" alt="profile picture" style="width: 200px; height: auto">
                         <br><br>
                         <div id="bginfo" class="justify-content-center">
-                            <p class="lead" ><strong>First Name:</strong><br>{{this.first_name}}ooooooooooo</p>
-                            <p class="lead"><strong>Last Name:</strong><br>{{this.last_name}}</p>
+                            <p class="lead" ><strong>First Name:</strong><br>{{this.firstName}}</p>
+                            <p class="lead"><strong>Last Name:</strong><br>{{this.lastName}}</p>
                             <p class="lead"><strong>Email:</strong><br>{{this.email}}</p>
                             <p class="lead"><strong>Date Joined:</strong><br>{{this.dateJoined}}</p>
                         </div>
@@ -63,7 +63,7 @@
                       <input type="radio" name="reason" value="Other"> Other<br>
                     </form> 
                     </span><br>
-                    <button type="button" class="btn btn-warning btn-lg" (click)="reportmodal.hide(); confirmmodal.show();">Report</button>
+                    <button type="button" class="btn btn-warning btn-lg" (click)="reportmodal.hide(); this.executeReport(); confirmmodal.show();">Report</button>
                 </div>
                 <div class="app-modal-footer">
                     <button type="button" class="btn btn-default" (click)="reportmodal.hide();">Close</button>
@@ -93,7 +93,7 @@
                     </video>
                 </div>
                 <div class="app-modal-footer">
-                    <button *ngIf="this.user_id != this.user.user_id" type="button" class="btn btn-warning" (click)="modal.hide(); reportmodal.show()">Report</button>
+                    <button *ngIf="this.userId != this.user.userId" type="button" class="btn btn-warning" (click)="modal.hide(); reportmodal.show()">Report</button>
                     <button type="button" class="btn btn-default" (click)="modal.hide();">Close</button>
                 </div>
             </picture-modal>

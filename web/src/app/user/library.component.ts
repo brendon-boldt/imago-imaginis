@@ -81,7 +81,7 @@ export class LibraryComponent {
    * Deletes a photo
    */
   deletePhoto(): void {
-    this.db.deletePhoto(this.user.user_id, this.modalPhoto['photo_id']).then(res => {
+    this.db.deletePhoto(this.user.userId, this.modalPhoto['photo_id']).then(res => {
       console.log(res);
       // Update the library display
       // this.getPictures();
@@ -92,7 +92,7 @@ export class LibraryComponent {
    * Deletes a video
    */
   deleteVideo(): void {
-    this.db.deleteVideo(this.user.user_id, this.modalPhoto['video_id']).then(res => {
+    this.db.deleteVideo(this.user.userId, this.modalPhoto['video_id']).then(res => {
       console.log(res);
       // Update the library display
       // this.getPictures();

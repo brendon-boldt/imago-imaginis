@@ -48,6 +48,6 @@ export class SearchComponent {
     let user = this.results[index];
     console.log(user);
     // Navigate to the user profile, with route parameters set
-    this.router.navigate(['user'], { queryParams: { user_id: user.user_id }});
+    this.router.navigate(['user'], { queryParams: { userId: user.user_id }});
   }
 }

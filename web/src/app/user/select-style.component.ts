@@ -23,7 +23,7 @@ export class SelectStyleComponent {
   freeUser: boolean = true;
   selectedStyle: Object = {"filter_id": "Select a style", "name":"Select a Style", "path":"../../assets/brush.png"};
   // styles: Array<Object> = [{"style":"Cubism", "example":"../assets/cubism.jpg"}, {"style":"Flowers", "example":"../assets/flowers.jpg"}, {"style":"Starry Night", "example":"../assets/starrynight.jpg"}, {"style":"Oil Painting", "example":"../assets/oil.jpg"}, {"style":"Impressionism", "example":"../assets/impress.jpg"}];
-  styles: Array<Object> = null; // Comes from DB as [{"filter_id":1,"name":"VanGogh"},...]
+  styles: Array<any> = null; // Comes from DB as [{"filter_id":1,"name":"VanGogh"},...]
   // uploadedImage: File = null;
   filterToUpload: File;
   video: any;
@@ -36,6 +36,10 @@ export class SelectStyleComponent {
       // Gets list of filters/styles
       this.db.getFilters().then(filters => {
         this.styles = filters;
+        // Convert paths
+        for(var i=0; i<this.styles.length; i++){
+          this.styles[i].path = this.db.url + "/" + this.styles[i].path;
+        }
         console.log(this.styles);
       });
     }
@@ -50,7 +54,7 @@ export class SelectStyleComponent {
    */
   selectStyle = function(style) {
     this.selectedStyle = style;
-    this.selectedStyle.path = this.db.url + "/" + this.selectedStyle.path;
+    // this.selectedStyle.path = this.db.url + "/" + this.selectedStyle.path;
     console.log(this.selectedStyle);
   }
 
@@ -68,16 +72,16 @@ export class SelectStyleComponent {
         // TODO: GET DIMENSIONS OF VIDEO UPLOAD
         // Upload the filter if custom is selected
         if(this.selectedStyle.filter_id == "Upload a style"){
-          this.db.uploadFilter(this.filterToUpload, this.us.user_id).then(res => {
+          this.db.uploadFilter(this.filterToUpload, this.us.userId).then(res => {
             // res._body returns the filter id that was just added
             // TODO: Display loading animation while uploading, stop when response received.
-            this.db.uploadVideo(this.us.user_id, this.us.uploadedPhoto, res._body).then(result => {
+            this.db.uploadVideo(this.us.userId, this.us.uploadedPhoto, res._body).then(result => {
               this.router.navigate(['library']);
             });
           });
         }
         else{
-          this.db.uploadVideo(this.us.user_id, this.us.uploadedPhoto, this.selectedStyle['filter_id']).then(result => {
+          this.db.uploadVideo(this.us.userId, this.us.uploadedPhoto, this.selectedStyle['filter_id']).then(result => {
             this.router.navigate(['library']);
           });
         }
@@ -89,10 +93,10 @@ export class SelectStyleComponent {
         img.src = this.gen.uploadedImage;
         // Upload the filter if custom is selected
         if(this.selectedStyle.filter_id == "Upload a style"){
-          this.db.uploadFilter(this.filterToUpload, this.us.user_id).then(res => {
+          this.db.uploadFilter(this.filterToUpload, this.us.userId).then(res => {
             // res._body returns the filter id that was just added
             // TODO: Display loading animation while uploading, stop when response received.
-            this.db.uploadPhoto(this.us.user_id, this.us.uploadedPhoto, res._body, img).then(result => {
+            this.db.uploadPhoto(this.us.userId, this.us.uploadedPhoto, res._body, img).then(result => {
               if(result.status == 501){
                 // File size was too large
                 this.modalText = "Max image file size exceeded! 7MB max.";
@@ -106,7 +110,7 @@ export class SelectStyleComponent {
           });
         }
         else{
-          this.db.uploadPhoto(this.us.user_id, this.us.uploadedPhoto, this.selectedStyle['filter_id'], img).then(result => {
+          this.db.uploadPhoto(this.us.userId, this.us.uploadedPhoto, this.selectedStyle['filter_id'], img).then(result => {
             if(result.status == 501){
               // File size was too large
               this.modalText = "Max image file size exceeded! 7MB max.";
