@@ -48,6 +48,7 @@ export class UserSettingsComponent {
       this.user.last_name = this.lastName;
       this.user.email = this.email;
       this.modalText = "User Settings Saved!";
+      this.user.refreshInfo;
       // Scroll user to top of page
       window.scrollTo(0, 0)
       this.modal.show();

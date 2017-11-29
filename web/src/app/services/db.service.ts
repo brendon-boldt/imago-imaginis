@@ -48,23 +48,15 @@ export class DBService {
         let createUser = this.url + '/user/create';
         let headers = new Headers();
         headers.append('Content-Type', 'application/x-www-form-urlencoded');
-
-        // Looks like form data is not supported
-        // let formData: any = new FormData();
-        // formData.append("first_name", firstName);
-        // formData.append("last_name", lastName);
-        // formData.append("email", email);
-        // formData.append("password", password);
-        let body = new URLSearchParams();
+        let body: any = new URLSearchParams();
         body.append("first_name", firstName);
         body.append("last_name", lastName);
         body.append("email", email);
         body.append("password", password);
-
+        console.log(password)
         let params = new URLSearchParams();
-        // params.set('filter_id', style['filter_id']);
         let options = new RequestOptions({headers: headers, search: params});
-        return this.http.post(createUser, body.toString(), options)
+        return this.http.post(createUser, body, options)
         .toPromise()
         .then(response => {return response as Object})
         .catch(this.handleError);
@@ -79,7 +71,6 @@ export class DBService {
         console.log("WEB: Performing POST of photo");
         let upload = this.url + '/upload/photo';
         let headers = new Headers();
-        // headers.append('Content-Type', 'image/jpeg');
         // Pass in JWT for Express to verify if valid
         let jwt = sessionStorage.getItem('jwt');
         let formData: any = new FormData();
@@ -91,13 +82,7 @@ export class DBService {
         formData.append('jwt', jwt+"");
         console.log("WEB: File that will be uploaded with filter id " + filterId + ":");
         console.log(file);
-
-        // TODO: USE PROPER BODY POSTING
         let params = new URLSearchParams();
-        // params.set('filter_id', filterId+"");
-        // params.set('user_id', id+"");
-        // params.set('height', img.width+"");
-        // params.set('width', img.height+"");
         let options = new RequestOptions({headers: headers, search: params});
         return this.http.post(upload, formData, options)
         .toPromise()
@@ -114,20 +99,15 @@ export class DBService {
         console.log("WEB: Performing POST of video");
         let videoUpload = this.url + '/upload/video';
         let headers = new Headers();
-        // headers.append('Content-Type', 'image/jpeg');
-
+        let jwt = sessionStorage.getItem('jwt');
         let formData: any = new FormData();
         formData.append("upload", file);
         formData.append('filter_id', filterId+"");
         formData.append('user_id', ""+id);
-        let jwt = sessionStorage.getItem('jwt');
         formData.append('jwt', jwt+"");
         console.log("WEB: File that will be uploaded with filter id " + filterId + ":");
         console.log(file);
-
         let params = new URLSearchParams();
-        // params.set('filter_id', filterId+"");
-        // params.set('user_id', ""+id);
         let options = new RequestOptions({headers: headers, search: params});
         return this.http.post(videoUpload, formData, options)
         .toPromise()
@@ -144,18 +124,17 @@ export class DBService {
         console.log("WEB: Performing POST of photo");
         let uploadProfile = this.url + '/user/upload/profile';
         let headers = new Headers();
+        // headers.append('Content-Type', 'application/x-www-form-urlencoded');
+        // headers.append('Content-Type', 'multipart/form-data');
         // headers.append('Content-Type', 'image/jpeg');
-
-        let formData: any = new FormData();
+        let jwt = sessionStorage.getItem('jwt');
+        var formData: any = new FormData();
         formData.append("upload", file);
         formData.append('user_id', ""+id);
-        let jwt = sessionStorage.getItem('jwt');
         formData.append('jwt', jwt+"");
         console.log("WEB: Profile photo that will be uploaded: ");
         console.log(file);
-
         let params = new URLSearchParams();
-        // params.set('user_id', ""+id);
         let options = new RequestOptions({headers: headers, search: params});
         return this.http.post(uploadProfile, formData, options)
         .toPromise()
@@ -275,23 +254,6 @@ export class DBService {
         .catch(this.handleError);
     }
     
-    // /**
-    //  * Gets the user's profile photo based on passed user id
-    //  */
-    // getProfilePhoto(id: number): Promise<any> {
-    //     let profilePicture = this.url + '/user/profile-picture';
-    //     let headers = new Headers();
-    //     headers.append('Content-Type', 'application/json');
-    //     let params = new URLSearchParams();
-    //     params.set('user_id', id+"");
-    //     let options = new RequestOptions({headers: headers, search: params});
-    //     return this.http.get(profilePicture, options)
-    //     .toPromise()
-    //     // .then(response => response.json()　as Object)
-    //     .then(response => response as Object)
-    //     .catch(this.handleError);
-    // }
-
     /**
      * Gets list of all filters
      * Must be user

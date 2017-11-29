@@ -68,6 +68,8 @@ module.exports = function(app) {
      */
     app.post('/user/create', (req, getres) => {
         console.log("POST - create account");
+        console.log(req.body);
+        // console.log(req);
         var firstName = req.body.first_name;
         var lastName = req.body.last_name;
         var email = req.body.email;
@@ -80,32 +82,33 @@ module.exports = function(app) {
         var queryText = "SELECT * FROM ASP_USERS WHERE email = LOWER($1);";
         let values = [email];
         db.param_query(queryText, values)
-            .then(res => {
-                if (res == undefined) {
-                    getres.send("Create account failed");
-                } else if (res.rowCount > 0) {
-                    console.log("Email already registered to account");
-                    getres.status(401);
-                    getres.send("Email already registered to account");
-                } else {
-                    // Email is unique
-                    console.log("Email is unique");
-                    let queryText = "INSERT INTO asp_users (first_name, last_name, email, password, date_joined, status) VALUES ($1, $2, LOWER($3), $4, $5, true);";
-                    console.log("Query: " + queryText);
-                    let values = [firstName, lastName, email, password, date];
-                    db.param_query(queryText, values)
-                        .then(res => {
-                            if (res != undefined) {
-                                console.log("Account creation successful!");
-                                getres.send("Account creation successful!");
-                            } else {
-                                getres.send("Account creation failed");
-                            }
-                        })
-                        .catch(e => console.error(e.stack))
-                }
-            })
-            .catch(e => console.error(e.stack))
+          .then(res => {
+            if (res == undefined) {
+                getres.send("Create account failed");
+            } else if (res.rowCount > 0) {
+                console.log("Email already registered to account");
+                getres.status(401);
+                getres.statusMessage = "Email already registered";
+                getres.send("Email already registered to an account");
+            } else {
+              // Email is unique
+              console.log("Email is unique");
+              let queryText = "INSERT INTO asp_users (first_name, last_name, email, password, date_joined, status) VALUES ($1, $2, LOWER($3), $4, $5, true);";
+              console.log("Query: " + queryText);
+              let values = [firstName, lastName, email, password, date];
+              db.param_query(queryText, values)
+                  .then(res => {
+                      if (res != undefined) {
+                          console.log("Account creation successful!");
+                          getres.send("Account creation successful!");
+                      } else {
+                          getres.send("Account creation failed");
+                      }
+                  })
+                  .catch(e => console.error(e.stack))
+              }
+          })
+          .catch(e => console.error(e.stack))
     });
 
     /**

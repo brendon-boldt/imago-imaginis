@@ -66,8 +66,18 @@ export class UserService {
     // Refreshes the user info. Typically called after account update
     refreshInfo(): Promise<any> {
         return this.db.getUser(this.user_id).then(res => {
+            res = res[0];
+            console.log(res);
             console.log("WEB: Refreshing user's information");
-            console.log(res.json());
-        })
+            this.user_id = res.user_id;
+            this.first_name = res.first_name;
+            this.last_name = res.last_name;
+            this.email = res.email;
+            this.isAdmin = res.admin;
+            this.dateJoined = res.dateJoined;
+            if(res.profile_photo != null){
+                this.profilePhoto = this.db.url + res.profile_photo;
+            }
+        });
     }
 }
