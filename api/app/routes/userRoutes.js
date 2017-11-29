@@ -3,6 +3,7 @@ const multer = require('multer');
 const path = require('path');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
+const validator = require('validator');
 
 const config = require('../../config.js');
 
@@ -74,6 +75,19 @@ module.exports = function(app) {
         var lastName = req.body.last_name;
         var email = req.body.email;
         var password = req.body.password; // Hash password
+        if(firstName == null || lastName == null || email == null || password == null || firstName == "" || lastName == "" || email == ""){
+          getres.status(406);
+          getres.statusMessage = "Missing info";
+          getres.send("Missing information. Refer to API documentation for all necessary information.");
+          return;
+        }
+        if(!validator.isEmail(email)){
+          console.log("Not a valid email")
+          getres.status(408);
+          getres.statusMessage = "Invalid email";
+          getres.send("Please enter a valid email.");
+          return;
+        }
         const hash = crypto.createHash('sha256');
         hash.update(password);
         password = hash.digest('hex');
@@ -126,6 +140,19 @@ module.exports = function(app) {
         var lastName = req.body.last_name;
         var email = req.body.email;
         var password = req.body.password; // Hash password
+        // Verify that they provided information to all the fields
+        if(id == null || firstName == null || lastName == null || email == null){
+          getres.status(406);
+          getres.statusMessage = "Missing info";
+          getres.send("Missing user information. Please provide all user information. Password is optional");
+        }
+        if(!validator.isEmail(email)){
+          console.log("Not a valid email")
+          getres.status(408);
+          getres.statusMessage = "Invalid email";
+          getres.send("Please enter a valid email.");
+          return;
+        }
         // Verify email is unique
         var queryText = "SELECT * FROM ASP_USERS WHERE email = $1 AND user_id != $2;";
         console.log(queryText);
@@ -193,13 +220,6 @@ module.exports = function(app) {
                     // Put the user ID in the JWT payload
                     var payload = {
                         user_id: res.rows[0].user_id,
-                        // first_name: res.rows[0].first_name,
-                        // last_name: res.rows[0].last_name,
-                        // isAdmin: res.rows[0].admin,
-                        // dateJoined: res.rows[0].date_joined,
-                        // isPaid: res.rows[0].paid_id,
-                        // email: email,
-                        // profilePhoto: res.rows[0].profile_photo
                     };
                     var token = jwt.sign(payload, "thisisthekey", {
                         expiresIn: '1h'
@@ -286,8 +306,8 @@ module.exports = function(app) {
     /**
      * Creates a paid user with id
      * Takes in the request body's parameters
+     * TODO: How to hide from the public?
      */
-    //HIDE FROM PUBLIC
     app.post('/user/paid', (req, getres) => {
         console.log("Post - create paid user");
         var id = req.body.user_id;
@@ -326,6 +346,12 @@ module.exports = function(app) {
         }
         var id = req.body.photo_id;
         var display = req.body.display;
+        if(id == null || display == null){
+          getres.status(406);
+          getres.statusMessage = "Missing info";
+          getres.send("Missing information. Refer to API documentation for all necessary information.");
+          return;
+        }
         var queryText = "UPDATE PHOTOS SET display = $1 WHERE photo_id = $2;";
         let values = [display, id];
         console.log(queryText);
@@ -338,7 +364,12 @@ module.exports = function(app) {
                     getres.send("Photo profile display change failed");
                 }
             })
-            .catch(e => console.error(e.stack))
+            .catch(e => {
+              console.error(e.stack); 
+              getres.status(402);
+              getres.statusMessage = "Error";
+              getres.send("Something went wrong. Please try again.");
+            })
     });
 
     /**
@@ -352,6 +383,12 @@ module.exports = function(app) {
         }
         var id = req.body.video_id;
         var display = req.body.display;
+        if(id == null || display == null){
+          getres.status(406);
+          getres.statusMessage = "Missing info";
+          getres.send("Missing information. Refer to API documentation for all necessary information.");
+          return;
+        }
         var queryText = "UPDATE VIDEOS SET display = $1 WHERE video_id = $2;";
         let values = [display, id];
         console.log(queryText);
@@ -374,6 +411,12 @@ module.exports = function(app) {
     app.get('/user/videos', (req, getres) => {
         console.log("GET - user videos");
         var id = req.query.user_id;
+        if(id == null){
+          getres.status(406);
+          getres.statusMessage = "Missing info";
+          getres.send("Missing information. Refer to API documentation for all necessary information.");
+          return;
+        }
         let queryText = "SELECT * FROM VIDEOS WHERE video_id IN (SELECT video_id FROM USER_VIDEO WHERE user_ID = $1 AND status = 'done') ORDER BY video_id;";
         let values = [id];
         db.param_query(queryText, values)
@@ -390,6 +433,12 @@ module.exports = function(app) {
     app.get('/user/photos', (req, getres) => {
         console.log("GET - user photos");
         var id = req.query.user_id;
+        if(id == null){
+          getres.status(406);
+          getres.statusMessage = "Missing info";
+          getres.send("Missing information. Refer to API documentation for all necessary information.");
+          return;
+        }
         let queryText = "SELECT * FROM PHOTOS WHERE photo_id in (SELECT photo_id FROM USER_PHOTO WHERE user_ID = $1 AND status = 'done') ORDER BY photo_id";
         let values = [id];
         db.param_query(queryText, values)
@@ -410,6 +459,12 @@ module.exports = function(app) {
         }
         var photoId = req.body.photo_id;
         var userId = req.body.user_id;
+        if(photoId == null || userId == null){
+          getres.status(406);
+          getres.statusMessage = "Missing info";
+          getres.send("Missing information. Refer to API documentation for all necessary information.");
+          return;
+        }
         var queryText = "DELETE FROM user_photo WHERE photo_id = $1 AND user_id = $2;";
         console.log(queryText);
         async function deletePhoto() {
@@ -435,6 +490,12 @@ module.exports = function(app) {
         }
         var videoId = req.body.video_id;
         var userId = req.body.user_id;
+        if(videoId == null || userId == null){
+          getres.status(406);
+          getres.statusMessage = "Missing info";
+          getres.send("Missing information. Refer to API documentation for all necessary information.");
+          return;
+        }
         var queryText = "DELETE FROM user_video WHERE video_id = $1 AND user_id = $2;";
         console.log(queryText);
         async function deleteVideo() {
@@ -455,6 +516,12 @@ module.exports = function(app) {
     app.get('/user/photos/display', (req, getres) => {
         console.log("GET - user profile display photos");
         var id = req.query.user_id;
+        if(id == null){
+          getres.status(406);
+          getres.statusMessage = "Missing info";
+          getres.send("Missing information. Refer to API documentation for all necessary information.");
+          return;
+        }
         let queryText = "SELECT * FROM PHOTOS WHERE photo_id in (SELECT photo_id FROM USER_PHOTO WHERE user_ID = $1 AND status = 'done') AND display = true;";
         let values = [id];
         db.param_query(queryText, values)
@@ -470,6 +537,12 @@ module.exports = function(app) {
     app.get('/user/videos/display', (req, getres) => {
         console.log("GET - user profile display videos");
         var id = req.query.user_id;
+        if(id == null){
+          getres.status(406);
+          getres.statusMessage = "Missing info";
+          getres.send("Missing information. Refer to API documentation for all necessary information.");
+          return;
+        }
         let queryText = "SELECT * FROM VIDEOS WHERE video_id in (SELECT video_id FROM user_video WHERE user_ID = $1 AND status = 'done') AND display = true;";
         let values = [id];
         db.param_query(queryText, values)
