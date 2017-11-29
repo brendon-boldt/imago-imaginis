@@ -155,8 +155,8 @@
         <picture-modal #modal [clickOutsideToHide]="true">
             <div class="app-modal-header">
                 <!--Error-->&nbsp;
-                <h3 *ngIf="this.modalPhoto.unfiltered_photo_id != null">
-                    IMAGE STYLING IN PROGRESS
+                <h3 *ngIf="this.modalPhoto.unfiltered_photo_id != null || this.modalPhoto.unfiltered_video_id != null">
+                    STYLING IN PROGRESS
                 </h3>
             </div>
             <div class="app-modal-body preview">

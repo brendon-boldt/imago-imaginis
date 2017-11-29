@@ -143,7 +143,7 @@ module.exports = function(app) {
       var result = await db.query(queryText);
       var unfiltered_photo_id = result.rows[0].unfiltered_photo_id;
       file.unfiltered_photo_id = unfiltered_photo_id;
-      var filename = file.fieldname + '-' + unfiltered_photo_id + path.extname(file.originalname);
+      var filename = file.fieldname + '-' + unfiltered_photo_id + path.extname(file.originalname.toLowerCase());
       cb(null, filename);
     }
   });
@@ -227,7 +227,7 @@ module.exports = function(app) {
         var result = await db.query(queryText);
         var unfiltered_video_id = result.rows[0].unfiltered_video_id;
         file.unfiltered_video_id = unfiltered_video_id;
-        var filename = file.fieldname + '-' + unfiltered_video_id + path.extname(file.originalname);
+        var filename = file.fieldname + '-' + unfiltered_video_id + path.extname(file.originalname.toLowerCase());
         cb(null, filename);
     }
   });

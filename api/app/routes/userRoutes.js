@@ -71,11 +71,11 @@ module.exports = function(app) {
         console.log("POST - create account");
         console.log(req.body);
         // console.log(req);
-        var firstName = req.body.first_name;
-        var lastName = req.body.last_name;
-        var email = req.body.email;
-        var password = req.body.password; // Hash password
-        if(firstName == null || lastName == null || email == null || password == null || firstName == "" || lastName == "" || email == ""){
+        var firstName = req.body.first_name.trim();
+        var lastName = req.body.last_name.trim();
+        var email = req.body.email.trim();
+        var password = req.body.password.trim(); // Hash password
+        if(firstName == null || lastName == null || email == null || password == null || firstName == "" || lastName == "" || email == "" || password == ""){
           getres.status(406);
           getres.statusMessage = "Missing info";
           getres.send("Missing information. Refer to API documentation for all necessary information.");
@@ -136,19 +136,20 @@ module.exports = function(app) {
             return;
         }
         var id = req.body.user_id;
-        var firstName = req.body.first_name;
-        var lastName = req.body.last_name;
-        var email = req.body.email;
-        var password = req.body.password; // Hash password
+        var firstName = req.body.first_name.trim();
+        var lastName = req.body.last_name.trim();
+        var email = req.body.email.trim();
+        var password = req.body.password.trim(); // Hash password
         // Verify that they provided information to all the fields
-        if(id == null || firstName == null || lastName == null || email == null){
+        if(id == null || firstName == null || lastName == null || email == null || firstName == "" || lastName == "" || email == ""){
           getres.status(406);
           getres.statusMessage = "Missing info";
           getres.send("Missing user information. Please provide all user information. Password is optional");
         }
         if(!validator.isEmail(email)){
+          console.log(email)
           console.log("Not a valid email")
-          getres.status(408);
+          getres.status(409);
           getres.statusMessage = "Invalid email";
           getres.send("Please enter a valid email.");
           return;
@@ -171,7 +172,7 @@ module.exports = function(app) {
                   console.log("Email is unique");
                   // If password is empty, leave it alone
                   if (password == "" || password == null) {
-                      queryText = "UPDATE asp_users SET (first_name, last_name, email) = ($1, $2, $3) WHERE user_id = $5;";
+                      queryText = "UPDATE asp_users SET (first_name, last_name, email) = ($1, $2, $3) WHERE user_id = $4;";
                       values = [firstName, lastName, email, id];
                   } else {
                       console.log(password);

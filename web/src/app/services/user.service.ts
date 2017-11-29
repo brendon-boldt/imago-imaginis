@@ -83,6 +83,9 @@ export class UserService {
         if(res.profile_photo != null){
             this.profilePhoto = this.db.url + res.profile_photo;
         }
+        else{
+            this.profilePhoto = '../../assets/placeholder.jpg';
+        }
         // this.dataAvailable = true;
         return res;
       });

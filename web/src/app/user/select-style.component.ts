@@ -23,7 +23,7 @@ export class SelectStyleComponent {
   freeUser: boolean = true;
   selectedStyle: Object = {"filter_id": "Select a style", "name":"Select a Style", "path":"../../assets/brush.png"};
   // styles: Array<Object> = [{"style":"Cubism", "example":"../assets/cubism.jpg"}, {"style":"Flowers", "example":"../assets/flowers.jpg"}, {"style":"Starry Night", "example":"../assets/starrynight.jpg"}, {"style":"Oil Painting", "example":"../assets/oil.jpg"}, {"style":"Impressionism", "example":"../assets/impress.jpg"}];
-  styles: Array<Object> = null; // Comes from DB as [{"filter_id":1,"name":"VanGogh"},...]
+  styles: Array<any> = null; // Comes from DB as [{"filter_id":1,"name":"VanGogh"},...]
   // uploadedImage: File = null;
   filterToUpload: File;
   video: any;
@@ -36,6 +36,10 @@ export class SelectStyleComponent {
       // Gets list of filters/styles
       this.db.getFilters().then(filters => {
         this.styles = filters;
+        // Convert paths
+        for(var i=0; i<this.styles.length; i++){
+          this.styles[i].path = this.db.url + "/" + this.styles[i].path;
+        }
         console.log(this.styles);
       });
     }
@@ -50,7 +54,7 @@ export class SelectStyleComponent {
    */
   selectStyle = function(style) {
     this.selectedStyle = style;
-    this.selectedStyle.path = this.db.url + "/" + this.selectedStyle.path;
+    // this.selectedStyle.path = this.db.url + "/" + this.selectedStyle.path;
     console.log(this.selectedStyle);
   }
 

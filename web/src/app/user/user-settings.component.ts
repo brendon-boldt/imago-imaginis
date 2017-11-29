@@ -50,7 +50,7 @@ export class UserSettingsComponent {
    */
   save(): void {
     console.log("WEB: Saving user settings");
-    this.db.saveUserSettings(this.user.userId, this.firstName, this.lastName, this.email, this.password).then(res => {
+    this.db.saveUserSettings(this.user.userId, this.form.firstName, this.form.lastName, this.form.email, this.password).then(res => {
       console.log(res.status)
       if(res.status == 401){
         // Email already exists
@@ -58,12 +58,15 @@ export class UserSettingsComponent {
         window.scrollTo(0,0);
         this.modal.show();
       }
+      else if(res.status == 409){
+        // Invalid email
+        this.modalText = "Please enter a valid email."
+        window.scrollTo(0,0);
+        this.modal.show();
+      }
       else{
-        this.user.firstName = this.firstName;
-        this.user.lastName = this.lastName;
-        this.user.email = this.email;
         this.modalText = "User Settings Saved!";
-        this.user.refreshInfo;
+        this.user.refreshInfo();
         // Scroll user to top of page
         window.scrollTo(0, 0)
         this.modal.show();
