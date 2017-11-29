@@ -460,6 +460,23 @@ export class DBService {
     }
 
     /**
+     * Gets the number of photos a user has
+     */
+    getNumPhotos(user_id: number): Promise<any> {
+        console.log("WEB: Get num of photos");
+        let get = this.url + '/user/photos/num';
+        let headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        let params = new URLSearchParams();
+        params.set('user_id', user_id+"");
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.get(get, options)
+        .toPromise()
+        .then(response => response as Object)
+        .catch(this.handleError);
+    }
+
+    /**
      * Performs a get on all system stats
      * Only admins
      */
@@ -615,6 +632,12 @@ export class DBService {
 
     private handleError(error: any) {
         console.error('WEB: An error occurred', error); 
+        console.log(error);
+        // JWT has expired, sign the user out
+        if(error.status == 800){
+            sessionStorage.clear();
+            location.reload();
+        }
         return error;
 		// return Promise.reject(error.message || error);
 	}

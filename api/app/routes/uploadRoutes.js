@@ -7,6 +7,7 @@ var sizeOf = require('image-size');
 const config = require('../../config.js');
 
 const MAX_PHOTO_UPLOAD_SIZE = 7340032; // 7 MB is max photo upload size
+const MAX_PHOTO_UPLOADS_FREE = 2;
 
 /**
  * Performs JWT verification. Returns true if JWT is valid, otherwise returns error
@@ -156,9 +157,23 @@ module.exports = function(app) {
       return cb(null, false, new Error('goes wrong on the mimetype'));
     }
     cb(null, true); 
-  }}).single("upload"), (req, getres) => {
+  }}).single("upload"), async (req, getres) => {
     if(!verify(req, getres)){
       return;
+    }
+    var isPaid = await verifyPaid(req, getres);
+    // If the user is a free user, check to make sure they don't have more than 2 photos
+    if(!isPaid){
+      let queryText = "SELECT COUNT(*) FROM user_photo WHERE user_id = $1";
+      let values = [req.body.user_id];
+      result = await db.param_query(queryText, values)
+      console.log(result.rows[0])
+      if(result.rows[0] >= MAX_PHOTO_UPLOADS_FREE){
+        getres.status(605);
+        getres.statusMessage = "Max uploads";
+        getres.send("You have reached your max of 2 uploaded images. Please remove images before continuing.");
+        return;
+      }
     }
     console.log(req.file);
     if(!req.file){

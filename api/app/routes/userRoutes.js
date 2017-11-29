@@ -9,6 +9,8 @@ const config = require('../../config.js');
 
 const PROPER_ID = 1;
 
+const MAX_PHOTO_UPLOADS_FREE = 2;
+
 /**
  * Performs JWT verification. Returns true if JWT is valid, otherwise returns error
  * Verifies that the id the user is passing belongs to them.
@@ -552,5 +554,23 @@ module.exports = function(app) {
             })
             .catch(e => console.error(e.stack))
     });
+
+    /**
+     * Returns the number of photos the user has
+     */
+    app.get('/user/photos/num', async (req, getres) => {
+      console.log("GET - number of photos");
+      let queryText = "SELECT COUNT(*) FROM user_photo WHERE user_id = $1";
+      let values = [req.query.user_id];
+      result = await db.param_query(queryText, values)
+      console.log(result.rows[0])
+      if(result.rows[0].count >= MAX_PHOTO_UPLOADS_FREE){
+        getres.status(605);
+        getres.statusMessage = "Max uploads";
+        getres.send("You have reached your max of 2 uploaded images. Please remove images before continuing.");
+        return;
+      }
+      getres.send(result.rows[0]);
+    })
 
 }

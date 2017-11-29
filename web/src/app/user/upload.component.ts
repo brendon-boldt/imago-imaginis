@@ -2,7 +2,7 @@
  * This is the TypeScript backend for the upload component.
  * Here, we reference upload.component.html as the HTML for this component, as well as the app's css
  */
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { RouterModule, Routes, Router } from '@angular/router';
 
 // Importing database service so we can upload an image to the database
@@ -16,12 +16,27 @@ import { GeneralService } from '../services/general.service';
   styleUrls: ['../css/app.component.css']
 })
 export class UploadComponent {
+  @ViewChild('modal') modal;
   fileToUpload: File;
+  modalText: String;
   constructor(private router: Router, private db: DBService, private us: UserService, private gen: GeneralService){
     this.fileToUpload = null;
   }
 
-  ngOnInit() {}
+  ngOnInit() {
+    // Check to see if the user already has two photos if they're a free user
+    this.db.getNumPhotos(this.us.userId).then(async res => {
+      if(res.status == 605){
+        this.modalText = "You have reached your maximum number of uploaded photos. Please delete some photos before continuing, or upgrade your account. You will be redirected automatically in 10 seconds...";
+        this.modal.show();
+        var router = this.router;
+        setTimeout(function(){
+          router.navigate(['home']);
+        }, 10000);
+        
+      }
+    })
+  }
   
   btnClick(): void {
     this.router.navigate(['select-style']);
