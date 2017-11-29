@@ -131,43 +131,44 @@ module.exports = function(app) {
         console.log(queryText);
         let values = [email, id];
         db.param_query(queryText, values)
-            .then(res => {
-                if (res == undefined) {
-                    getres.send("Alter account failed");
-                } else if (res.rowCount > 0) {
-                    console.log("Email already registered to account");
-                    getres.status(401);
-                    getres.statusMessage = "Email already registered";
-                    getres.send("Email already registered to account");
-                } else {
-                    // Email is unique
-                    console.log("Email is unique");
-                    // If password is empty, leave it alone
-                    if (password == "" || password == null) {
-                        queryText = "UPDATE asp_users SET (first_name, last_name, email) = ('" + firstName + "', '" + lastName + "', '" + email + "') WHERE user_id = " + id + ";";
-                    } else {
-                        console.log(password);
-                        const hash = crypto.createHash('sha256');
-                        hash.update(password);
-                        password = hash.digest('hex');
-                        queryText = "UPDATE asp_users SET (first_name, last_name, email, password) = ($1, $2, $3, $4) WHERE user_id = $5;";
-                    }
-                    console.log("new Query: " + queryText);
-                    let values = [firstName, lastName, email, password, id];
-                    db.param_query(queryText, values)
-                        .then(res => {
-                            console.log(res);
-                            if (res != undefined) {
-                                console.log("Account update successful!");
-                                getres.send("Account update successful!");
-                            } else {
-                                getres.send("Account update failed");
-                            }
-                        })
-                        .catch(e => console.error(e.stack))
-                }
-            })
-            .catch(e => console.error(e.stack))
+          .then(res => {
+              if (res == undefined) {
+                  getres.send("Alter account failed");
+              } else if (res.rowCount > 0) {
+                  console.log("Email already registered to account");
+                  getres.status(401);
+                  getres.statusMessage = "Email already registered";
+                  getres.send("Email already registered to account");
+              } else {
+                  // Email is unique
+                  console.log("Email is unique");
+                  // If password is empty, leave it alone
+                  if (password == "" || password == null) {
+                      queryText = "UPDATE asp_users SET (first_name, last_name, email) = ($1, $2, $3) WHERE user_id = $5;";
+                      values = [firstName, lastName, email, id];
+                  } else {
+                      console.log(password);
+                      const hash = crypto.createHash('sha256');
+                      hash.update(password);
+                      password = hash.digest('hex');
+                      queryText = "UPDATE asp_users SET (first_name, last_name, email, password) = ($1, $2, $3, $4) WHERE user_id = $5;";
+                      values = [firstName, lastName, email, password, id];
+                  }
+                  console.log("new Query: " + queryText);
+                  db.param_query(queryText, values)
+                      .then(res => {
+                          console.log(res);
+                          if (res != undefined) {
+                              console.log("Account update successful!");
+                              getres.send("Account update successful!");
+                          } else {
+                              getres.send("Account update failed");
+                          }
+                      })
+                      .catch(e => console.error(e.stack))
+              }
+          })
+          .catch(e => console.error(e.stack))
     });
 
     /**

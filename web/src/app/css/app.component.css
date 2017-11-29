@@ -199,6 +199,7 @@ header.masthead:before{
   opacity: 0.4;
   background-image: url("../../assets/starrynight.jpg");
   background-color: #524a54;
+  background-attachment: fixed;
   background-size: 100%;
   /*background-clip: border-box;*/
   left: 0;

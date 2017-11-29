@@ -13,7 +13,7 @@ It is routed to when the user clicks on a router link-->
 		<div class="row">
 			<div class="col"></div>
 			<div class="col-md-4">
-				<form class="form-horizontal" role="form" data-toggle="validator" (keyup)="onKey($event)">
+				<form class="form-horizontal" role="form" data-toggle="validator" (keyup)="onKey($event)" #updateForm="ngForm">
 					<label class="button btn btn-primary btn-sm">
 						Upload Profile Picture<input type="file" (change)="fileChangeEvent($event)" accept="image/*" hidden>
 					</label>
@@ -22,21 +22,30 @@ It is routed to when the user clicks on a router link-->
 					<br><br>
 					<div class="form-group">
 						<label class="control-label" name="user-first-name">First Name</label>
-						<input type="text" class="form-control" name="first-name" placeholder="First Name" [(ngModel)]="this.firstName">
+						<input type="text" class="form-control" name="first-name" placeholder="First Name" [(ngModel)]="form.firstName" #firstName="ngModel" required>
+						<div [hidden]="firstName.valid || firstName.pristine" class="alert alert-danger">
+							First name is required
+						</div>
 					</div>
 					<div class="form-group">
 						<label class="control-label" name="user-last-name">Last Name</label>
-						<input type="text" class="form-control" name="last-name" placeholder="Last Name" [(ngModel)]="this.lastName">
+						<input type="text" class="form-control" name="last-name" placeholder="Last Name" [(ngModel)]="form.lastName" #lastName="ngModel" required>
+						<div [hidden]="lastName.valid || lastName.pristine" class="alert alert-danger">
+							Last name is required
+						</div>
 					</div>
 					<div class="form-group">
 						<label class="control-label" name="user-email">Email</label>
-						<input type="email" class="form-control" placeholder="Email" name="email" [(ngModel)]="this.email">
+						<input type="email" class="form-control" placeholder="Email" name="email" [(ngModel)]="form.email" #email="ngModel" email required>
+						<div [hidden]="email.valid || email.pristine" class="alert alert-danger">
+							Email is required
+						</div>
 					</div>
 					<div class="form-group">
 						<label class="control-label" name="user-password">Change Password</label>
 						<input type="password" class="form-control" placeholder="Password" name="password" [(ngModel)]="this.password">
 					</div>
-					<button type="button" class="button btn btn-primary btn-xl js-scroll-trigger center-block" (click)="this.save();">Save</button>
+					<button type="submit" [disabled]="!updateForm.form.valid" class="button btn btn-primary btn-xl js-scroll-trigger center-block" (click)="this.save();">Save</button>
 				</form>
 			</div>
 			<div class="col"></div>
