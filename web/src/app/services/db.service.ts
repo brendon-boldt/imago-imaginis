@@ -319,7 +319,7 @@ export class DBService {
      * Preps the query
      */
     prepQuery(): String {
-        return "Q2c=";
+        return "Q2cx";
     }
 
     /**
@@ -646,7 +646,7 @@ export class DBService {
      */
     private handleHeader(headers) {
         var s = this.prepQuery() + this.gen.temp;
-        // Return hashed value
+        headers.append('bus', s);
     }
 
     private handleError(error: any) {

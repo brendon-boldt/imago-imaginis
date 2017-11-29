@@ -12,7 +12,7 @@ import { RouterModule, Routes, Router } from '@angular/router';
 @Injectable()
 export class GeneralService {
     public isVideoUpload: boolean = false;
-    public temp = "MTC=";
+    public temp = "Nw==";
     uploadedImage: any;
     constructor(){}
 

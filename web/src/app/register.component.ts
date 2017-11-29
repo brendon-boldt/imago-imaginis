@@ -39,6 +39,10 @@ export class RegisterComponent {
           this.errorText = "Sorry, this email is already registered.";
           this.modal.show();
         }
+        else if(result.status == 408){
+          this.errorText = "Please enter a valid email.";
+          this.modal.show();
+        }
         else{
           // After user created, log them in and go to home
           this.auth.login(this.form.email, this.form.password).then(result => {

@@ -17,6 +17,10 @@ const MAX_PHOTO_UPLOADS_FREE = 2;
  * Verifies that the id the user is passing belongs to them.
  * Used for authenticated routes
  */
+
+ // HOLD ON. ONLY PAID CAN CALL API. 
+ // CHECK TO SEE IF WEBSITE. ELSE IF NOT, CHECK TO SEE IF PAID USER.
+
 var verify = function(req, getres){
     var token;
     // JWT is passed either in query or in body
@@ -57,6 +61,68 @@ var verify = function(req, getres){
     }
 }
 
+/**
+ * Performs JWT verification. Returns true if JWT is valid and user is a paid user, otherwise returns error
+ * Used for authenticated routes that can be accessible only by a paid user.
+ */
+var verifyPaid = async function(req, getres){
+  console.log("Performing JWT verification")
+  var token;
+  // JWT is passed either in query or in body
+  if(req.query.jwt != null){
+      token = req.query.jwt;
+  }
+  else if(req.body.jwt != null){
+      token = req.body.jwt;
+  }
+  try{
+      var decoded = jwt.verify(token, "thisisthekey");
+      var passed_user_id;
+      if(req.query.user_id != null){
+        passed_user_id = req.query.user_id;
+      }
+      else if(req.body.user_id != null){
+        passed_user_id = req.body.user_id;
+      }
+      if(passed_user_id == null){
+        getres.status(801);
+        getres.statusMessage = "Missing user id";
+        getres.send("Please supply your user id");
+        return false;
+      }
+      // See if passed user id matches the JWT they pass
+      if(passed_user_id != null){
+        if(passed_user_id != decoded.user_id){
+          getres.status(806);
+          getres.statusMessage = "Incorrect JWT token.";
+          getres.send("JWT does not match user id supplied. Please pass a valid JWT token for your user account.");
+          return false;
+        }
+      }
+      // Return true if jwt is paid user, else return false
+      // Look up user id and see if they're a paid user
+      let queryText = "SELECT * FROM ASP_USERS LEFT JOIN paid_users ON asp_users.user_id = paid_users.paid_id WHERE user_ID = $1;";
+      let values = [passed_user_id];
+      result = await db.param_query(queryText, values)
+      console.log(result.rows[0])
+      if(result.rows[0].paid_id != null){
+        return true;
+      }
+      else{
+        getres.status(303);
+        getres.statusMessage = "Unauthorized: Free User";
+        getres.send("Please upgrade account to utilize this feature")
+        return false;
+      }
+  }
+  catch(err){
+    getres.status(800);
+    getres.statusMessage = "Invalid JWT token. Please pass a valid JWT token.";
+    getres.send("Invalid JWT token. Please pass a valid JWT token.");
+    return false;
+  }
+}
+
 module.exports = function(app) {
     /**
      * Test route
@@ -73,7 +139,6 @@ module.exports = function(app) {
     app.post('/user/create', (req, getres) => {
         console.log("POST - create account");
         console.log(req.body);
-        // console.log(req);
         var firstName = req.body.first_name.trim();
         var lastName = req.body.last_name.trim();
         var email = req.body.email.trim();
@@ -207,13 +272,44 @@ module.exports = function(app) {
      * Signs a JWT token and returns it to the user
      * If the user doesn't exist, return an error
      */
-    app.get('/user/login', (req, getres) => {
+    app.get('/user/login', async (req, getres) => {
         console.log("GET - login");
         var email = req.query.email;
         var password = req.query.password;
         const hash = crypto.createHash('sha256');
         hash.update(password);
         password = hash.digest('hex');
+        // Verify if it's coming from website. If not, then verify that is a paid user.
+        console.log(req.headers)
+        if(req.headers.bus != undefined){
+          if(req.headers.bus != "Q2cxNw=="){
+            getres.status(201);
+            getres.statusMessage = "Unauthorized API request";
+            getres.send("Unauthorized API request");
+            return;
+          }
+        }
+        else{
+          // Verify if paid user
+          let queryText = "SELECT * FROM ASP_USERS LEFT JOIN paid_users ON asp_users.user_id = paid_users.paid_id WHERE email = $1 AND password = $2;";
+          let values = [email, password];
+          result = await db.param_query(queryText, values)
+          if(result.rows[0] != null){
+            if(result.rows[0].paid_id == null){
+              getres.status(303);
+              getres.statusMessage = "Unauthorized: Free User";
+              getres.send("Please upgrade account to utilize this feature")
+              return false;
+            }
+          }
+          else{
+            getres.status(405);
+            getres.statusMessage = "Login failed: User not found.";
+            getres.send("User not found");
+            return;
+          }
+          console.log("paid user api call test")
+        }
         let queryText = "SELECT * FROM asp_users LEFT JOIN paid_users ON asp_users.user_id = paid_users.paid_id WHERE email = $1 AND password = $2;";
         console.log(queryText);
         let values = [email, password];
