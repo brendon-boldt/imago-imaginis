@@ -2,6 +2,7 @@ const db = require('../db');
 const multer = require('multer'); 
 const path = require('path');
 const jwt = require('jsonwebtoken');
+var sizeOf = require('image-size');
 
 const config = require('../../config.js');
 
@@ -34,6 +35,11 @@ var verify = function(req, getres){
       else if(req.body.user_id != undefined){
         passed_user_id = req.body.user_id;
       }
+      if(passed_user_id == null){
+        getres.status(801);
+        getres.statusMessage = "Missing user id";
+        getres.send("Please supply your user id");
+      }
       // See if passed user id matches the JWT they pass
       if(passed_user_id != undefined){
         if(passed_user_id != decoded.user_id){
@@ -61,6 +67,7 @@ var verify = function(req, getres){
  * Used for authenticated routes that can be accessible only by a paid user.
  */
 var verifyPaid = function(req, getres){
+  console.log("Performing JWT verification")
   var token;
   // JWT is passed either in query or in body
   if(req.query.jwt != null){
@@ -79,6 +86,11 @@ var verifyPaid = function(req, getres){
         }
         else if(req.body.user_id != null){
           passed_user_id = req.body.user_id;
+        }
+        if(passed_user_id == null){
+          getres.status(801);
+          getres.statusMessage = "Missing user id";
+          getres.send("Please supply your user id");
         }
         // See if passed user id matches the JWT they pass
         if(passed_user_id != null){
@@ -113,100 +125,81 @@ module.exports = function(app) {
       cb(null, config.uploadsPath)
     },
     filename: async function (req, file, cb) {
-        console.log(file);
-        // Insert new entry into the database and use the unfiltered photo ID as filename
-        let queryText = "INSERT INTO unfiltered_photo (size, height, width, path) VALUES (0, 264, 264, '') RETURNING unfiltered_photo_id;";
-        console.log("Query: " + queryText);
-        var result = await db.query(queryText);
-        var unfiltered_photo_id = result.rows[0].unfiltered_photo_id;
-        file.unfiltered_photo_id = unfiltered_photo_id;
-        var filename = file.fieldname + '-' + unfiltered_photo_id + path.extname(file.originalname);
-        cb(null, filename);
+      console.log(file);
+      // Insert new entry into the database and use the unfiltered photo ID as filename
+      let queryText = "INSERT INTO unfiltered_photo (size, height, width, path) VALUES (0, 264, 264, '') RETURNING unfiltered_photo_id;";
+      console.log("Query: " + queryText);
+      var result = await db.query(queryText);
+      var unfiltered_photo_id = result.rows[0].unfiltered_photo_id;
+      file.unfiltered_photo_id = unfiltered_photo_id;
+      var filename = file.fieldname + '-' + unfiltered_photo_id + path.extname(file.originalname);
+      cb(null, filename);
     }
   });
-  var photoUpload = multer({storage: photoStorage, limits: { fileSize: MAX_PHOTO_UPLOAD_SIZE }, fileFilter: function (req, file, cb) { 
+  app.post('/upload/photo', multer({storage: photoStorage, limits: { fileSize: MAX_PHOTO_UPLOAD_SIZE }, fileFilter: function (req, file, cb) { 
+    console.log("POST - upload");
+    console.log(file)
     if(!(file.mimetype == 'image/png' || file.mimetype == 'image/jpeg')){
       console.log(file.mimetype);
       req.fileValidationError = 'goes wrong on the mimetype';
       return cb(null, false, new Error('goes wrong on the mimetype'));
     }
     cb(null, true); 
-  }}).single("upload");
-  // app.post('/upload/photo', photoUpload, (req, getres) => {
-  app.post('/upload/photo', function (req, res) {
+  }}).single("upload"), (req, getres) => {
     if(!verify(req, getres)){
       return;
     }
-    photoUpload(req, res, function(err) {
-      // File type validation check
-      // TODO: test this
-      if(req.fileValidationError){
-        res.status(502);
-        res.statusMessage = "Invalid file format";
-        res.send("Image must be JPG or PNG");
-        return;
-      }
-      // File size validation check
-      if(err){
-        console.log(err);
-        res.status(501);
-        res.statusMessage = "File size limit exceeded! 7MB max";
-        res.send("File size limit exceeded! 7MB max");
-        return;
-      }
-      console.log("POST - upload");
-      console.log(req.file);
-      async function upload() {
-        var path = config.uploadsPath + "/" + req.file.filename;
-        // Update record in DB to have file size and path
-        let queryText = "UPDATE unfiltered_photo SET (size, height, width, path) = ($1, $2, $3, $4) WHERE unfiltered_photo_id = $5;";
-        var values = [req.file.size, req.body.height, req.body.width, path, req.file.unfiltered_photo_id]
-        console.log("Query: " + queryText);
-        result = await db.query(queryText);
-        // Need to generate entry in Photos to have photo id so we can create entry in user_photo
-        queryText = "INSERT INTO photos (size, creation_date, path, process_time, flag, display, height, width) VALUES (.00000001, '1970-01-01', '', 0, false, false, 0, 0) RETURNING photo_id;";
-        console.log("Query: " + queryText);
-        result = await db.query(queryText); 
-        var photo_id = result.rows[0].photo_id;
-        // We also need to create a new entry in User_Photo. Need to use generated unfiltered_photo_id
-        queryText = "INSERT INTO user_photo (user_id, photo_id, filter_id, status, wait_time, unfiltered_photo_id) VALUES ($1, $2, $3, 'waiting', 0, $4);";
-        values = [req.body.user_id, photo_id, req.body.filter_id, req.file.unfiltered_photo_id]
-        console.log("Query: " + queryText);
-        db.query(queryText); 
-        res.send("Upload complete!");
-      }
-      upload();
-    })
+    console.log(req.file);
+    if(!req.file){
+      getres.status(503);
+      getres.statusMessage = "No photo";
+      getres.send("Please upload a photo")
+    }
+    if(req.fileValidationError){
+      getres.status(502);
+      getres.statusMessage = "Invalid file format";
+      getres.send("Image must be JPG or PNG");
+      return;
+    }
+    // Sending headers with file size checking currently not working
+    if(req.fileTooBig){
+      getres.status(501);
+      getres.statusMessage = "File size limit exceeded! 7MB max";
+      getres.send("File size limit exceeded! 7MB max");
+      return;
+    }
+    if(req.file.size > MAX_PHOTO_UPLOAD_SIZE){
+      getres.status(501);
+      getres.statusMessage = "File size limit exceeded! 7MB max";
+      getres.send("File size limit exceeded! 7MB max");
+      return;
+    }
+    if(!req.body.filter_id){
+      getres.status(504);
+      getres.statusMessage = "No filter id";
+      getres.send("Specify a filter id")
+    }
+    async function upload() {
+      var path = config.uploadsPath + "/" + req.file.filename;
+      // Update record in DB to have file size and path
+      let queryText = "UPDATE unfiltered_photo SET (size, height, width, path) = ($1, $2, $3, $4) WHERE unfiltered_photo_id = $5;";
+      var values = [req.file.size, 260, 260, path, req.file.unfiltered_photo_id]
+      console.log("Query: " + queryText);
+      result = await db.param_query(queryText, values);
+      // Need to generate entry in Photos to have photo id so we can create entry in user_photo
+      queryText = "INSERT INTO photos (size, creation_date, path, process_time, flag, display, height, width) VALUES (.00000001, '1970-01-01', '', 0, false, false, 0, 0) RETURNING photo_id;";
+      console.log("Query: " + queryText);
+      result = await db.query(queryText); 
+      var photo_id = result.rows[0].photo_id;
+      // We also need to create a new entry in User_Photo. Need to use generated unfiltered_photo_id
+      queryText = "INSERT INTO user_photo (user_id, photo_id, filter_id, status, wait_time, unfiltered_photo_id) VALUES ($1, $2, $3, 'waiting', 0, $4);";
+      values = [req.body.user_id, photo_id, req.body.filter_id, req.file.unfiltered_photo_id]
+      console.log("Query: " + queryText);
+      db.param_query(queryText, values); 
+      getres.send("Upload complete!");
+    }
+    upload();
   });
-  //   photoUpload(req, getres, ( err ) => {
-  //     console.log("what the fuck?");
-  //     if(err){
-  //       console.log("FK ME");
-  //       return getres.status(501).send("File too big.");
-  //     }
-  //   });
-  //   // Do verification that this is indeed a photo upload
-  //   console.log("POST - upload");
-  //   console.log(req.file);
-  //   async function upload() {
-  //     var path = config.uploadsPath + "/" + req.file.filename;
-  //     // Update record in DB to have file size and path
-  //     let queryText = "UPDATE unfiltered_photo SET (size, height, width, path) = (" + req.file.size + ", "+req.body.height+", "+req.body.width+", '" + path + "') WHERE unfiltered_photo_id = " + req.file.unfiltered_photo_id + ";";
-  //     console.log("Query: " + queryText);
-  //     result = await db.query(queryText);
-  //     // Need to generate entry in Photos to have photo id so we can create entry in user_photo
-  //     queryText = "INSERT INTO photos (size, creation_date, path, process_time, flag, display, height, width) VALUES (.00000001, '1970-01-01', '', 0, false, false, 0, 0) RETURNING photo_id;";
-  //     console.log("Query: " + queryText);
-  //     result = await db.query(queryText); 
-  //     var photo_id = result.rows[0].photo_id;
-  //     // We also need to create a new entry in User_Photo. Need to use generated unfiltered_photo_id
-  //     queryText = "INSERT INTO user_photo (user_id, photo_id, filter_id, status, wait_time, unfiltered_photo_id) VALUES (" + req.body.user_id + ", " + photo_id + ", " + req.body.filter_id + ", 'waiting', 0, " + req.file.unfiltered_photo_id + ");";
-  //     console.log("Query: " + queryText);
-  //     db.query(queryText); 
-  //     getres.send("Upload complete!");
-  //   }
-  //   upload();
-  // });
 
   /**
    * Performs a video upload. Only accessible to paid users.
@@ -227,59 +220,60 @@ module.exports = function(app) {
         cb(null, filename);
     }
   });
-  var videoUpload = multer({storage: videoStorage, fileFilter: function (req, file, cb) { 
+  app.post('/upload/video', multer({storage: videoStorage, fileFilter: function (req, file, cb) { 
     if(!(file.mimetype == 'video/mp4')){
       console.log(file.mimetype);
       req.fileValidationError = 'goes wrong on the mimetype';
       return cb(null, false, new Error('goes wrong on the mimetype'));
     }
     cb(null, true); 
-  }}).single("upload");
-  app.post('/upload/video', function (req, getres) {
+  }}).single("upload"), (req, getres) => {
     if(!verifyPaid(req, getres)){
+      getres.status(303);
+      getres.statusMessage = "Unauthorized: Free User";
+      getres.send("Please upgrade account to utilize this feature")
       return;
     }
-    videoUpload(req, res, function(err) {
-      // File type validation check
-      // TODO: test this
-      if(req.fileValidationError){
-        res.status(502);
-        res.statusMessage = "Invalid file format";
-        res.send("Video must be in mp4 format");
-        return;
-      }
-      // File size validation check
-      if(err){
-        console.log(err);
-        res.status(503);
-        res.statusMessage = "File upload error";
-        res.send("Something went wrong with the upload. Try again.");
-        return;
-      }
-      console.log("POST - upload");
-      console.log(req.file);
-      async function upload() {
-        var path = config.videoUploadsPath + "/" + req.file.filename;
-        // Update record in DB to have file size and path
-        let queryText = "UPDATE unfiltered_video SET (size, height, width, path) = ($1, 0, 0, $2) WHERE unfiltered_video_id = $3;";
-        var values = [req.file.size, path, req.file.unfiltered_video_id];
-        console.log("Query: " + queryText);
-        result = await db.param_query(queryText, values);
-        // Need to generate entry in Videos to have photo id so we can create entry in user_photo
-        // TODO: Insert height and width of video
-        queryText = "INSERT INTO videos (size, creation_date, path, process_time, flag, display) VALUES (.00000001, '1970-01-01', '', 0, false, false) RETURNING video_id;";
-        console.log("Query: " + queryText);
-        result = await db.query(queryText); 
-        var video_id = result.rows[0].video_id;
-        // We also need to create a new entry in User_Video
-        queryText = "INSERT INTO user_video (user_id, video_id, filter_id, status, wait_time, unfiltered_video_id) VALUES ($1, $2, $3, 'waiting', 0, $4);";
-        values = [req.body.user_id, video_id, req.body.filter_id, req.file.unfiltered_video_id];
-        console.log("Query: " + queryText);
-        db.param_query(queryText, values); 
-        getres.send("Upload complete!");
-      }
-      upload();
-    });
+    if(!req.file){
+      getres.status(503);
+      getres.statusMessage = "No photo";
+      getres.send("Please upload a photo")
+    }
+    // File type validation check
+    if(req.fileValidationError){
+      res.status(502);
+      res.statusMessage = "Invalid file format";
+      res.send("Video must be in mp4 format");
+      return;
+    }
+    if(!req.body.filter_id){
+      getres.status(504);
+      getres.statusMessage = "No filter id";
+      getres.send("Specify a filter id")
+    }
+    console.log("POST - upload");
+    console.log(req.file);
+    async function upload() {
+      var path = config.videoUploadsPath + "/" + req.file.filename;
+      // Update record in DB to have file size and path
+      let queryText = "UPDATE unfiltered_video SET (size, height, width, path) = ($1, 0, 0, $2) WHERE unfiltered_video_id = $3;";
+      var values = [req.file.size, path, req.file.unfiltered_video_id];
+      console.log("Query: " + queryText);
+      result = await db.param_query(queryText, values);
+      // Need to generate entry in Videos to have photo id so we can create entry in user_photo
+      // TODO: Insert height and width of video
+      queryText = "INSERT INTO videos (size, creation_date, path, process_time, flag, display) VALUES (.00000001, '1970-01-01', '', 0, false, false) RETURNING video_id;";
+      console.log("Query: " + queryText);
+      result = await db.query(queryText); 
+      var video_id = result.rows[0].video_id;
+      // We also need to create a new entry in User_Video
+      queryText = "INSERT INTO user_video (user_id, video_id, filter_id, status, wait_time, unfiltered_video_id) VALUES ($1, $2, $3, 'waiting', 0, $4);";
+      values = [req.body.user_id, video_id, req.body.filter_id, req.file.unfiltered_video_id];
+      console.log("Query: " + queryText);
+      db.param_query(queryText, values); 
+      getres.send("Upload complete!");
+    }
+    upload();
   });
 
   /**
@@ -321,13 +315,10 @@ module.exports = function(app) {
         res.send("Video must be in mp4 format");
         return;
       }
-      // File size validation check
-      if(err){
-        console.log(err);
-        res.status(503);
-        res.statusMessage = "File upload error";
-        res.send("Something went wrong with the upload. Try again.");
-        return;
+      if(!req.file){
+        getres.status(503);
+        getres.statusMessage = "No photo";
+        getres.send("Please upload a photo")
       }
     // Do verification that this is indeed a photo upload
     console.log("POST - upload");

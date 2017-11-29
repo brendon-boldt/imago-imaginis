@@ -77,8 +77,8 @@ export class DBService {
         formData.append("upload", file);
         formData.append('filter_id', filterId+"");
         formData.append('user_id', id+"");
-        formData.append('height', img.width+"");
-        formData.append('width', img.height+"");
+        // formData.append('height', img.width+"");
+        // formData.append('width', img.height+"");
         formData.append('jwt', jwt+"");
         console.log("WEB: File that will be uploaded with filter id " + filterId + ":");
         console.log(file);
