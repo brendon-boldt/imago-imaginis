@@ -4,6 +4,7 @@ const path = require('path');
 const jwt = require('jsonwebtoken');
 
 const config = require('../../config.js');
+const stat = require('./statRoutes');
 
 const MAX_PHOTO_UPLOAD_SIZE = 7340032; // 7 MB is max photo upload size
 
@@ -56,6 +57,8 @@ module.exports = function(app) {
         return;
       }
       console.log("POST - upload");
+	  var requesterUserId = req.body.requesterUserId;
+	  stat.logStatUploadPhoto(requesterUserId);
       console.log(req.file);
       async function upload() {
         var path = config.uploadsPath + "/" + req.file.filename;
@@ -129,6 +132,8 @@ module.exports = function(app) {
   app.post('/upload/video', multer({storage: storage}).single("upload"), (req, getres) => {
     // Do verification that this is indeed a photo upload
     console.log("POST - upload");
+	var requesterUserId = req.body.requesterUserId;
+	stat.logStatUploadVideo(requesterUserId);
     console.log(req.file);
     async function upload() {
       var path = config.videoUploadsPath + "/" + req.file.filename;
@@ -172,6 +177,8 @@ module.exports = function(app) {
   app.post('/filter/upload', multer({storage: storage}).single("upload"), (req, getres) => {
     // Do verification that this is indeed a photo upload
     console.log("POST - upload");
+	var requesterUserId = req.body.requesterUserId;
+	stat.logStatUploadPhoto(requesterUserId);
     console.log(req.body);
     console.log(req.file);
     // getres.send(req.file);
@@ -202,6 +209,8 @@ module.exports = function(app) {
   app.post('/user/upload/profile', multer({storage: storage}).single("upload"), (req, getres) => {
     // TODO: Do verification that this is indeed a photo upload
     console.log("POST - upload");
+	var requesterUserId = req.query.requesterUserId;
+	stat.logStatUploadPhoto(requesterUserId);
     console.log(req.file);
     async function upload() {
       var path = config.uploadsPath + "/" + req.file.filename;

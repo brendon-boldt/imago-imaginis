@@ -5,35 +5,7 @@ const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 
 const config = require('../../config.js');
-
-const LOGIN_STAT_ID = 0;
-const REQUEST_STAT_ID = 1;
-const UPLOAD_PHOTO_STAT_ID = 2;
-const UPLOAD_VIDEO_STAT_ID = 3;
-
-var logStat = async function(userId, statId) {
-	var date = new Date(Date.now()).toLocaleString();	
-	var queryText = "INSERT INTO Usage (user_id, timestamp, stat_id) VALUES ($1, $2, $3);";
-    console.log("Logging login: " + userId);
-    let values = [userId, date, statId];
-	var result = await db.param_query(queryText, values);
-};
-
-var logStatLogin = function(userId) {
-	logStat(userId, LOGIN_STAT_ID);
-};
-
-var logStatRequest = function(userId) {
-	logStat(userId, REQUEST_STAT_ID);
-};
-
-var logStatUploadPhoto = function(userId) {
-	logStat(userId, UPLOAD_PHOTO_STAT_ID);	
-};
-
-var logStatUploadVideo = function(userId) {
-	logStat(userId, UPLOAD_VIDEO_STAT_ID);
-};
+const stat = require('./statRoutes');
 
 module.exports = function(app) {
     /**
@@ -159,7 +131,7 @@ module.exports = function(app) {
         db.param_query(queryText, values)
             .then(res => {
                 if (res.rows[0] != null) {
-					logStatLogin(res.rows[0].user_id);
+					stat.logStatLogin(res.rows[0].user_id);
                     // Puts various user information into the JWT
                     var payload = {
                         user_id: res.rows[0].user_id,
@@ -194,7 +166,7 @@ module.exports = function(app) {
     app.get('/user/search', (req, getres) => {
         console.log("GET - search");
 		var requesterUserId = req.query.requesterUserId;
-		logStatRequest(requesterUserId);
+		stat.logStatRequest(requesterUserId);
         var searchString = "%" + req.query.searchString + "%";
         let queryText = "SELECT * FROM ASP_USERS WHERE LOWER(first_name::text || last_name::text) LIKE LOWER($1)";
         let values = [searchString];
@@ -210,9 +182,9 @@ module.exports = function(app) {
      * Takes in the request query's parameters
      */
     app.get('/user/info', (req, getres) => {
-        console.log("GET - info @");
+        console.log("GET - info $");
 		var requesterUserId = req.query.requesterUserId;
-		logStatRequest(requesterUserId);
+		stat.logStatRequest(requesterUserId);
         var id = req.query.id;
         let queryText = "SELECT * FROM ASP_USERS WHERE user_ID = $1;";
         let values = [id];
@@ -230,7 +202,7 @@ module.exports = function(app) {
     app.get('/user/photos/unstyled', (req, getres) => {
         console.log("GET - user unstyled photos");
 		var requesterUserId = req.query.requesterUserId;
-		logStatRequest(requesterUserId);
+		stat.logStatRequest(requesterUserId);
         var id = req.query.id;
         let queryText = "SELECT * FROM unfiltered_photo WHERE unfiltered_photo_id IN (SELECT unfiltered_photo_id FROM USER_PHOTO WHERE user_ID = $1 AND (status = 'waiting' OR status = 'processing')) ORDER BY unfiltered_photo_id;";
         let values = [id];
@@ -248,7 +220,7 @@ module.exports = function(app) {
     app.get('/user/videos/unstyled', (req, getres) => {
         console.log("GET - user unstyled video");
 		var requesterUserId = req.query.requesterUserId;
-		logStatRequest(requesterUserId);
+		stat.logStatRequest(requesterUserId);
         var id = req.query.id;
         let queryText = "SELECT * FROM unfiltered_video WHERE unfiltered_video_id IN (SELECT unfiltered_video_id FROM user_video WHERE user_ID = $1 AND (status = 'waiting' OR status = 'processing')) ORDER BY unfiltered_video_id;";
         let values = [id];
@@ -266,7 +238,7 @@ module.exports = function(app) {
     app.post('/user/paid', (req, getres) => {
         console.log("Post - create paid user");
 		var requesterUserId = req.body.requesterUserId;
-		logStatRequest(requesterUserId);
+		stat.logStatRequest(requesterUserId);
         var id = req.body.id;
         var queryText = "SELECT * FROM Paid_Users WHERE user_id = $1;";
         let values = [id];
@@ -299,7 +271,7 @@ module.exports = function(app) {
     app.post('/user/photos/set-display', (req, getres) => {
         console.log("POST - set photo to display");
 		var requesterUserId = req.body.requesterUserId;
-		logStatRequest(requesterUserId);
+		stat.logStatRequest(requesterUserId);
         var id = req.body.photo_id;
         var display = req.body.display;
         var queryText = "UPDATE PHOTOS SET display = $1 WHERE photo_id = $2;";
@@ -324,7 +296,7 @@ module.exports = function(app) {
     app.post('/user/videos/set-display', (req, getres) => {
         console.log("POST - set video to display");
 		var requesterUserId = req.body.requesterUserId;
-		logStatRequest(requesterUserId);
+		stat.logStatRequest(requesterUserId);
         var id = req.body.video_id;
         var display = req.body.display;
         var queryText = "UPDATE VIDEOS SET display = $1 WHERE video_id = $2;";
@@ -349,7 +321,7 @@ module.exports = function(app) {
     app.get('/user/videos', (req, getres) => {
         console.log("GET - user videos");
 		var requesterUserId = req.query.requesterUserId;
-		logStatRequest(requesterUserId);
+		stat.logStatRequest(requesterUserId);
         var id = req.query.id;
         let queryText = "SELECT * FROM VIDEOS WHERE video_id IN (SELECT video_id FROM USER_VIDEO WHERE user_ID = $1 AND status = 'done') ORDER BY video_id;";
         let values = [id];
@@ -367,7 +339,7 @@ module.exports = function(app) {
     app.get('/user/photos', (req, getres) => {
         console.log("GET - user photos");
 		var requesterUserId = req.query.requesterUserId;
-		logStatRequest(requesterUserId);
+		stat.logStatRequest(requesterUserId);
         var id = req.query.id;
         let queryText = "SELECT * FROM PHOTOS WHERE photo_id in (SELECT photo_id FROM USER_PHOTO WHERE user_ID = $1 AND status = 'done') ORDER BY photo_id";
         let values = [id];
@@ -385,7 +357,7 @@ module.exports = function(app) {
     app.post('/user/photos/delete', (req, getres) => {
         console.log("POST - delete photo");
 		var requesterUserId = req.body.requesterUserId;
-		logStatRequest(requesterUserId);
+		stat.logStatRequest(requesterUserId);
         var photoId = req.body.photo_id;
         var userId = req.body.user_id;
         var queryText = "DELETE FROM user_photo WHERE photo_id = $1 AND user_id = $2;";
@@ -409,7 +381,7 @@ module.exports = function(app) {
     app.post('/user/videos/delete', (req, getres) => {
         console.log("POST - delete video");
 		var requesterUserId = req.body.requesterUserId;
-		logStatRequest(requesterUserId);
+		stat.logStatRequest(requesterUserId);
         console.log(req.body);
         var videoId = req.body.video_id;
         var userId = req.body.user_id;
@@ -433,7 +405,7 @@ module.exports = function(app) {
     app.get('/user/photos/display', (req, getres) => {
         console.log("GET - user profile display photos");
 		var requesterUserId = req.query.requesterUserId;
-		logStatRequest(requesterUserId);
+		stat.logStatRequest(requesterUserId);
         var id = req.query.id;
         let queryText = "SELECT * FROM PHOTOS WHERE photo_id in (SELECT photo_id FROM USER_PHOTO WHERE user_ID = $1 AND status = 'done') AND display = true;";
         let values = [id];
@@ -450,7 +422,7 @@ module.exports = function(app) {
     app.get('/user/videos/display', (req, getres) => {
         console.log("GET - user profile display videos");
 		var requesterUserId = req.query.requesterUserId;
-		logStatRequest(requesterUserId);
+		stat.logStatRequest(requesterUserId);
         var id = req.query.id;
         let queryText = "SELECT * FROM VIDEOS WHERE video_id in (SELECT video_id FROM user_video WHERE user_ID = $1 AND status = 'done') AND display = true;";
         let values = [id];
