@@ -93,7 +93,7 @@ module.exports = function(app) {
             } else {
               // Email is unique
               console.log("Email is unique");
-              let queryText = "INSERT INTO asp_users (first_name, last_name, email, password, date_joined, status) VALUES ($1, $2, LOWER($3), $4, $5, true);";
+              let queryText = "INSERT INTO asp_users (first_name, last_name, email, password, date_joined, status, admin) VALUES ($1, $2, LOWER($3), $4, $5, true, false);";
               console.log("Query: " + queryText);
               let values = [firstName, lastName, email, password, date];
               db.param_query(queryText, values)
@@ -136,6 +136,8 @@ module.exports = function(app) {
                     getres.send("Alter account failed");
                 } else if (res.rowCount > 0) {
                     console.log("Email already registered to account");
+                    getres.status(401);
+                    getres.statusMessage = "Email already registered";
                     getres.send("Email already registered to account");
                 } else {
                     // Email is unique
@@ -187,16 +189,16 @@ module.exports = function(app) {
             .then(res => {
                 if (res.rows[0] != null) {
                     console.log(res.rows);
-                    // Puts various user information into the JWT
+                    // Put the user ID in the JWT payload
                     var payload = {
                         user_id: res.rows[0].user_id,
-                        first_name: res.rows[0].first_name,
-                        last_name: res.rows[0].last_name,
-                        isAdmin: res.rows[0].admin,
-                        dateJoined: res.rows[0].date_joined,
-                        isPaid: res.rows[0].paid_id,
-                        email: email,
-                        profilePhoto: res.rows[0].profile_photo
+                        // first_name: res.rows[0].first_name,
+                        // last_name: res.rows[0].last_name,
+                        // isAdmin: res.rows[0].admin,
+                        // dateJoined: res.rows[0].date_joined,
+                        // isPaid: res.rows[0].paid_id,
+                        // email: email,
+                        // profilePhoto: res.rows[0].profile_photo
                     };
                     var token = jwt.sign(payload, "thisisthekey", {
                         expiresIn: '1h'

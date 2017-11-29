@@ -26,7 +26,7 @@ export class AuthService {
         this.checkLogin();
     }
     checkLogin(): boolean {
-        // Check to see if there is jwt in local storage
+        // Check to see if there is JWT in local storage
         // If not, return false
         console.log("WEB: CHECK LOGIN");
         if(sessionStorage.getItem('jwt') == null){

@@ -28,9 +28,12 @@ export class UserSettingsComponent {
   modalText: string;
   cardInfo: string;
   constructor(private router: Router, private db: DBService, private user: UserService){
-    this.firstName = this.user.first_name;
-    this.lastName = this.user.last_name;
-    this.email = this.user.email;
+    // Set form info
+    this.user.refreshInfo().then(() => {
+        this.firstName = this.user.firstName;
+        this.lastName = this.user.lastName;
+        this.email = this.user.email;
+    });
   }
   /**
    * Pops up a modal to allow the user to upgrade their account
@@ -43,15 +46,25 @@ export class UserSettingsComponent {
    */
   save(): void {
     console.log("WEB: Saving user settings");
-    this.db.saveUserSettings(this.user.user_id, this.firstName, this.lastName, this.email, this.password).then(res => {
-      this.user.first_name = this.firstName;
-      this.user.last_name = this.lastName;
-      this.user.email = this.email;
-      this.modalText = "User Settings Saved!";
-      this.user.refreshInfo;
-      // Scroll user to top of page
-      window.scrollTo(0, 0)
-      this.modal.show();
+    this.db.saveUserSettings(this.user.userId, this.firstName, this.lastName, this.email, this.password).then(res => {
+      console.log(res.status)
+      if(res.status == 401){
+        // Email already exists
+        this.modalText = "Email already registered. Please try again."
+        window.scrollTo(0,0);
+        this.modal.show();
+      }
+      else{
+        this.user.firstName = this.firstName;
+        this.user.lastName = this.lastName;
+        this.user.email = this.email;
+        this.modalText = "User Settings Saved!";
+        this.user.refreshInfo;
+        // Scroll user to top of page
+        window.scrollTo(0, 0)
+        this.modal.show();
+      }
+      // Relog the user in so JWT is updated
     })
   }
   /**
@@ -75,7 +88,7 @@ export class UserSettingsComponent {
    */
   uploadProfilePhoto(): void {
     // Uploading photo with no style
-    this.db.uploadProfilePhoto(this.user.user_id, this.fileToUpload).then(result => {
+    this.db.uploadProfilePhoto(this.user.userId, this.fileToUpload).then(result => {
       // Post shouldn't return anything
       console.log(result);
       // this.user.getProfilePhoto();

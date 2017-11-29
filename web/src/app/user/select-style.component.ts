@@ -68,16 +68,16 @@ export class SelectStyleComponent {
         // TODO: GET DIMENSIONS OF VIDEO UPLOAD
         // Upload the filter if custom is selected
         if(this.selectedStyle.filter_id == "Upload a style"){
-          this.db.uploadFilter(this.filterToUpload, this.us.user_id).then(res => {
+          this.db.uploadFilter(this.filterToUpload, this.us.userId).then(res => {
             // res._body returns the filter id that was just added
             // TODO: Display loading animation while uploading, stop when response received.
-            this.db.uploadVideo(this.us.user_id, this.us.uploadedPhoto, res._body).then(result => {
+            this.db.uploadVideo(this.us.userId, this.us.uploadedPhoto, res._body).then(result => {
               this.router.navigate(['library']);
             });
           });
         }
         else{
-          this.db.uploadVideo(this.us.user_id, this.us.uploadedPhoto, this.selectedStyle['filter_id']).then(result => {
+          this.db.uploadVideo(this.us.userId, this.us.uploadedPhoto, this.selectedStyle['filter_id']).then(result => {
             this.router.navigate(['library']);
           });
         }
@@ -89,10 +89,10 @@ export class SelectStyleComponent {
         img.src = this.gen.uploadedImage;
         // Upload the filter if custom is selected
         if(this.selectedStyle.filter_id == "Upload a style"){
-          this.db.uploadFilter(this.filterToUpload, this.us.user_id).then(res => {
+          this.db.uploadFilter(this.filterToUpload, this.us.userId).then(res => {
             // res._body returns the filter id that was just added
             // TODO: Display loading animation while uploading, stop when response received.
-            this.db.uploadPhoto(this.us.user_id, this.us.uploadedPhoto, res._body, img).then(result => {
+            this.db.uploadPhoto(this.us.userId, this.us.uploadedPhoto, res._body, img).then(result => {
               if(result.status == 501){
                 // File size was too large
                 this.modalText = "Max image file size exceeded! 7MB max.";
@@ -106,7 +106,7 @@ export class SelectStyleComponent {
           });
         }
         else{
-          this.db.uploadPhoto(this.us.user_id, this.us.uploadedPhoto, this.selectedStyle['filter_id'], img).then(result => {
+          this.db.uploadPhoto(this.us.userId, this.us.uploadedPhoto, this.selectedStyle['filter_id'], img).then(result => {
             if(result.status == 501){
               // File size was too large
               this.modalText = "Max image file size exceeded! 7MB max.";
