@@ -6,6 +6,35 @@ const crypto = require('crypto');
 
 const config = require('../../config.js');
 
+const LOGIN_STAT_ID = 0;
+const REQUEST_STAT_ID = 1;
+const UPLOAD_PHOTO_STAT_ID = 2;
+const UPLOAD_VIDEO_STAT_ID = 3;
+
+var logStat = async function(userId, statId) {
+	var date = new Date(Date.now()).toLocaleString();	
+	var queryText = "INSERT INTO Usage (user_id, timestamp, stat_id) VALUES ($1, $2, $3);";
+    console.log("Logging login: " + userId);
+    let values = [userId, date, statId];
+	var result = await db.param_query(queryText, values);
+};
+
+var logStatLogin = function(userId) {
+	logStat(userId, LOGIN_STAT_ID);
+};
+
+var logStatRequest = function(userId) {
+	logStat(userId, REQUEST_STAT_ID);
+};
+
+var logStatUploadPhoto = function(userId) {
+	logStat(userId, UPLOAD_PHOTO_STAT_ID);	
+};
+
+var logStatUploadVideo = function(userId) {
+	logStat(userId, UPLOAD_VIDEO_STAT_ID);
+};
+
 module.exports = function(app) {
     /**
      * Test route
@@ -164,7 +193,7 @@ module.exports = function(app) {
      */
     app.get('/user/search', (req, getres) => {
         console.log("GET - search");
-		var requesterUserId = req.body.requesterUserId;
+		var requesterUserId = req.query.requesterUserId;
 		logStatRequest(requesterUserId);
         var searchString = "%" + req.query.searchString + "%";
         let queryText = "SELECT * FROM ASP_USERS WHERE LOWER(first_name::text || last_name::text) LIKE LOWER($1)";
@@ -181,8 +210,8 @@ module.exports = function(app) {
      * Takes in the request query's parameters
      */
     app.get('/user/info', (req, getres) => {
-        console.log("GET - info");
-		var requesterUserId = req.body.requesterUserId;
+        console.log("GET - info @");
+		var requesterUserId = req.query.requesterUserId;
 		logStatRequest(requesterUserId);
         var id = req.query.id;
         let queryText = "SELECT * FROM ASP_USERS WHERE user_ID = $1;";
@@ -200,7 +229,7 @@ module.exports = function(app) {
      */
     app.get('/user/photos/unstyled', (req, getres) => {
         console.log("GET - user unstyled photos");
-		var requesterUserId = req.body.requesterUserId;
+		var requesterUserId = req.query.requesterUserId;
 		logStatRequest(requesterUserId);
         var id = req.query.id;
         let queryText = "SELECT * FROM unfiltered_photo WHERE unfiltered_photo_id IN (SELECT unfiltered_photo_id FROM USER_PHOTO WHERE user_ID = $1 AND (status = 'waiting' OR status = 'processing')) ORDER BY unfiltered_photo_id;";
@@ -218,7 +247,7 @@ module.exports = function(app) {
      */
     app.get('/user/videos/unstyled', (req, getres) => {
         console.log("GET - user unstyled video");
-		var requesterUserId = req.body.requesterUserId;
+		var requesterUserId = req.query.requesterUserId;
 		logStatRequest(requesterUserId);
         var id = req.query.id;
         let queryText = "SELECT * FROM unfiltered_video WHERE unfiltered_video_id IN (SELECT unfiltered_video_id FROM user_video WHERE user_ID = $1 AND (status = 'waiting' OR status = 'processing')) ORDER BY unfiltered_video_id;";
@@ -319,7 +348,7 @@ module.exports = function(app) {
      */
     app.get('/user/videos', (req, getres) => {
         console.log("GET - user videos");
-		var requesterUserId = req.body.requesterUserId;
+		var requesterUserId = req.query.requesterUserId;
 		logStatRequest(requesterUserId);
         var id = req.query.id;
         let queryText = "SELECT * FROM VIDEOS WHERE video_id IN (SELECT video_id FROM USER_VIDEO WHERE user_ID = $1 AND status = 'done') ORDER BY video_id;";
@@ -337,7 +366,7 @@ module.exports = function(app) {
      */
     app.get('/user/photos', (req, getres) => {
         console.log("GET - user photos");
-		var requesterUserId = req.body.requesterUserId;
+		var requesterUserId = req.query.requesterUserId;
 		logStatRequest(requesterUserId);
         var id = req.query.id;
         let queryText = "SELECT * FROM PHOTOS WHERE photo_id in (SELECT photo_id FROM USER_PHOTO WHERE user_ID = $1 AND status = 'done') ORDER BY photo_id";
@@ -403,7 +432,7 @@ module.exports = function(app) {
      */
     app.get('/user/photos/display', (req, getres) => {
         console.log("GET - user profile display photos");
-		var requesterUserId = req.body.requesterUserId;
+		var requesterUserId = req.query.requesterUserId;
 		logStatRequest(requesterUserId);
         var id = req.query.id;
         let queryText = "SELECT * FROM PHOTOS WHERE photo_id in (SELECT photo_id FROM USER_PHOTO WHERE user_ID = $1 AND status = 'done') AND display = true;";
@@ -420,7 +449,7 @@ module.exports = function(app) {
      */
     app.get('/user/videos/display', (req, getres) => {
         console.log("GET - user profile display videos");
-		var requesterUserId = req.body.requesterUserId;
+		var requesterUserId = req.query.requesterUserId;
 		logStatRequest(requesterUserId);
         var id = req.query.id;
         let queryText = "SELECT * FROM VIDEOS WHERE video_id in (SELECT video_id FROM user_video WHERE user_ID = $1 AND status = 'done') AND display = true;";
