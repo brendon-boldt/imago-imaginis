@@ -42,6 +42,12 @@ export class UserComponent {
     this.modalPhoto = photo;
     this.modal.show();
   }
+  /**
+   * Performs the report on the content
+   */
+  executeReport(): void {
+    
+  }
   ngOnInit() {
     console.log("INIT");
     this.route.queryParams.subscribe(params => {

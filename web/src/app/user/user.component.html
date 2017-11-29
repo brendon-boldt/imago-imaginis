@@ -63,7 +63,7 @@
                       <input type="radio" name="reason" value="Other"> Other<br>
                     </form> 
                     </span><br>
-                    <button type="button" class="btn btn-warning btn-lg" (click)="reportmodal.hide(); confirmmodal.show();">Report</button>
+                    <button type="button" class="btn btn-warning btn-lg" (click)="reportmodal.hide(); this.executeReport(); confirmmodal.show();">Report</button>
                 </div>
                 <div class="app-modal-footer">
                     <button type="button" class="btn btn-default" (click)="reportmodal.hide();">Close</button>
@@ -93,7 +93,7 @@
                     </video>
                 </div>
                 <div class="app-modal-footer">
-                    <button *ngIf="this.user_id != this.user.user_id" type="button" class="btn btn-warning" (click)="modal.hide(); reportmodal.show()">Report</button>
+                    <button *ngIf="this.userId != this.user.userId" type="button" class="btn btn-warning" (click)="modal.hide(); reportmodal.show()">Report</button>
                     <button type="button" class="btn btn-default" (click)="modal.hide();">Close</button>
                 </div>
             </picture-modal>
