@@ -57,13 +57,13 @@
                     <label>Flag images that have offensive content</label>
                     <br>
                     <span>
-                    <form action="">
-                      <input type="radio" name="reason" value="Nudity"> Nudity<br>
-                      <input type="radio" name="reason" value="Offensive content"> Offensive content<br>
-                      <input type="radio" name="reason" value="Other"> Other<br>
+                    <form action="" #reportForm="ngForm">
+                      <input type="radio" name="reasons" value="Nudity" [(ngModel)]="form.reasons" required> Nudity<br>
+                      <input type="radio" name="reasons" value="Offensive content" [(ngModel)]="form.reasons"> Offensive content<br>
+                      <input type="radio" name="reasons" value="Other" [(ngModel)]="form.reasons"> Other<br>
                     </form> 
                     </span><br>
-                    <button type="button" class="btn btn-warning btn-lg" (click)="reportmodal.hide(); this.executeReport(); confirmmodal.show();">Report</button>
+                    <button type="submit" [disabled]="!reportForm.form.valid" class="btn btn-warning btn-lg" (click)="reportmodal.hide(); this.executeReport(); confirmmodal.show();">Report</button>
                 </div>
                 <div class="app-modal-footer">
                     <button type="button" class="btn btn-default" (click)="reportmodal.hide();">Close</button>

@@ -75,10 +75,10 @@ module.exports = function(app) {
       else{
         // If they're a paid API user and trying to access API not thru website
         if(!isAdmin){
-          // If they're not paid, isPaid returns error
-          getres.status(303);
-          getres.statusMessage = "Unauthorized: Free User";
-          getres.send("Please upgrade account to utilize this feature")
+          // If they're not an admin, return an error
+          getres.status(309);
+          getres.statusMessage = "Unauthorized: Regular User";
+          getres.send("Only admins may access this.");
           return;
         }
       }
@@ -115,10 +115,10 @@ app.get('/system/stats/photos/flagged', async (req, getres) => {
       else{
         // If they're admin API user and trying to access API not thru website
         if(!isAdmin){
-          // If they're not admin, isAdmin returns error
-          getres.status(303);
-          getres.statusMessage = "Unauthorized: Free User";
-          getres.send("Please upgrade account to utilize this feature")
+          // If they're not an admin, return an error
+          getres.status(309);
+          getres.statusMessage = "Unauthorized: Regular User";
+          getres.send("Only admins may access this.");
           return;
         }
       }
@@ -155,14 +155,14 @@ app.get('/system/stats/videos/flagged', async (req, getres) => {
       else{
         // If they're a paid API user and trying to access API not thru website
         if(!isAdmin){
-          // If they're not paid, isPaid returns error
-          getres.status(303);
-          getres.statusMessage = "Unauthorized: Free User";
-          getres.send("Please upgrade account to utilize this feature")
+          // If they're not an admin, return an error
+          getres.status(309);
+          getres.statusMessage = "Unauthorized: Regular User";
+          getres.send("Only admins may access this.");
           return;
         }
       }
-    let queryText = "SELECT videos.photo_id, user_video.user_id, videos.creation_date FROM photos, user_video WHERE videos.video_id = user_video.video_id AND videos.flag = true";
+    let queryText = "SELECT videos.video_id, user_video.user_id, videos.creation_date FROM videos, user_video WHERE videos.video_id = user_video.video_id AND videos.flag = true";
       
     db.query(queryText)
         .then(res => {
@@ -197,10 +197,10 @@ app.get('/system/stats/photos/processing', async (req, getres) => {
       else{
         // If they're a paid API user and trying to access API not thru website
         if(!isAdmin){
-          // If they're not paid, isPaid returns error
-          getres.status(303);
-          getres.statusMessage = "Unauthorized: Free User";
-          getres.send("Please upgrade account to utilize this feature")
+          // If they're not an admin, return an error
+          getres.status(309);
+          getres.statusMessage = "Unauthorized: Regular User";
+          getres.send("Only admins may access this.");
           return;
         }
       }
@@ -238,10 +238,10 @@ app.get('/system/stats/videos/processing', async (req, getres) => {
       else{
         // If they're a paid API user and trying to access API not thru website
         if(!isAdmin){
-          // If they're not paid, isPaid returns error
-          getres.status(303);
-          getres.statusMessage = "Unauthorized: Free User";
-          getres.send("Please upgrade account to utilize this feature")
+          // If they're not an admin, return an error
+          getres.status(309);
+          getres.statusMessage = "Unauthorized: Regular User";
+          getres.send("Only admins may access this.");
           return;
         }
       }
@@ -279,10 +279,10 @@ app.get('/system/stats/uploads/pastday', async (req, getres) => {
       else{
         // If they're a paid API user and trying to access API not thru website
         if(!isAdmin){
-          // If they're not paid, isPaid returns error
-          getres.status(303);
-          getres.statusMessage = "Unauthorized: Free User";
-          getres.send("Please upgrade account to utilize this feature")
+          // If they're not an admin, return an error
+          getres.status(309);
+          getres.statusMessage = "Unauthorized: Regular User";
+          getres.send("Only admins may access this.");
           return;
         }
       }
@@ -321,10 +321,10 @@ app.get('/system/stats/uploads/pastweek', async (req, getres) => {
       else{
         // If they're a paid API user and trying to access API not thru website
         if(!isAdmin){
-          // If they're not paid, isPaid returns error
-          getres.status(303);
-          getres.statusMessage = "Unauthorized: Free User";
-          getres.send("Please upgrade account to utilize this feature")
+          // If they're not an admin, return an error
+          getres.status(309);
+          getres.statusMessage = "Unauthorized: Regular User";
+          getres.send("Only admins may access this.");
           return;
         }
       }
@@ -363,10 +363,10 @@ app.get('/system/stats/uploads/pastmonth', async (req, getres) => {
       else{
         // If they're a paid API user and trying to access API not thru website
         if(!isAdmin){
-          // If they're not paid, isPaid returns error
-          getres.status(303);
-          getres.statusMessage = "Unauthorized: Free User";
-          getres.send("Please upgrade account to utilize this feature")
+          // If they're not an admin, return an error
+          getres.status(309);
+          getres.statusMessage = "Unauthorized: Regular User";
+          getres.send("Only admins may access this.");
           return;
         }
       }
@@ -404,10 +404,10 @@ app.get('/system/stats/reqs/pastday', async (req, getres) => {
       else{
         // If they're a paid API user and trying to access API not thru website
         if(!isAdmin){
-          // If they're not paid, isPaid returns error
-          getres.status(303);
-          getres.statusMessage = "Unauthorized: Free User";
-          getres.send("Please upgrade account to utilize this feature")
+          // If they're not an admin, return an error
+          getres.status(309);
+          getres.statusMessage = "Unauthorized: Regular User";
+          getres.send("Only admins may access this.");
           return;
         }
       }
@@ -444,10 +444,10 @@ app.get('/system/stats/reqs/pastweek', async (req, getres) => {
       else{
         // If they're a paid API user and trying to access API not thru website
         if(!isAdmin){
-          // If they're not paid, isPaid returns error
-          getres.status(303);
-          getres.statusMessage = "Unauthorized: Free User";
-          getres.send("Please upgrade account to utilize this feature")
+          // If they're not an admin, return an error
+          getres.status(309);
+          getres.statusMessage = "Unauthorized: Regular User";
+          getres.send("Only admins may access this.");
           return;
         }
       }
@@ -484,10 +484,10 @@ app.get('/system/stats/reqs/pastmonth', async (req, getres) => {
       else{
         // If they're a paid API user and trying to access API not thru website
         if(!isAdmin){
-          // If they're not paid, isPaid returns error
-          getres.status(303);
-          getres.statusMessage = "Unauthorized: Free User";
-          getres.send("Please upgrade account to utilize this feature")
+          // If they're not an admin, return an error
+          getres.status(309);
+          getres.statusMessage = "Unauthorized: Regular User";
+          getres.send("Only admins may access this.");
           return;
         }
       }
@@ -502,7 +502,7 @@ app.get('/system/stats/reqs/pastmonth', async (req, getres) => {
   
     
 
-//Get space used by DB
+// Get space used by DB
 app.get('/system/stats/db/spaceused', async (req, getres) => {
     console.log("GET - space used by db");
     // This performs the JWT authorization
@@ -525,10 +525,10 @@ app.get('/system/stats/db/spaceused', async (req, getres) => {
       else{
         // If they're a paid API user and trying to access API not thru website
         if(!isAdmin){
-          // If they're not paid, isPaid returns error
-          getres.status(303);
-          getres.statusMessage = "Unauthorized: Free User";
-          getres.send("Please upgrade account to utilize this feature")
+          // If they're not an admin, return an error
+          getres.status(309);
+          getres.statusMessage = "Unauthorized: Regular User";
+          getres.send("Only admins may access this.");
           return;
         }
       }
@@ -565,10 +565,10 @@ app.get('/system/stats/filesystem/spaceused', async (req, getres) => {
       else{
         // If they're a paid API user and trying to access API not thru website
         if(!isAdmin){
-          // If they're not paid, isPaid returns error
-          getres.status(303);
-          getres.statusMessage = "Unauthorized: Free User";
-          getres.send("Please upgrade account to utilize this feature")
+          // If they're not an admin, return an error
+          getres.status(309);
+          getres.statusMessage = "Unauthorized: Regular User";
+          getres.send("Only admins may access this.");
           return;
         }
       }

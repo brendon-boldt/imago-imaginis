@@ -4,6 +4,9 @@
       <h1 id="homeHeading">System Usage Report</h1>
       <hr>
       <br>
+      <div *ngIf="!dataReady">
+        <h3>Loading data...</h3>
+      </div>
       <div *ngIf="dataReady">
         <!--Table results go here-->
         <!-- <div class="table-responsive" style="overflow: auto; max-height: 200px;">
@@ -24,7 +27,6 @@
             </tbody>
           </table>
         </div> -->
-        <br>
         <h3>Disk Usage</h3>
         <div class="table-responsive" style="overflow: auto; max-height: 500px;">
           <table style="float: none; margin: 0 auto;" id="statsTable" class="table-striped" height=4>
@@ -46,6 +48,7 @@
             </tbody>
           </table>
         </div>
+        <br>
         <div style="display: block">
           <canvas baseChart
                   [data]="pieChartData"
@@ -67,11 +70,11 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>{{processingPhotos.unfiltered_photo_id}}</td>
-                <td>{{processingPhotos.filter_id}}</td>
+              <tr *ngFor="let photo of processingPhotos">
+                <td>{{photo.unfiltered_photo_id}}</td>
+                <td>{{photo.filter_id}}</td>
                 <!-- <td>{{processingPhotos.wait_time}}</td> -->
-                <td>{{processingPhotos.user_id}}</td>
+                <td>{{photo.user_id}}</td>
               </tr>
             </tbody>
           </table>
@@ -89,11 +92,10 @@
               </tr>
             </thead>
             <tbody>
-              <tr>
-                <td>{{processingVideos.unfiltered_video_id}}</td>
-                <td>{{processingVideos.filter_id}}</td>
-                <!-- <td>{{processingPhotos.wait_time}}</td> -->
-                <td>{{processingVideos.user_id}}</td>
+              <tr *ngFor="let video of processingVideos">
+                <td>{{video.unfiltered_video_id}}</td>
+                <td>{{video.filter_id}}</td>
+                <td>{{video.user_id}}</td>
               </tr>
             </tbody>
           </table>
@@ -134,75 +136,47 @@
             (chartClick)="onChartClick($event)">
         </canvas>
         </div>
-        <!-- <div class="table-responsive" style="overflow: auto; max-height: 300px;">
+        <br><br>
+        <h3>Reported Photos</h3>
+        <div class="table-responsive" style="overflow: auto; max-height: 300px;">
           <table style="float: none; margin: 0 auto;" id="statsTable" class="table-striped" height=4>
             <thead>
               <tr>
-                <th>Past Day:</th>
-                <th>Past Week:</th>
-                <th>Past Month:</th>
+                <th>Video ID</th>
+                <th>User ID</th>
+                <th>Creation Date</th>
               </tr>
             </thead>
             <tbody>
-              <tr>
+              <tr *ngFor="let photo of flaggedPhotos">
+                <td>{{photo.photo_id}}</td>
+                <td>{{photo.user_id}}</td>
+                <td>{{photo.creation_date}}</td>
               </tr>
             </tbody>
           </table>
-        </div> -->
+        </div>
+        <br>
+        <h3>Reported Videos</h3>
+        <div class="table-responsive" style="overflow: auto; max-height: 300px;">
+          <table style="float: none; margin: 0 auto;" id="statsTable" class="table-striped" height=4>
+            <thead>
+              <tr>
+                <th>Video ID</th>
+                <th>User ID</th>
+                <th>Creation Date</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr *ngFor="let video of flaggedVideos">
+                <td>{{video.video_id}}</td>
+                <td>{{video.user_id}}</td>
+                <td>{{video.creation_date}}</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   </div>
 </header>
-  
-
-<!-- <div class = "wrapper">
-<div class="container-fluid">
-	<div class="center-text">
-		<div class="page-header">
-			<h1 class="display-2">System Usage Report</h1>
-		</div>
-		<hr>
-  <br>
-    <div style="overflow-x:auto;">
-        <table style="margin:0 auto;">
-          <tr>
-            <th>Date&Time</th>
-            <th>Disk Avail</th>
-            <th>Upload Count</th>
-            <th>Request Count</th>
-            <th>Processing Time</th>
-          </tr>
-          <tr>
-            <td>EXZ</td>
-            <td>EXZ</td>
-            <td>EXZ</td>
-            <td>EXZ</td>
-            <td>EXZ</td>
-          </tr>
-          <tr>
-            <td>EXZ</td>
-            <td>EXZ</td>
-            <td>EXZ</td>
-            <td>EXZ</td>
-            <td>EXZ</td>
-          </tr>
-          <tr>
-            <td>EXZ</td>
-            <td>EXZ</td>
-            <td>EXZ</td>
-            <td>EXZ</td>
-            <td>EXZ</td>
-          </tr>
-          <tr>
-            <td>EXZ</td>
-            <td>EXZ</td>
-            <td>EXZ</td>
-            <td>EXZ</td>
-            <td>EXZ</td>
-          </tr>
-        </table>
-      <br> 
-    </div>
-
-</div>
-</div> -->

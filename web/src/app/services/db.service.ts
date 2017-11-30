@@ -721,6 +721,48 @@ export class DBService {
     }
 
     /**
+     * Sets a photo as reported
+     */
+    reportPhoto(photo_id): Promise<any> {
+        let report = this.url + '/report/photo';
+        let headers = new Headers();
+        this.handleHeader(headers);
+        headers.append('Content-Type', 'application/x-www-form-urlencoded');
+        let body = new URLSearchParams();
+        body.append('photo_id', photo_id+"");
+        let jwt = sessionStorage.getItem('jwt');
+        body.append('jwt', jwt+"");
+        let params = new URLSearchParams();
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.post(report, body, options)
+        .toPromise()
+        .then(response => response as Object)
+        .catch(this.handleError);
+    }
+
+    /**
+     * Sets a video as reported
+     */
+    reportVideo(video_id): Promise<any> {
+        let report = this.url + '/report/video';
+        let headers = new Headers();
+        this.handleHeader(headers);
+        headers.append('Content-Type', 'application/x-www-form-urlencoded');
+        let body = new URLSearchParams();
+        body.append('video_id', video_id+"");
+        let jwt = sessionStorage.getItem('jwt');
+        body.append('jwt', jwt+"");
+        let params = new URLSearchParams();
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.post(report, body, options)
+        .toPromise()
+        .then(response => response as Object)
+        .catch(this.handleError);
+    }
+
+
+
+    /**
      * Handles the headers
      */
     private handleHeader(headers) {

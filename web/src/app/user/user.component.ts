@@ -31,7 +31,8 @@ export class UserComponent {
   outside: boolean = true;
   photos: Array<Object> = []; // array of filepaths of images
   profilePhoto: String = this.placeholder;
-  modalPhoto: Object = {};
+  modalPhoto: any = {};
+  form = {};
   constructor(private user: UserService, private route: ActivatedRoute, private router: Router, private db: DBService){
     this.photos = [];
   }
@@ -46,6 +47,16 @@ export class UserComponent {
    * Performs the report on the content
    */
   executeReport(): void {
+    if(this.modalPhoto.photo_id != null){
+      this.db.reportPhoto(this.modalPhoto.photo_id).then(res => {
+        console.log(res);
+      });
+    }
+    else if(this.modalPhoto.video_id != null){
+      this.db.reportVideo(this.modalPhoto.video_id).then(res => {
+        console.log(res);
+      });
+    }
     
   }
   ngOnInit() {

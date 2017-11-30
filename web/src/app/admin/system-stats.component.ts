@@ -25,6 +25,8 @@ export class SystemStatsComponent {
   pastDayReqCount: any;
   pastWeekReqCount: any;
   pastMonthReqCount: any;
+  flaggedPhotos: any;
+  flaggedVideos: any;
 
   chartOptions = {
     responsive: true,
@@ -93,6 +95,13 @@ export class SystemStatsComponent {
     res = await this.db.getPastMonthReqs();
     this.pastMonthReqCount = res.json();
     console.log(this.pastMonthReqCount)
+    res = await this.db.getFlaggedPhotos();
+    this.flaggedPhotos = res.json();
+    console.log(this.flaggedPhotos);
+    res = await this.db.getFlaggedVideos();
+    this.flaggedVideos = res.json();
+    console.log(this.flaggedVideos);
+    // Display tables
     this.displayMonthUploads();
     this.displayMonthReqs();
     // Load tables with data

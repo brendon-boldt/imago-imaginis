@@ -4,6 +4,7 @@ const path = require('path');
 const jwt = require('jsonwebtoken');
 
 const config = require('../../config.js');
+const stat = require('./statRoutes');
 
 /**
  * Performs JWT verification. Returns true if JWT is valid and user is a paid user, otherwise returns error
@@ -176,7 +177,7 @@ module.exports = function(app) {
             }
           }
           stat.logStatRequest(0);
-        var id = req.body.id;
+        var id = req.body.photo_id;
         var queryText = "UPDATE PHOTOS SET flag = TRUE WHERE photo_id = $1;";
         let values = [id];
         db.param_query(queryText, values)
@@ -186,6 +187,56 @@ module.exports = function(app) {
                     getres.send("Photo flagging successful!");
                 } else {
                     getres.send("Photo flagging failed");
+                }
+            })
+            .catch(e => console.error(e.stack))
+        }
+    });
+
+    /**
+     * Set a video as reported on passed video_id
+     * Takes in the request body's parameters
+     */
+    app.post('/report/video', async (req, getres) => {
+        console.log("POST - set photo reported with id");
+        // This performs the JWT authorization
+        var user_id = getUserIdFromJWT(req, getres);
+        if(user_id == null){
+          return; // Authorization failed
+        }
+        else{
+          var isPaid = await verifyPaid(user_id);
+          if(req.headers.bus != undefined){
+            // If the website is making the API call
+            if(req.headers.bus != "Q2cxNw=="){
+              getres.status(201);
+              getres.statusMessage = "Unauthorized API request";
+              getres.send("Unauthorized API request");
+              return;
+            }
+          }
+          // Accessing through the API
+          else{
+            // If they're a paid API user and trying to access API not thru website
+            if(!isPaid){
+              // If they're not paid, isPaid returns error
+              getres.status(303);
+              getres.statusMessage = "Unauthorized: Free User";
+              getres.send("Please upgrade account to utilize this feature")
+              return;
+            }
+          }
+          stat.logStatRequest(0);
+        var id = req.body.video_id;
+        var queryText = "UPDATE VIDEOS SET flag = TRUE WHERE video_id = $1;";
+        let values = [id];
+        db.param_query(queryText, values)
+            .then(res => {
+                if (res != undefined) {
+                    console.log("Video flagging successful!");
+                    getres.send("Video flagging successful!");
+                } else {
+                    getres.send("Video flagging failed");
                 }
             })
             .catch(e => console.error(e.stack))
