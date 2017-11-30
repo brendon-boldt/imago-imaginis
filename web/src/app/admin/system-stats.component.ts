@@ -50,11 +50,9 @@ export class SystemStatsComponent {
  
   // events
   public chartClicked(e:any):void {
-    console.log(e);
   }
  
   public chartHovered(e:any):void {
-    console.log(e);
   }
 
   // chartLabels = ['January', 'February', 'Mars', 'April'];
@@ -62,7 +60,6 @@ export class SystemStatsComponent {
   chartLabelsReqs = [];
 
   onChartClick(event) {
-    console.log(event);
   }
 
   constructor(private db: DBService){

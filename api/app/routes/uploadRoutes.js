@@ -2,6 +2,7 @@ const db = require('../db');
 const multer = require('multer'); 
 const path = require('path');
 const jwt = require('jsonwebtoken');
+const fs = require('fs');
 var sizeOf = require('image-size');
 
 const config = require('../../config.js');
@@ -53,7 +54,27 @@ var getUserIdFromJWT = function(req, getres){
   }
 }
 
-
+var deleteFromFS = function(path){
+  fs.unlinkSync(path);
+}
+var deleteFailedPhotoFromDB = function(photo_id){
+  let queryText = "DELETE FROM unfiltered_photo WHERE unfiltered_photo_id = $1";
+  let values = [photo_id];
+  console.log("Query: " + queryText);
+  var result = db.param_query(queryText, values);
+}
+var deleteFailedVideoFromDB = function(video_id){
+  let queryText = "DELETE FROM unfiltered_video WHERE unfiltered_video_id = $1";
+  let values = [video_id];
+  console.log("Query: " + queryText);
+  var result = db.param_query(queryText, values);
+}
+var deleteFailedFilterFromDB = function(filter_id){
+  let queryText = "DELETE FROM filters WHERE filter_id = $1";
+  let values = [filter_id];
+  console.log("Query: " + queryText);
+  var result = db.param_query(queryText, values);
+}
 
 module.exports = function(app) {
   /**
@@ -89,6 +110,8 @@ module.exports = function(app) {
     // This performs the JWT authorization
     var user_id = getUserIdFromJWT(req, getres);
     if(user_id == null){
+      deleteFromFS(config.uploadsPath + "/" + req.file.filename); // Delete the photo from the file system, given its path
+      deleteFailedPhotoFromDB(req.file.unfiltered_photo_id); // Delete the unfiltered photo entry in the DB, given its photo id
       return; // Authorization failed
     }
     else{
@@ -96,9 +119,11 @@ module.exports = function(app) {
       if(req.headers.bus != undefined){
         // If the website is making the API call
         if(req.headers.bus != "Q2cxNw=="){
-          getres.status(201);
+          getres.status(306);
           getres.statusMessage = "Unauthorized API request";
           getres.send("Unauthorized API request");
+          deleteFromFS(config.uploadsPath + "/" + req.file.filename); // Delete the photo from the file system, given its path
+          deleteFailedPhotoFromDB(req.file.unfiltered_photo_id); // Delete the unfiltered photo entry in the DB, given its photo id
           return;
         }
       }
@@ -109,7 +134,9 @@ module.exports = function(app) {
           // If they're not paid, isPaid returns error
           getres.status(303);
           getres.statusMessage = "Unauthorized: Free User";
-          getres.send("Please upgrade account to utilize this feature")
+          getres.send("Please upgrade account to utilize this feature");
+          deleteFromFS(config.uploadsPath + "/" + req.file.filename); // Delete the photo from the file system, given its path
+          deleteFailedPhotoFromDB(req.file.unfiltered_photo_id); // Delete the unfiltered photo entry in the DB, given its photo id
           return;
         }
       }
@@ -123,6 +150,8 @@ module.exports = function(app) {
           getres.status(605);
           getres.statusMessage = "Max uploads";
           getres.send("You have reached your max of 2 uploaded images. Please remove images before continuing.");
+          deleteFromFS(config.uploadsPath + "/" + req.file.filename); // Delete the photo from the file system, given its path
+          deleteFailedPhotoFromDB(req.file.unfiltered_photo_id); // Delete the unfiltered photo entry in the DB, given its photo id
           return;
         }
         console.log("POST - upload");
@@ -131,13 +160,17 @@ module.exports = function(app) {
       if(!req.file){
         getres.status(503);
         getres.statusMessage = "No photo";
-        getres.send("Please upload a photo")
+        getres.send("Please upload a photo");
+        deleteFromFS(config.uploadsPath + "/" + req.file.filename); // Delete the photo from the file system, given its path
+        deleteFailedPhotoFromDB(req.file.unfiltered_photo_id); // Delete the unfiltered photo entry in the DB, given its photo id
         return;
       }
       if(req.fileValidationError){
         getres.status(502);
         getres.statusMessage = "Invalid file format";
         getres.send("Image must be JPG or PNG");
+        deleteFromFS(config.uploadsPath + "/" + req.file.filename); // Delete the photo from the file system, given its path
+        deleteFailedPhotoFromDB(req.file.unfiltered_photo_id); // Delete the unfiltered photo entry in the DB, given its photo id
         return;
       }
       // TODO: Sending headers with file size checking currently not working
@@ -145,18 +178,24 @@ module.exports = function(app) {
         getres.status(501);
         getres.statusMessage = "File size limit exceeded! 7MB max";
         getres.send("File size limit exceeded! 7MB max");
+        deleteFromFS(config.uploadsPath + "/" + req.file.filename); // Delete the photo from the file system, given its path
+        deleteFailedPhotoFromDB(req.file.unfiltered_photo_id); // Delete the unfiltered photo entry in the DB, given its photo id
         return;
       }
       if(req.file.size > MAX_PHOTO_UPLOAD_SIZE){
         getres.status(501);
         getres.statusMessage = "File size limit exceeded! 7MB max";
         getres.send("File size limit exceeded! 7MB max");
+        deleteFromFS(config.uploadsPath + "/" + req.file.filename); // Delete the photo from the file system, given its path
+        deleteFailedPhotoFromDB(req.file.unfiltered_photo_id); // Delete the unfiltered photo entry in the DB, given its photo id
         return;
       }
       if(!req.body.filter_id){
         getres.status(504);
         getres.statusMessage = "No filter id";
-        getres.send("Specify a filter id")
+        getres.send("Specify a filter id");
+        deleteFromFS(config.uploadsPath + "/" + req.file.filename); // Delete the photo from the file system, given its path
+        deleteFailedPhotoFromDB(req.file.unfiltered_photo_id); // Delete the unfiltered photo entry in the DB, given its photo id
         return;
       }
       stat.logStatUploadPhoto(user_id);
@@ -210,6 +249,8 @@ module.exports = function(app) {
     // This performs the JWT authorization
     var user_id = getUserIdFromJWT(req, getres);
     if(user_id == null){
+      deleteFromFS(config.videoUploadsPath + "/" + req.file.filename); // Delete the photo from the file system, given its path
+      deleteFailedVideoFromDB(req.file.unfiltered_video_id); // Delete the unfiltered photo entry in the DB, given its photo id
       return; // Error occurred in authorization
     }
     else{
@@ -218,16 +259,20 @@ module.exports = function(app) {
       if(req.headers.bus != undefined){
         // If the website is making the API call
         if(req.headers.bus != "Q2cxNw=="){
-          getres.status(201);
+          getres.status(306);
           getres.statusMessage = "Unauthorized API request";
           getres.send("Unauthorized API request");
+          deleteFromFS(config.videoUploadsPath + "/" + req.file.filename); // Delete the photo from the file system, given its path
+          deleteFailedVideoFromDB(req.file.unfiltered_video_id); // Delete the unfiltered photo entry in the DB, given its photo id
           return;
         }
         // Make sure user JWT is authenticated, and also that they're a paid user, else return error
         if(!isPaid){
           getres.status(303);
           getres.statusMessage = "Unauthorized: Free User";
-          getres.send("Please upgrade account to utilize this feature")
+          getres.send("Please upgrade account to utilize this feature");
+          deleteFromFS(config.videoUploadsPath + "/" + req.file.filename); // Delete the photo from the file system, given its path
+          deleteFailedVideoFromDB(req.file.unfiltered_video_id); // Delete the unfiltered photo entry in the DB, given its photo id
           return;
         }
       }
@@ -237,14 +282,18 @@ module.exports = function(app) {
           // If they're not paid, isPaid returns error
           getres.status(303);
           getres.statusMessage = "Unauthorized: Free User";
-          getres.send("Please upgrade account to utilize this feature")
+          getres.send("Please upgrade account to utilize this feature");
+          deleteFromFS(config.videoUploadsPath + "/" + req.file.filename); // Delete the photo from the file system, given its path
+          deleteFailedVideoFromDB(req.file.unfiltered_video_id); // Delete the unfiltered photo entry in the DB, given its photo id
           return;
         }
       }
       if(!req.file){
         getres.status(503);
         getres.statusMessage = "No video";
-        getres.send("Please upload a video")
+        getres.send("Please upload a video");
+        deleteFromFS(config.videoUploadsPath + "/" + req.file.filename); // Delete the photo from the file system, given its path
+        deleteFailedVideoFromDB(req.file.unfiltered_video_id); // Delete the unfiltered photo entry in the DB, given its photo id
         return;
       }
       // File type validation check
@@ -252,12 +301,16 @@ module.exports = function(app) {
         res.status(502);
         res.statusMessage = "Invalid file format";
         res.send("Video must be in mp4 format");
+        deleteFromFS(config.videoUploadsPath + "/" + req.file.filename); // Delete the photo from the file system, given its path
+        deleteFailedVideoFromDB(req.file.unfiltered_video_id); // Delete the unfiltered photo entry in the DB, given its photo id
         return;
       }
       if(!req.body.filter_id){
         getres.status(504);
         getres.statusMessage = "No filter id";
-        getres.send("Specify a filter id")
+        getres.send("Specify a filter id");
+        deleteFromFS(config.videoUploadsPath + "/" + req.file.filename); // Delete the photo from the file system, given its path
+        deleteFailedVideoFromDB(req.file.unfiltered_video_id); // Delete the unfiltered photo entry in the DB, given its photo id
         return;
       }
       console.log("POST - upload");
@@ -303,7 +356,7 @@ module.exports = function(app) {
     }
   });
   app.post('/filter/upload', multer({storage: filterStorage, fileFilter: function (req, file, cb) { 
-    if(!(file.mimetype == 'video/mp4')){
+    if(!(file.mimetype == 'image/jpeg' || file.mimetype == 'image/png')){
       console.log(file.mimetype);
       req.fileValidationError = 'goes wrong on the mimetype';
       return cb(null, false, new Error('goes wrong on the mimetype'));
@@ -313,6 +366,8 @@ module.exports = function(app) {
     // This performs the JWT authorization
     var user_id = getUserIdFromJWT(req, getres);
     if(user_id == null){
+      deleteFromFS(config.stylePath + "/" + req.file.filename); // Delete the photo from the file system, given its path
+      deleteFailedFilterFromDB(req.file.filter_id); // Delete the unfiltered photo entry in the DB, given its photo id
       return; // Error occurred in authorization
     }
     else{
@@ -321,16 +376,20 @@ module.exports = function(app) {
       if(req.headers.bus != undefined){
         // If the website is making the API call
         if(req.headers.bus != "Q2cxNw=="){
-          getres.status(201);
+          getres.status(306);
           getres.statusMessage = "Unauthorized API request";
           getres.send("Unauthorized API request");
+          deleteFromFS(config.stylePath + "/" + req.file.filename); // Delete the photo from the file system, given its path
+          deleteFailedFilterFromDB(req.file.filter_id); // Delete the unfiltered photo entry in the DB, given its photo id
           return;
         }
         // Make sure user JWT is authenticated, and also that they're a paid user, else return error
         if(!isPaid){
           getres.status(303);
           getres.statusMessage = "Unauthorized: Free User";
-          getres.send("Please upgrade account to utilize this feature")
+          getres.send("Please upgrade account to utilize this feature");
+          deleteFromFS(config.stylePath + "/" + req.file.filename); // Delete the photo from the file system, given its path
+          deleteFailedFilterFromDB(req.file.filter_id); // Delete the unfiltered photo entry in the DB, given its photo id
           return;
         }
       }
@@ -340,19 +399,25 @@ module.exports = function(app) {
           // If they're not paid, isPaid returns error
           getres.status(303);
           getres.statusMessage = "Unauthorized: Free User";
-          getres.send("Please upgrade account to utilize this feature")
+          getres.send("Please upgrade account to utilize this feature");
+          deleteFromFS(config.stylePath + "/" + req.file.filename); // Delete the photo from the file system, given its path
+          deleteFailedFilterFromDB(req.file.filter_id); // Delete the unfiltered photo entry in the DB, given its photo id
           return;
         }
         // File type validation check
         if(!req.file){
           getres.status(503);
           getres.statusMessage = "No photo";
-          getres.send("Please upload a photo")
+          getres.send("Please upload a photo");
+          deleteFromFS(config.stylePath + "/" + req.file.filename); // Delete the photo from the file system, given its path
+          deleteFailedFilterFromDB(req.file.filter_id); // Delete the unfiltered photo entry in the DB, given its photo id
         }
         if(req.fileValidationError){
           res.status(502);
           res.statusMessage = "Invalid file format";
           res.send("Video must be in mp4 format");
+          deleteFromFS(config.stylePath + "/" + req.file.filename); // Delete the photo from the file system, given its path
+          deleteFailedFilterFromDB(req.file.filter_id); // Delete the unfiltered photo entry in the DB, given its photo id
           return;
         }
         // Do verification that this is indeed a photo upload
@@ -395,6 +460,7 @@ module.exports = function(app) {
     // This performs the JWT authorization
     var user_id = getUserIdFromJWT(req, getres);
     if(user_id == null){
+      deleteFromFS(config.uploadsPath + "/" + req.file.filename);
       return; // Authorization failed
     }
     else{
@@ -402,9 +468,10 @@ module.exports = function(app) {
       if(req.headers.bus != undefined){
         // If the website is making the API call
         if(req.headers.bus != "Q2cxNw=="){
-          getres.status(201);
+          getres.status(306);
           getres.statusMessage = "Unauthorized API request";
           getres.send("Unauthorized API request");
+          deleteFromFS(config.uploadsPath + "/" + req.file.filename);
           return;
         }
       }
@@ -415,7 +482,8 @@ module.exports = function(app) {
           // If they're not paid, isPaid returns error
           getres.status(303);
           getres.statusMessage = "Unauthorized: Free User";
-          getres.send("Please upgrade account to utilize this feature")
+          getres.send("Please upgrade account to utilize this feature");
+          deleteFromFS(config.uploadsPath + "/" + req.file.filename);
           return;
         }
       }
@@ -423,21 +491,21 @@ module.exports = function(app) {
     if(!req.file){
       getres.status(503);
       getres.statusMessage = "No photo";
-      getres.send("Please upload a photo")
+      getres.send("Please upload a photo");
+      deleteFromFS(config.uploadsPath + "/" + req.file.filename);
     }
     if(req.fileValidationError){
       getres.status(502);
       getres.statusMessage = "Image must be JPG or PNG";
       getres.send("Image must be JPG or PNG");
+      deleteFromFS(config.uploadsPath + "/" + req.file.filename);
       return;
     }
-    // TODO: Do verification that this is indeed a photo upload
     console.log("POST - upload");
     stat.logStatUploadPhoto(user_id);
     console.log("POST - uploaasdfasdfd");
     console.log(req.file);
     var path = config.uploadsPath + "/" + req.file.filename;
-    // var path = req.file.filename;
     var queryText = "UPDATE asp_users SET (profile_photo) = ($1) WHERE user_id = $2;";
     var values = [path, user_id];
     console.log("Query: " + queryText);
