@@ -4,6 +4,12 @@ const path = require('path');
 const jwt = require('jsonwebtoken');
 const fs = require('fs');
 var sizeOf = require('image-size');
+var watermark = require('image-watermark');
+var options = {
+  'text' : 'ImagoImaginis',
+  'override-image' : true,
+  'dstPath' : '/home/administrator/files/images/ii_logo_color.png'
+}
 
 const config = require('../../config.js');
 const stat = require('./statRoutes');
@@ -23,10 +29,12 @@ var verifyPaid = async function(user_id){
   result = await db.param_query(queryText, values)
   console.log(result.rows[0])
   if(result.rows[0].paid_id != null){
+    console.log("VERIFY: Paid user");
     return true;
   }
   else{
     // They are a free user
+    console.log("VERIFY: Free user");
     return false;
   }
 }
@@ -154,8 +162,15 @@ module.exports = function(app) {
           deleteFailedPhotoFromDB(req.file.unfiltered_photo_id); // Delete the unfiltered photo entry in the DB, given its photo id
           return;
         }
-        console.log("POST - upload");
+        // If they're a free user, put a watermark on their uploaded image. Muahaahaha!
+        try{
+          await watermark.embedWatermark(config.uploadsPath + "/" + req.file.filename, options);
+        }
+        catch(e){
+          console.log(e);
+        }
       }
+      console.log("POST - upload");
       console.log(req.file);
       if(!req.file){
         getres.status(503);
@@ -201,10 +216,16 @@ module.exports = function(app) {
       stat.logStatUploadPhoto(user_id);
       var path = config.uploadsPath + "/" + req.file.filename;
       // Update record in DB to have file size and path
-      let queryText = "UPDATE unfiltered_photo SET (size, height, width, path) = ($1, $2, $3, $4) WHERE unfiltered_photo_id = $5;";
-      var values = [req.file.size, 260, 260, path, req.file.unfiltered_photo_id]
+      var queryText = "UPDATE unfiltered_photo SET (size, height, width, path) = ($1, $2, $3, $4) WHERE unfiltered_photo_id = $5;";
+      var values = [req.file.size, 260, 260, path, req.file.unfiltered_photo_id];
       console.log("Query: " + queryText);
-      result = await db.param_query(queryText, values);
+      try{
+        result = await db.param_query(queryText, values);
+        console.log(result)
+      }
+      catch(e){
+        console.log(e)
+      }
       // Need to generate entry in Photos to have photo id so we can create entry in user_photo
       queryText = "INSERT INTO photos (size, creation_date, path, process_time, flag, display, height, width) VALUES (.00000001, '1970-01-01', '', 0, false, false, 0, 0) RETURNING photo_id;";
       console.log("Query: " + queryText);

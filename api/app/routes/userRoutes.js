@@ -1046,6 +1046,8 @@ module.exports = function(app) {
      * Returns the number of photos the user has
      */
     app.get('/user/photos/num', async (req, getres) => {
+      var user_id = getUserIdFromJWT(req, getres);
+      var isPaid = await verifyPaid(user_id);
       // This performs the JWT authorization
       if(req.headers.bus != undefined){
         // If the website is making the API call
@@ -1063,7 +1065,6 @@ module.exports = function(app) {
         if(user_id == null){
           return; // Authorization failed
         }
-        var isPaid = await verifyPaid(user_id);
         // If they're a paid API user and trying to access API not thru website
         if(!isPaid){
           // If they're not paid, isPaid returns error
@@ -1079,7 +1080,8 @@ module.exports = function(app) {
       let values = [req.query.user_id];
       var result = await db.param_query(queryText, values)
       console.log(result.rows[0])
-      if(result.rows[0].count >= MAX_PHOTO_UPLOADS_FREE){
+      if(result.rows[0].count >= MAX_PHOTO_UPLOADS_FREE && !isPaid){
+        // If the user is a free user, make sure they aren't over two uploaded images.
         getres.status(605);
         getres.statusMessage = "Max uploads";
         getres.send("You have reached your max of 2 uploaded images. Please remove images before continuing.");

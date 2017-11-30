@@ -501,6 +501,8 @@ export class DBService {
         headers.append('Content-Type', 'application/json');
         let params = new URLSearchParams();
         params.set('user_id', user_id+"");
+        let jwt = sessionStorage.getItem('jwt');
+        params.set('jwt', jwt+"");
         let options = new RequestOptions({headers: headers, search: params});
         return this.http.get(get, options)
         .toPromise()
