@@ -159,8 +159,7 @@ module.exports = function(app) {
         getres.send("Specify a filter id")
         return;
       }
-      // var requesterUserId = req.body.requesterUserId;
-      // stat.logStatUploadPhoto(requesterUserId);
+      stat.logStatUploadPhoto(user_id);
       var path = config.uploadsPath + "/" + req.file.filename;
       // Update record in DB to have file size and path
       let queryText = "UPDATE unfiltered_photo SET (size, height, width, path) = ($1, $2, $3, $4) WHERE unfiltered_photo_id = $5;";
@@ -262,8 +261,7 @@ module.exports = function(app) {
         return;
       }
       console.log("POST - upload");
-      // var requesterUserId = req.body.requesterUserId;
-      // stat.logStatUploadVideo(requesterUserId);
+      stat.logStatUploadVideo(user_id);
       console.log(req.file);
       var path = config.videoUploadsPath + "/" + req.file.filename;
       // Update record in DB to have file size and path
@@ -319,7 +317,7 @@ module.exports = function(app) {
     }
     else{
       var isPaid = await verifyPaid(user_id);
-      // User must be paid, either through website or through API
+      // User must be paid, both through website or through API
       if(req.headers.bus != undefined){
         // If the website is making the API call
         if(req.headers.bus != "Q2cxNw=="){
@@ -359,8 +357,7 @@ module.exports = function(app) {
         }
         // Do verification that this is indeed a photo upload
         console.log("POST - upload");
-        // var requesterUserId = req.body.requesterUserId;
-        // stat.logStatUploadPhoto(requesterUserId);
+        stat.logStatUploadPhoto(user_id);
         console.log(req.body);
         console.log(req.file);
         var path = config.stylePath + "/" + req.file.filename;
@@ -436,8 +433,7 @@ module.exports = function(app) {
     }
     // TODO: Do verification that this is indeed a photo upload
     console.log("POST - upload");
-    // var requesterUserId = req.query.requesterUserId;
-    // stat.logStatUploadPhoto(requesterUserId);
+    stat.logStatUploadPhoto(user_id);
     console.log("POST - uploaasdfasdfd");
     console.log(req.file);
     var path = config.uploadsPath + "/" + req.file.filename;

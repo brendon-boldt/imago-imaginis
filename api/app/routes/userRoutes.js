@@ -17,24 +17,25 @@ const MAX_PHOTO_UPLOADS_FREE = 2;
  * Used for authenticated routes that can be accessible only by a paid user.
  */
 var verifyPaid = async function(user_id){
-  // Return true if jwt is paid user, else return false
-  // Look up user id and see if they're a paid user
   let queryText = "SELECT * FROM ASP_USERS LEFT JOIN paid_users ON asp_users.user_id = paid_users.paid_id WHERE user_ID = $1;";
   let values = [user_id];
   result = await db.param_query(queryText, values)
   console.log(result.rows[0])
   if(result.rows[0].paid_id != null){
+    // The user is a paid user.
     return true;
   }
   else{
-    // They are a free user
     return false;
   }
 }
 
-// Verifies if JWT is good
+/**
+ * Takes in a JWT from the request object and verifies if it is a valid JWT.
+ * Returns an error if the JWT is invalid.
+ */
 var getUserIdFromJWT = function(req, getres){
-  console.log("Performing JWT verification")
+  console.log("EXPRESS - Performing JWT verification")
   var token;
   // JWT is passed either in query or in body
   if(req.query.jwt != null){
@@ -55,97 +56,87 @@ var getUserIdFromJWT = function(req, getres){
   }
 }
 
-// ---------------------------------------------------------------------------------------------------------------------------
-
 module.exports = function(app) {
-    /**
-     * Test route
-     */
-    app.post('/test', (req, res) => {
-        console.log(req.query);
-        res.send('Hello');
-    });
-
     /**
      * Inserts an entry into the asp_users' table
      * Takes in the request body's parameters
      */
     app.post('/user/create', (req, getres) => {
-        console.log("POST - create account");
-        // Verify if it's coming from website.
-        // Only the website may create users
-        if(req.headers.bus != undefined){
-          if(req.headers.bus != "Q2cxNw=="){
-            getres.status(201);
-            getres.statusMessage = "Unauthorized API request";
-            getres.send("Unauthorized API request");
-            return;
+    console.log("POST - create account");
+    // Verify if it's coming from website.
+    // Only the website may create users
+    if(req.headers.bus != undefined){
+      if(req.headers.bus != "Q2cxNw=="){
+        getres.status(201);
+        getres.statusMessage = "Unauthorized API request";
+        getres.send("Unauthorized API request");
+        return;
+      }
+    }
+    else{
+      getres.status(201);
+      getres.statusMessage = "Unauthorized API request";
+      getres.send("Unauthorized API request");
+      return;
+    }
+    if(req.body.first_name == null || req.body.last_name == null || req.body.email == null || req.body.password == null){
+      getres.status(406);
+      getres.statusMessage = "Missing info";
+      getres.send("Missing user information. Please provide all user information. Password is optional");
+      return;
+    }
+    var firstName = req.body.first_name.trim();
+    var lastName = req.body.last_name.trim();
+    var email = req.body.email.trim();
+    var password = req.body.password;
+    if(req.body.first_name == "" || lastName == "" || email == "" || password == ""){
+      getres.status(406);
+      getres.statusMessage = "Missing info";
+      getres.send("Missing user information. Please provide all user information. Password is optional");
+      return;
+    }
+    if(!validator.isEmail(email)){
+      console.log("Not a valid email")
+      getres.status(408);
+      getres.statusMessage = "Invalid email";
+      getres.send("Please enter a valid email.");
+      return;
+    }
+    const hash = crypto.createHash('sha256');
+    hash.update(password);
+    password = hash.digest('hex');
+    var date = new Date(Date.now()).toLocaleDateString();
+    // Verify email is unique
+    var queryText = "SELECT * FROM ASP_USERS WHERE LOWER(email) = LOWER($1);";
+    let values = [email];
+    db.param_query(queryText, values)
+      .then(res => {
+        if (res == undefined) {
+            getres.send("Create account failed");
+        } else if (res.rowCount > 0) {
+            console.log("Email already registered to account");
+            getres.status(401);
+            getres.statusMessage = "Email already registered";
+            getres.send("Email already registered to an account");
+        } else {
+          // Email is unique
+          console.log("Email is unique");
+          let queryText = "INSERT INTO asp_users (first_name, last_name, email, password, date_joined, status, admin) VALUES ($1, $2, LOWER($3), $4, $5, true, false);";
+          console.log("Query: " + queryText);
+          let values = [firstName, lastName, email, password, date];
+          db.param_query(queryText, values)
+              .then(res => {
+                  if (res != undefined) {
+                      console.log("Account creation successful!");
+                      getres.send("Account creation successful!");
+                  } else {
+                      getres.send("Account creation failed");
+                  }
+              })
+              .catch(e => console.error(e.stack))
           }
-        }
-        else{
-          getres.status(201);
-          getres.statusMessage = "Unauthorized API request";
-          getres.send("Unauthorized API request");
-          return;
-        }
-        if(req.body.first_name == null || req.body.last_name == null || req.body.email == null || req.body.password == null){
-          getres.status(406);
-          getres.statusMessage = "Missing info";
-          getres.send("Missing user information. Please provide all user information. Password is optional");
-          return;
-        }
-        var firstName = req.body.first_name.trim();
-        var lastName = req.body.last_name.trim();
-        var email = req.body.email.trim();
-        var password = req.body.password;
-        if(req.body.first_name == "" || lastName == "" || email == "" || password == ""){
-          getres.status(406);
-          getres.statusMessage = "Missing info";
-          getres.send("Missing user information. Please provide all user information. Password is optional");
-          return;
-        }
-        if(!validator.isEmail(email)){
-          console.log("Not a valid email")
-          getres.status(408);
-          getres.statusMessage = "Invalid email";
-          getres.send("Please enter a valid email.");
-          return;
-        }
-        const hash = crypto.createHash('sha256');
-        hash.update(password);
-        password = hash.digest('hex');
-        var date = new Date(Date.now()).toLocaleDateString();
-        // Verify email is unique
-        var queryText = "SELECT * FROM ASP_USERS WHERE LOWER(email) = LOWER($1);";
-        let values = [email];
-        db.param_query(queryText, values)
-          .then(res => {
-            if (res == undefined) {
-                getres.send("Create account failed");
-            } else if (res.rowCount > 0) {
-                console.log("Email already registered to account");
-                getres.status(401);
-                getres.statusMessage = "Email already registered";
-                getres.send("Email already registered to an account");
-            } else {
-              // Email is unique
-              console.log("Email is unique");
-              let queryText = "INSERT INTO asp_users (first_name, last_name, email, password, date_joined, status, admin) VALUES ($1, $2, LOWER($3), $4, $5, true, false);";
-              console.log("Query: " + queryText);
-              let values = [firstName, lastName, email, password, date];
-              db.param_query(queryText, values)
-                  .then(res => {
-                      if (res != undefined) {
-                          console.log("Account creation successful!");
-                          getres.send("Account creation successful!");
-                      } else {
-                          getres.send("Account creation failed");
-                      }
-                  })
-                  .catch(e => console.error(e.stack))
-              }
-          })
-          .catch(e => console.error(e.stack))
+      })
+      .catch(e => console.error(e.stack))
     });
 
     /**
@@ -359,8 +350,7 @@ module.exports = function(app) {
               return;
             }
           }
-          var requesterUserId = req.query.requesterUserId;
-          stat.logStatRequest(requesterUserId);
+          stat.logStatRequest(0);
           var searchString = "%" + req.query.searchString + "%";
           let queryText = "SELECT * FROM ASP_USERS WHERE LOWER(first_name::text || last_name::text) LIKE LOWER($1)";
           let values = [searchString];
@@ -403,8 +393,7 @@ module.exports = function(app) {
             return;
           }
         }
-          var requesterUserId = req.query.requesterUserId;
-          stat.logStatRequest(requesterUserId);
+          stat.logStatRequest(0);
           console.log("GET - info");
           var id = req.query.user_id;
           let queryText = "SELECT * FROM ASP_USERS WHERE user_ID = $1;";
@@ -448,8 +437,7 @@ module.exports = function(app) {
             return;
           }
         }
-          var requesterUserId = req.query.requesterUserId;
-          stat.logStatRequest(requesterUserId);
+          stat.logStatRequest(0);
           var id = req.query.user_id;
           let queryText = "SELECT * FROM unfiltered_photo WHERE unfiltered_photo_id IN (SELECT unfiltered_photo_id FROM USER_PHOTO WHERE user_ID = $1 AND (status = 'waiting' OR status = 'processing')) ORDER BY unfiltered_photo_id;";
           let values = [id];
@@ -494,8 +482,7 @@ module.exports = function(app) {
             return;
           }
         }
-        var requesterUserId = req.query.requesterUserId;
-        stat.logStatRequest(requesterUserId);
+        stat.logStatRequest(0);
         var id = req.query.user_id;
         let queryText = "SELECT * FROM unfiltered_video WHERE unfiltered_video_id IN (SELECT unfiltered_video_id FROM user_video WHERE user_ID = $1 AND (status = 'waiting' OR status = 'processing')) ORDER BY unfiltered_video_id;";
         let values = [id];
@@ -520,7 +507,6 @@ module.exports = function(app) {
           return; // Authorization failed
         }
         else{
-          var isPaid = await verifyPaid(user_id);
           if(req.headers.bus != undefined){
             // If the website is making the API call
             if(req.headers.bus != "Q2cxNw=="){
@@ -532,17 +518,14 @@ module.exports = function(app) {
           }
           // Accessing through the API
           else{
-            // If they're a paid API user and trying to access API not thru website
-            if(!isPaid){
-              // If they're not paid, isPaid returns error
-              getres.status(303);
-              getres.statusMessage = "Unauthorized: Free User";
-              getres.send("Please upgrade account to utilize this feature")
-              return;
+            // Access through the API by a user should not be allowed, so return an error anyways.
+            getres.status(303);
+            getres.statusMessage = "Unauthorized: Free User";
+            getres.send("Please upgrade account to utilize this feature")
+            return;
             }
           }
-        var requesterUserId = req.body.requesterUserId;
-        stat.logStatRequest(requesterUserId);
+        stat.logStatRequest(user_id);
         var id = req.body.user_id;
         var queryText = "SELECT * FROM Paid_Users WHERE user_id = $1;";
         let values = [id];
@@ -566,7 +549,6 @@ module.exports = function(app) {
                 }
             })
             .catch(e => console.error(e.stack))
-          }
     });
 
     /**
@@ -603,8 +585,7 @@ module.exports = function(app) {
               return;
             }
           }
-          var requesterUserId = req.body.requesterUserId;
-          stat.logStatRequest(requesterUserId);
+          stat.logStatRequest(user_id);
           var photo_id = req.body.photo_id;
           var display = req.body.display;
           if(photo_id == null || display == null){
@@ -650,8 +631,6 @@ module.exports = function(app) {
      */
     app.post('/user/videos/set-display', async (req, getres) => {
         console.log("POST - set video to display");
-        var requesterUserId = req.body.requesterUserId;
-        stat.logStatRequest(requesterUserId);
         // This performs the JWT authorization
         var user_id = getUserIdFromJWT(req, getres);
         if(user_id == null){
@@ -679,6 +658,7 @@ module.exports = function(app) {
               return;
             }
           }
+          stat.logStatRequest(user_id);
         var video_id = req.body.video_id;
         var display = req.body.display;
         if(video_id == null || display == null){
@@ -745,8 +725,7 @@ module.exports = function(app) {
             return;
           }
         }
-        var requesterUserId = req.query.requesterUserId;
-        stat.logStatRequest(requesterUserId);
+        stat.logStatRequest(0);
         var id = req.query.user_id;
         if(id == null){
           getres.status(406);
@@ -797,8 +776,7 @@ module.exports = function(app) {
             return;
           }
         }
-        var requesterUserId = req.query.requesterUserId;
-        stat.logStatRequest(requesterUserId);
+        stat.logStatRequest(0);
         var id = req.query.id;
         var id = req.query.user_id;
         if(id == null){
@@ -822,8 +800,6 @@ module.exports = function(app) {
      */
     app.post('/user/photos/delete', async (req, getres) => {
         console.log("POST - delete photo");
-        var requesterUserId = req.body.requesterUserId;
-        stat.logStatRequest(requesterUserId);
         // This performs the JWT authorization
         var user_id = getUserIdFromJWT(req, getres);
         if(user_id == null){
@@ -851,6 +827,7 @@ module.exports = function(app) {
               return;
             }
           }
+          stat.logStatRequest(user_id);
         var photoId = req.body.photo_id;
         var userId = req.body.user_id;
         if(photoId == null || userId == null){
@@ -877,8 +854,6 @@ module.exports = function(app) {
      */
     app.post('/user/videos/delete', async (req, getres) => {
         console.log("POST - delete video");
-        var requesterUserId = req.body.requesterUserId;
-        stat.logStatRequest(requesterUserId);
         console.log(req.body);
         // This performs the JWT authorization
         var user_id = getUserIdFromJWT(req, getres);
@@ -907,6 +882,7 @@ module.exports = function(app) {
               return;
             }
           }
+          stat.logStatRequest(user_id);
         var videoId = req.body.video_id;
         var userId = req.body.user_id;
         if(videoId == null || userId == null){
@@ -959,8 +935,7 @@ module.exports = function(app) {
             return;
           }
         }
-        var requesterUserId = req.query.requesterUserId;
-        stat.logStatRequest(requesterUserId);
+        stat.logStatRequest(0);
         var id = req.query.id;
         var id = req.query.user_id;
         if(id == null){
@@ -1010,8 +985,7 @@ module.exports = function(app) {
             return;
           }
         }
-        var requesterUserId = req.query.requesterUserId;
-        stat.logStatRequest(requesterUserId);
+        stat.logStatRequest(0);
         var id = req.query.id;
         var id = req.query.user_id;
         if(id == null){
@@ -1060,6 +1034,7 @@ module.exports = function(app) {
           return;
         }
       }
+      stat.logStatRequest(0);
       console.log("GET - number of photos");
       let queryText = "SELECT COUNT(*) FROM user_photo WHERE user_id = $1";
       let values = [req.query.user_id];
@@ -1075,47 +1050,3 @@ module.exports = function(app) {
     });
 
 }
-
-
-
-
-
-// var verify = function(req, getres){
-//   var token;
-//   // JWT is passed either in query or in body
-//   if(req.query.jwt != null){
-//       token = req.query.jwt;
-//   }
-//   else if(req.body.jwt != null){
-//       token = req.body.jwt;
-//   }
-//   try{
-//       var decoded = jwt.verify(token, "thisisthekey");
-//       var passed_user_id;
-//       if(req.query.user_id != null){
-//         passed_user_id = req.query.user_id;
-//       }
-//       else if(req.body.user_id != null){
-//         passed_user_id = req.body.user_id;
-//       }
-//       console.log("Checking IDs");
-//       console.log(passed_user_id);
-//       console.log(token.user_id); 
-//       // See if passed user id matches the JWT they pass
-//       if(passed_user_id != null){
-//           if(passed_user_id != decoded.user_id){
-//               getres.status(806);
-//               getres.statusMessage = "Incorrect JWT token.";
-//               getres.send("JWT does not match user id supplied. Please pass a valid JWT token for your user account.");
-//               return false;
-//           }
-//       }
-//       return true;
-//   }
-//   catch(err){
-//       getres.status(800);
-//       getres.statusMessage = "Invalid JWT token. Please pass a valid JWT token.";
-//       getres.send("Invalid JWT token. Please pass a valid JWT token.");
-//       return false;
-//   }
-// }

@@ -49,15 +49,6 @@ var verifyPaid = async function(user_id){
   }
 
 module.exports = function(app) {
-
-    /**
-     * Test route
-     */
-    app.post('/test', (req, res) => {
-        console.log(req.query);
-        res.send('Hello');
-    });
-
     /**
      * Returns all filter ids and their names
      */
@@ -91,6 +82,7 @@ module.exports = function(app) {
               return;
             }
           }
+          stat.logStatRequest(0);
         let queryText = 'SELECT * FROM filters WHERE preset = true';
         db.query(queryText)
         .then(res => {
@@ -139,6 +131,7 @@ module.exports = function(app) {
               return;
             }
           }
+          stat.logStatRequest(0);
         var id = req.query.id;
         let queryText = "SELECT path FROM FILTERS WHERE filter_id = $1";
         let values = [id];
@@ -182,6 +175,7 @@ module.exports = function(app) {
               return;
             }
           }
+          stat.logStatRequest(0);
         var id = req.body.id;
         var queryText = "UPDATE PHOTOS SET flag = TRUE WHERE photo_id = $1;";
         let values = [id];
