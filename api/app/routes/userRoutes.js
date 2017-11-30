@@ -4,6 +4,7 @@ const path = require('path');
 const jwt = require('jsonwebtoken');
 const crypto = require('crypto');
 const validator = require('validator');
+const fs = require('fs');
 
 const config = require('../../config.js');
 const stat = require('./statRoutes');
@@ -54,6 +55,13 @@ var getUserIdFromJWT = function(req, getres){
     getres.send("Invalid JWT token. Please pass a valid JWT token.");
     return null;
   }
+}
+
+/**
+ * Performs a delete from the file system given the path
+ */
+var deleteFromFS = function(path){
+  fs.unlinkSync(path);
 }
 
 module.exports = function(app) {
@@ -598,10 +606,10 @@ module.exports = function(app) {
           let values = [photoId, user_id]
           var results = await db.param_query(queryText, values);
           // If the photo does not belong to the user, return error
-          if(results.rows[0] == 0){
+          if(results.rows[0] == null){
             getres.status(408);
-            getres.statusMessage = "Photo Ownership Error";
-            getres.send("This photo does not belong to this account. Please try again.");
+            getres.statusMessage = "Photo Existence Error";
+            getres.send("This photo does not exist for this account. Please try again.");
             return;
           }
           var queryText = "UPDATE PHOTOS SET display = $1 WHERE photo_id = $2;";
@@ -671,10 +679,10 @@ module.exports = function(app) {
         let values = [video_id, user_id]
         var results = await db.param_query(queryText, values);
         // If the photo does not belong to the user, return error
-        if(results.rows[0] == 0){
+        if(results.rows[0] == null){
           getres.status(408);
-          getres.statusMessage = "Video Ownership Error";
-          getres.send("This video does not belong to this account. Please try again.");
+          getres.statusMessage = "Video Existence Error";
+          getres.send("This video does not exist for this account. Please try again.");
           return;
         }
         var queryText = "UPDATE VIDEOS SET display = $1 WHERE video_id = $2;";
@@ -796,7 +804,6 @@ module.exports = function(app) {
 
     /**
      * Deletes the photo id passed in that belongs to that user
-     * TODO: Remove from FS
      */
     app.post('/user/photos/delete', async (req, getres) => {
         console.log("POST - delete photo");
@@ -829,7 +836,7 @@ module.exports = function(app) {
           }
           stat.logStatRequest(user_id);
         var photoId = req.body.photo_id;
-        var userId = req.body.user_id;
+        var userId = user_id;
         if(photoId == null || userId == null){
           getres.status(406);
           getres.statusMessage = "Missing info";
@@ -837,33 +844,29 @@ module.exports = function(app) {
           return;
         }
         var queryText = "SELECT * FROM USER_PHOTO WHERE photo_id = $1 AND user_id = $2";
-        let values = [photoId, userId]
-        var results = await db.param_query(queryText, values);
-        // If the photo does not belong to the user, return error
-        if(results.rows[0] == 0){
-          getres.status(408);
-          getres.statusMessage = "Photo Ownership Error";
-          getres.send("This photo does not belong to this account. Please try again.");
-          return;
-        }
-        var queryText = "SELECT * FROM USER_PHOTO WHERE photo_id = $1 AND user_id = $2";
         values = [photoId, userId]
         var results = await db.param_query(queryText, values);
         // If the photo does not belong to the user, return error
-        if(results.rows[0] == 0){
+        if(results.rows[0] == null){
           getres.status(408);
-          getres.statusMessage = "Photo Ownership Error";
-          getres.send("This photo does not belong to this account. Please try again.");
+          getres.statusMessage = "Photo Existence Error";
+          getres.send("This photo does not exist for this account. Please try again.");
           return;
         }
         var queryText = "DELETE FROM user_photo WHERE photo_id = $1 AND user_id = $2;";
         console.log(queryText);
         values = [photoId, userId];
-        result = await db.param_query(queryText, values);
+        results = await db.param_query(queryText, values);
+        // Delete this from the file system
+        var queryText = "SELECT path FROM photos WHERE photo_id = $1";
+        console.log(queryText);
+        values = [photoId];
+        results = await db.param_query(queryText, values);
+        deleteFromFS(results.rows[0].path);
         queryText = "DELETE FROM photos WHERE photo_id = $1;";
         values = [photoId];
         console.log(queryText);
-        result = await db.param_query(queryText, values);
+        results = await db.param_query(queryText, values);
         getres.send("Delete was a success!");
       }
     });
@@ -904,7 +907,7 @@ module.exports = function(app) {
           }
           stat.logStatRequest(user_id);
         var videoId = req.body.video_id;
-        var userId = req.body.user_id;
+        var userId = user_id;
         if(videoId == null || userId == null){
           getres.status(406);
           getres.statusMessage = "Missing info";
@@ -915,20 +918,26 @@ module.exports = function(app) {
         let values = [videoId, userId]
         var results = await db.param_query(queryText, values);
         // If the video does not belong to the user, return error
-        if(results.rows[0] == 0){
+        if(results.rows[0] == null){
           getres.status(408);
-          getres.statusMessage = "Video Ownership Error";
-          getres.send("This video does not belong to this account. Please try again.");
+          getres.statusMessage = "Video Existence Error";
+          getres.send("This video does not exist for this account. Please try again.");
           return;
         }
         var queryText = "DELETE FROM user_video WHERE video_id = $1 AND user_id = $2;";
         console.log(queryText);
         values = [videoId, userId];
-        result = await db.param_query(queryText, values);
+        results = await db.param_query(queryText, values);
+        // Delete this from the file system
+        var queryText = "SELECT path FROM videos WHERE video_id = $1";
+        console.log(queryText);
+        values = [videoId];
+        results = await db.param_query(queryText, values);
+        deleteFromFS(results.rows[0].path);
         queryText = "DELETE FROM videos WHERE video_id = $1;";
         console.log(queryText);
         values = [videoId];
-        result = await db.param_query(queryText, values);
+        results = await db.param_query(queryText, values);
         getres.send("Delete was a success!");
       }
     });
@@ -1068,7 +1077,7 @@ module.exports = function(app) {
       console.log("GET - number of photos");
       let queryText = "SELECT COUNT(*) FROM user_photo WHERE user_id = $1";
       let values = [req.query.user_id];
-      result = await db.param_query(queryText, values)
+      var result = await db.param_query(queryText, values)
       console.log(result.rows[0])
       if(result.rows[0].count >= MAX_PHOTO_UPLOADS_FREE){
         getres.status(605);
