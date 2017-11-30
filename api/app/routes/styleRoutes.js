@@ -10,7 +10,7 @@ module.exports = function(app) {
   app.post('/style/insertImage*', /*multer({storage: storage}).single("upload"),*/ async (req, getres) => {
     console.log("POST - style upload");
 
-    let filepath = `${config.outputPath}/output-${req.query.photo_id}.jpg`; 
+    let filepath = `${config.outputPath}/output-${req.query.photo_id}.${req.query.fileType}`; 
     console.log(`Writing file: ${filepath}`);
     fs.writeFile(filepath, req.body, (err) => {
         if (err) {
@@ -44,10 +44,14 @@ let user_photoQuery = `UPDATE user_photo SET status='done' WHERE photo_id=${phot
   app.post('/style/selectImage', (req, res) => {
     console.log("Received: ", req.body);
     let filepath = 'UNSET';
-    if (req.body.type === 'content')
-      filepath = `${config.contentPath}/upload-${req.body.photo_id}.jpg`;
-    else
-      filepath = `${config.stylePath}/filter-${req.body.photo_id}.jpg`;
+    if (req.body.type === 'content') {
+    // TODO: This should be its own route, but I do not have time for that now
+      filepath = `${config.contentPath}/upload-${req.body.photo_id}.${req.body.fileType}`;
+      let processingQuery = `UPDATE user_photo SET status='processing' WHERE unfiltered_photo_id=${req.body.photo_id}`;
+      console.log(processingQuery); 
+      db.query(processingQuery); 
+    } else
+      filepath = `${config.stylePath}/filter-${req.body.photo_id}.${req.body.fileType}`;
     console.log('Sending: ' + filepath);
     res.sendFile(filepath);
   });
@@ -74,7 +78,7 @@ let user_photoQuery = `UPDATE user_photo SET status='done' WHERE photo_id=${phot
     let user_id = parseInt(req.body.user_id);
     let photo_id = parseInt(req.body.photo_id);
     let queryText =
-      'SELECT * FROM user_photo WHERE status=\'waiting\'';
+      'SELECT photo_id, user_id, unfiltered_photo_id, filters.filter_id, unfiltered_photo.path AS uppath, filters.path AS fpath FROM user_photo NATURAL JOIN unfiltered_photo JOIN filters ON (filters.filter_id = user_photo.filter_id) WHERE status=\'waiting\'';
 
     console.log("QUERYING: " + queryText);
     db.query(queryText)
