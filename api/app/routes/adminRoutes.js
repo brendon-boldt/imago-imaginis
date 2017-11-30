@@ -286,8 +286,9 @@ app.get('/system/stats/uploads/pastday', async (req, getres) => {
           return;
         }
       }
-    let queryText = "SELECT photos.photo_id, user_photo.user_id, photos.creation_date FROM photos, user_photo WHERE photos.photo_id = user_photo.photo_id AND photos.creation_date BETWEEN LOCALTIMESTAMP - INTERVAL '1 day' AND LOCALTIMESTAMP";
-      
+    // let queryText = "SELECT photos.photo_id, user_photo.user_id, photos.creation_date FROM photos, user_photo WHERE photos.photo_id = user_photo.photo_id AND photos.creation_date BETWEEN LOCALTIMESTAMP - INTERVAL '1 day' AND LOCALTIMESTAMP";
+    // let queryText = "SELECT COUNT(*) FROM usage, stat_types WHERE stat_types.stat_id = usage.stat_id AND TIMESTAMP BETWEEN now() - INTERVAL '1 day' AND now()";
+    let queryText = "SELECT CAST(TIMESTAMP AS TIME), COUNT(*) FROM usage, stat_types WHERE stat_types.stat_id = usage.stat_id AND (TIMESTAMP BETWEEN now() - INTERVAL '1 day' AND now()) AND (usage.stat_id = 2 OR usage.stat_id = 3) GROUP BY cast(TIMESTAMP AS TIME) ORDER BY timestamp";
     db.query(queryText)
         .then(res => {
             getres.send(res.rows);
@@ -327,8 +328,9 @@ app.get('/system/stats/uploads/pastweek', async (req, getres) => {
           return;
         }
       }
-    let queryText = "SELECT photos.photo_id, user_photo.user_id, photos.creation_date FROM photos, user_photo WHERE photos.photo_id = user_photo.photo_id AND photos.creation_date BETWEEN LOCALTIMESTAMP - INTERVAL '7 days' AND LOCALTIMESTAMP";
-      
+    // let queryText = "SELECT photos.photo_id, user_photo.user_id, photos.creation_date FROM photos, user_photo WHERE photos.photo_id = user_photo.photo_id AND photos.creation_date BETWEEN LOCALTIMESTAMP - INTERVAL '7 days' AND LOCALTIMESTAMP";
+    // let queryText = "SELECT COUNT(*) FROM usage, stat_types WHERE stat_types.stat_id = usage.stat_id AND TIMESTAMP BETWEEN now() - INTERVAL '7 days' AND now()";
+    let queryText = "SELECT CAST(TIMESTAMP AS DATE), COUNT(*) FROM usage, stat_types WHERE stat_types.stat_id = usage.stat_id AND (TIMESTAMP BETWEEN now() - INTERVAL '7 days' AND now()) AND (usage.stat_id = 2 OR usage.stat_id = 3) GROUP BY cast(TIMESTAMP AS DATE) ORDER BY timestamp";
     db.query(queryText)
         .then(res => {
             getres.send(res.rows);
@@ -368,8 +370,128 @@ app.get('/system/stats/uploads/pastmonth', async (req, getres) => {
           return;
         }
       }
-    let queryText = "SELECT photos.photo_id, user_photo.user_id, photos.creation_date FROM photos, user_photo WHERE photos.photo_id = user_photo.photo_id AND photos.creation_date BETWEEN LOCALTIMESTAMP - INTERVAL '1 month' AND LOCALTIMESTAMP";
-      
+    // let queryText = "SELECT photos.photo_id, user_photo.user_id, photos.creation_date FROM photos, user_photo WHERE photos.photo_id = user_photo.photo_id AND photos.creation_date BETWEEN LOCALTIMESTAMP - INTERVAL '1 month' AND LOCALTIMESTAMP";
+    // let queryText = "SELECT COUNT(*) FROM usage, stat_types WHERE stat_types.stat_id = usage.stat_id AND TIMESTAMP BETWEEN now() - INTERVAL '1 month' AND now()";
+    let queryText = "SELECT CAST(TIMESTAMP AS DATE), COUNT(*) FROM usage, stat_types WHERE stat_types.stat_id = usage.stat_id AND (TIMESTAMP BETWEEN now() - INTERVAL '1 month' AND now()) AND (usage.stat_id = 2 OR usage.stat_id = 3) GROUP BY cast(TIMESTAMP AS DATE) ORDER BY timestamp";
+    db.query(queryText)
+        .then(res => {
+            getres.send(res.rows);
+        })
+        .catch(e => console.error(e.stack))
+    }
+  });    
+
+  // Get all reqs from past day
+app.get('/system/stats/reqs/pastday', async (req, getres) => {
+    console.log("GET - reqs from past day");
+    // This performs the JWT authorization
+    var user_id = getUserIdFromJWT(req, getres);
+    if(user_id == null){
+      return; // Authorization failed
+    }
+    else{
+      var isAdmin = await verifyAdmin(user_id);
+      if(req.headers.bus != undefined){
+        // If the website is making the API call
+        if(req.headers.bus != "Q2cxNw=="){
+          getres.status(201);
+          getres.statusMessage = "Unauthorized API request";
+          getres.send("Unauthorized API request");
+          return;
+        }
+      }
+      // Accessing through the API
+      else{
+        // If they're a paid API user and trying to access API not thru website
+        if(!isAdmin){
+          // If they're not paid, isPaid returns error
+          getres.status(303);
+          getres.statusMessage = "Unauthorized: Free User";
+          getres.send("Please upgrade account to utilize this feature")
+          return;
+        }
+      }
+    let queryText = "SELECT CAST(TIMESTAMP AS TIME), COUNT(*) FROM usage, stat_types WHERE stat_types.stat_id = usage.stat_id AND (TIMESTAMP BETWEEN now() - INTERVAL '1 day' AND now()) AND (usage.stat_id = 0 OR usage.stat_id = 1) GROUP BY cast(TIMESTAMP AS TIME) ORDER BY timestamp";
+    db.query(queryText)
+        .then(res => {
+            getres.send(res.rows);
+        })
+        .catch(e => console.error(e.stack))
+    }
+  });   
+
+    
+// Get all reqs from past week
+app.get('/system/stats/reqs/pastweek', async (req, getres) => {
+    console.log("GET - reqs from past week");
+    // This performs the JWT authorization
+    var user_id = getUserIdFromJWT(req, getres);
+    if(user_id == null){
+      return; // Authorization failed
+    }
+    else{
+      var isAdmin = await verifyAdmin(user_id);
+      if(req.headers.bus != undefined){
+        // If the website is making the API call
+        if(req.headers.bus != "Q2cxNw=="){
+          getres.status(201);
+          getres.statusMessage = "Unauthorized API request";
+          getres.send("Unauthorized API request");
+          return;
+        }
+      }
+      // Accessing through the API
+      else{
+        // If they're a paid API user and trying to access API not thru website
+        if(!isAdmin){
+          // If they're not paid, isPaid returns error
+          getres.status(303);
+          getres.statusMessage = "Unauthorized: Free User";
+          getres.send("Please upgrade account to utilize this feature")
+          return;
+        }
+      }
+    let queryText = "SELECT CAST(TIMESTAMP AS DATE), COUNT(*) FROM usage, stat_types WHERE stat_types.stat_id = usage.stat_id AND (TIMESTAMP BETWEEN now() - INTERVAL '7 days' AND now()) AND (usage.stat_id = 0 OR usage.stat_id = 1) GROUP BY cast(TIMESTAMP AS DATE) ORDER BY timestamp";
+    db.query(queryText)
+        .then(res => {
+            getres.send(res.rows);
+        })
+        .catch(e => console.error(e.stack))
+    }
+  });    
+    
+
+// Get all reqs from past month
+app.get('/system/stats/reqs/pastmonth', async (req, getres) => {
+    console.log("GET - reqs from past month");
+    // This performs the JWT authorization
+    var user_id = getUserIdFromJWT(req, getres);
+    if(user_id == null){
+      return; // Authorization failed
+    }
+    else{
+      var isAdmin = await verifyAdmin(user_id);
+      if(req.headers.bus != undefined){
+        // If the website is making the API call
+        if(req.headers.bus != "Q2cxNw=="){
+          getres.status(201);
+          getres.statusMessage = "Unauthorized API request";
+          getres.send("Unauthorized API request");
+          return;
+        }
+      }
+      // Accessing through the API
+      else{
+        // If they're a paid API user and trying to access API not thru website
+        if(!isAdmin){
+          // If they're not paid, isPaid returns error
+          getres.status(303);
+          getres.statusMessage = "Unauthorized: Free User";
+          getres.send("Please upgrade account to utilize this feature")
+          return;
+        }
+      }
+    let queryText = "SELECT CAST(TIMESTAMP AS DATE), COUNT(*) FROM usage, stat_types WHERE stat_types.stat_id = usage.stat_id AND (TIMESTAMP BETWEEN now() - INTERVAL '1 month' AND now()) AND (usage.stat_id = 0 OR usage.stat_id = 1) GROUP BY cast(TIMESTAMP AS DATE) ORDER BY timestamp";
     db.query(queryText)
         .then(res => {
             getres.send(res.rows);

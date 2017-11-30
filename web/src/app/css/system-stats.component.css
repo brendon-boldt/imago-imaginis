@@ -58,11 +58,14 @@ th {
     color: white;
 }
 
+#graph {
+    background-color: rgba(122, 206, 245, .8);
+    border-radius: 5px;
+    color: lightblue;
+}
 
-
-
-
-
-
+.graphbtn {
+    background-color: lightblue;
+}
 
 

@@ -672,6 +672,54 @@ export class DBService {
         .catch(this.handleError);
     }
 
+    getPastDayReqs(): Promise<any> {
+        console.log("Performing GET of uploads in past day");
+        let stats = this.url + '/system/stats/reqs/pastday';
+        let headers = new Headers();
+        this.handleHeader(headers);
+        headers.append('Content-Type', 'application/json');
+        let params = new URLSearchParams();
+        let jwt = sessionStorage.getItem('jwt');
+        params.append('jwt', jwt+"");
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.get(stats, options)
+        .toPromise()
+        .then(response => response as Object)
+        .catch(this.handleError);
+    }
+
+    getPastWeekReqs(): Promise<any> {
+        console.log("Performing GET of uploads in past day");
+        let stats = this.url + '/system/stats/reqs/pastweek';
+        let headers = new Headers();
+        this.handleHeader(headers);
+        headers.append('Content-Type', 'application/json');
+        let params = new URLSearchParams();
+        let jwt = sessionStorage.getItem('jwt');
+        params.append('jwt', jwt+"");
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.get(stats, options)
+        .toPromise()
+        .then(response => response as Object)
+        .catch(this.handleError);
+    }
+
+    getPastMonthReqs(): Promise<any> {
+        console.log("Performing GET of uploads in past day");
+        let stats = this.url + '/system/stats/reqs/pastmonth';
+        let headers = new Headers();
+        this.handleHeader(headers);
+        headers.append('Content-Type', 'application/json');
+        let params = new URLSearchParams();
+        let jwt = sessionStorage.getItem('jwt');
+        params.append('jwt', jwt+"");
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.get(stats, options)
+        .toPromise()
+        .then(response => response as Object)
+        .catch(this.handleError);
+    }
+
     /**
      * Handles the headers
      */

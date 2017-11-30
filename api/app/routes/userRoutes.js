@@ -586,16 +586,16 @@ module.exports = function(app) {
             }
           }
           stat.logStatRequest(user_id);
-          var photo_id = req.body.photo_id;
+          var photoId = req.body.photo_id;
           var display = req.body.display;
-          if(photo_id == null || display == null){
+          if(photoId == null || display == null){
             getres.status(406);
             getres.statusMessage = "Missing info";
             getres.send("Missing information. Refer to API documentation for all necessary information.");
             return;
           }
           var queryText = "SELECT * FROM USER_PHOTO WHERE photo_id = $1 AND user_id = $2";
-          let values = [photo_id, user_id]
+          let values = [photoId, user_id]
           var results = await db.param_query(queryText, values);
           // If the photo does not belong to the user, return error
           if(results.rows[0] == 0){
@@ -605,7 +605,7 @@ module.exports = function(app) {
             return;
           }
           var queryText = "UPDATE PHOTOS SET display = $1 WHERE photo_id = $2;";
-          values = [display, photo_id];
+          values = [display, photoId];
           console.log(queryText);
           db.param_query(queryText, values)
               .then(res => {
@@ -836,9 +836,29 @@ module.exports = function(app) {
           getres.send("Missing information. Refer to API documentation for all necessary information.");
           return;
         }
+        var queryText = "SELECT * FROM USER_PHOTO WHERE photo_id = $1 AND user_id = $2";
+        let values = [photoId, userId]
+        var results = await db.param_query(queryText, values);
+        // If the photo does not belong to the user, return error
+        if(results.rows[0] == 0){
+          getres.status(408);
+          getres.statusMessage = "Photo Ownership Error";
+          getres.send("This photo does not belong to this account. Please try again.");
+          return;
+        }
+        var queryText = "SELECT * FROM USER_PHOTO WHERE photo_id = $1 AND user_id = $2";
+        values = [photoId, userId]
+        var results = await db.param_query(queryText, values);
+        // If the photo does not belong to the user, return error
+        if(results.rows[0] == 0){
+          getres.status(408);
+          getres.statusMessage = "Photo Ownership Error";
+          getres.send("This photo does not belong to this account. Please try again.");
+          return;
+        }
         var queryText = "DELETE FROM user_photo WHERE photo_id = $1 AND user_id = $2;";
         console.log(queryText);
-        var values = [photoId, userId];
+        values = [photoId, userId];
         result = await db.param_query(queryText, values);
         queryText = "DELETE FROM photos WHERE photo_id = $1;";
         values = [photoId];
@@ -891,9 +911,19 @@ module.exports = function(app) {
           getres.send("Missing information. Refer to API documentation for all necessary information.");
           return;
         }
+        var queryText = "SELECT * FROM USER_VIDEO WHERE VIDEO_ID = $1 AND user_id = $2";
+        let values = [videoId, userId]
+        var results = await db.param_query(queryText, values);
+        // If the video does not belong to the user, return error
+        if(results.rows[0] == 0){
+          getres.status(408);
+          getres.statusMessage = "Video Ownership Error";
+          getres.send("This video does not belong to this account. Please try again.");
+          return;
+        }
         var queryText = "DELETE FROM user_video WHERE video_id = $1 AND user_id = $2;";
         console.log(queryText);
-        var values = [videoId, userId];
+        values = [videoId, userId];
         result = await db.param_query(queryText, values);
         queryText = "DELETE FROM videos WHERE video_id = $1;";
         console.log(queryText);

@@ -8,6 +8,7 @@ import { NgModule } from '@angular/core';
 import { HttpModule } from '@angular/http'; // This module allows us to make HTTP calls
 import { FormsModule } from '@angular/forms'; // This module allows us to have two-way data binding in forms
 import { AdminRoutingModule } from './admin-routing.module';
+import { ChartsModule } from 'ng2-charts';
 
 // References to all the components in the application
 import { SystemStatsComponent } from './system-stats.component';
@@ -28,7 +29,8 @@ import { GeneralService } from '../services/general.service';
     BrowserModule,
     HttpModule,
     FormsModule,
-    AdminRoutingModule
+    AdminRoutingModule,
+    ChartsModule
   ],
   providers: [
     DBService,
