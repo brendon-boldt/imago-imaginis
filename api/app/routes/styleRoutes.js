@@ -10,17 +10,17 @@ module.exports = function(app) {
   app.post('/style/insert/:type*', async (req, getres) => {
     console.log("Upload of type: " + req.params.type);
 
-    let outputPath;
-    let bridgetTable;
-    let resultTable;
+    let outputPath, bridgetTable, resultTable, resource_id_name;
     if (req.params.type === 'image') {
       outputPath = config.outputPath;
       bridgeTable = 'user_photo';
       resultTable = 'photos';
+      resource_id_name = 'photo_id';
     } else {
       outputPath = config.outputPathVideo;
       bridgeTable = 'user_video';
       resultTable = 'videos';
+      resource_id_name = 'video_id';
     }
 
     let filepath = `${outputPath}/output-${req.query.resource_id}.${req.query.fileType}`; 
@@ -36,7 +36,7 @@ module.exports = function(app) {
     console.log(resource_id);
     let user_id = parseInt(req.query.user_id);
     let path = config.resultPath;
-    let photosQuery = `UPDATE ${resultTable} SET path = '${filepath}' WHERE photo_id = ${resource_id}`;
+    let photosQuery = `UPDATE ${resultTable} SET path = '${filepath}' WHERE ${resource_id_name} = ${resource_id}`;
     console.log(photosQuery); 
     db.query(photosQuery); 
 
