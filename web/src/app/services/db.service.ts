@@ -51,6 +51,7 @@ export class DBService {
         console.log("WEB: Creating user");
         let createUser = this.url + '/user/create';
         let headers = new Headers();
+        this.handleHeader(headers);
         headers.append('Content-Type', 'application/x-www-form-urlencoded');
         let body: any = new URLSearchParams();
         body.append("first_name", firstName);
@@ -75,6 +76,7 @@ export class DBService {
         console.log("WEB: Performing POST of photo");
         let upload = this.url + '/upload/photo';
         let headers = new Headers();
+        this.handleHeader(headers);
         // Pass in JWT for Express to verify if valid
         let jwt = sessionStorage.getItem('jwt');
         let formData: any = new FormData();
@@ -103,6 +105,7 @@ export class DBService {
         console.log("WEB: Performing POST of video");
         let videoUpload = this.url + '/upload/video';
         let headers = new Headers();
+        this.handleHeader(headers);
         let jwt = sessionStorage.getItem('jwt');
         let formData: any = new FormData();
         formData.append("upload", file);
@@ -128,6 +131,7 @@ export class DBService {
         console.log("WEB: Performing POST of photo");
         let uploadProfile = this.url + '/user/upload/profile';
         let headers = new Headers();
+        this.handleHeader(headers);
         // headers.append('Content-Type', 'application/x-www-form-urlencoded');
         // headers.append('Content-Type', 'multipart/form-data');
         // headers.append('Content-Type', 'image/jpeg');
@@ -154,6 +158,7 @@ export class DBService {
         console.log(id);
         let photos = this.url + '/user/photos';
         let headers = new Headers();
+        this.handleHeader(headers);
         headers.append('Content-Type', 'application/json');
         let params = new URLSearchParams();
         params.set('user_id', id+"");
@@ -173,6 +178,7 @@ export class DBService {
         console.log(id);
         let videos = this.url + '/user/videos';
         let headers = new Headers();
+        this.handleHeader(headers);
         headers.append('Content-Type', 'application/json');
         let params = new URLSearchParams();
         params.set('user_id', id+"");
@@ -192,6 +198,7 @@ export class DBService {
         console.log(id);
         let photos = this.url + '/user/photos/unstyled';
         let headers = new Headers();
+        this.handleHeader(headers);
         headers.append('Content-Type', 'application/json');
         let params = new URLSearchParams();
         params.set('user_id', id+"");
@@ -211,6 +218,7 @@ export class DBService {
         console.log(id);
         let videos = this.url + '/user/videos/unstyled';
         let headers = new Headers();
+        this.handleHeader(headers);
         headers.append('Content-Type', 'application/json');
         let params = new URLSearchParams();
         params.set('user_id', id+"");
@@ -230,6 +238,7 @@ export class DBService {
         console.log(id);
         let photos = this.url + '/user/photos/display';
         let headers = new Headers();
+        this.handleHeader(headers);
         headers.append('Content-Type', 'application/json');
         let params = new URLSearchParams();
         params.set('user_id', id+"");
@@ -248,6 +257,7 @@ export class DBService {
         console.log(id);
         let videos = this.url + '/user/videos/display';
         let headers = new Headers();
+        this.handleHeader(headers);
         headers.append('Content-Type', 'application/json');
         let params = new URLSearchParams();
         params.set('user_id', id+"");
@@ -268,6 +278,7 @@ export class DBService {
         let jwt = sessionStorage.getItem('jwt');
         let filters = this.url + '/filters';
         let headers = new Headers();
+        this.handleHeader(headers);
         headers.append('Content-Type', 'application/json');
         let params = new URLSearchParams();
         params.append("jwt", jwt);
@@ -287,6 +298,7 @@ export class DBService {
         console.log("Performing GET of users with " + searchString);
         let search = this.url + '/user/search';
         let headers = new Headers();
+        this.handleHeader(headers);
         headers.append('Content-Type', 'application/json');
         let params = new URLSearchParams();
         params.set('searchString', searchString);
@@ -305,6 +317,7 @@ export class DBService {
         console.log("GETTING user info with id " + user_id);
         let getUser = this.url + '/user/info';
         let headers = new Headers();
+        this.handleHeader(headers);
         headers.append('Content-Type', 'application/json');
         let params = new URLSearchParams();
         params.set('user_id', user_id);
@@ -330,6 +343,7 @@ export class DBService {
         console.log("WEB: Saving user settings");
         let createUser = this.url + '/user/alter';
         let headers = new Headers();
+        this.handleHeader(headers);
         headers.append('Content-Type', 'application/x-www-form-urlencoded');
 
         let body = new URLSearchParams();
@@ -338,6 +352,7 @@ export class DBService {
         body.append("last_name", lastName);
         body.append("email", email);
         body.append("password", password); // should this be encrypted?
+        console.log(body)
         let jwt = sessionStorage.getItem('jwt');
         body.append('jwt', jwt+"");
 
@@ -359,6 +374,7 @@ export class DBService {
     setPhotoToDisplay(photo: any, display: String): Promise<any> {
         let setToDisplay = this.url + '/user/photos/set-display';
         let headers = new Headers();
+        this.handleHeader(headers);
         headers.append('Content-Type', 'application/x-www-form-urlencoded');
         let body = new URLSearchParams();
         body.append('photo_id', photo.photo_id+"");
@@ -383,6 +399,7 @@ export class DBService {
     setVideoToDisplay(video: any, display: String): Promise<any> {
         let setToDisplay = this.url + '/user/videos/set-display';
         let headers = new Headers();
+        this.handleHeader(headers);
         headers.append('Content-Type', 'application/x-www-form-urlencoded');
         let body = new URLSearchParams();
         body.append('video_id', video.video_id+"");
@@ -407,6 +424,7 @@ export class DBService {
         console.log("WEB: Performing POST of filter");
         let uploadFilter = this.url + '/filter/upload';
         let headers = new Headers();
+        this.handleHeader(headers);
         // headers.append('Content-Type', 'image/jpeg');
 
         let formData: any = new FormData();
@@ -432,6 +450,7 @@ export class DBService {
         console.log("WEB: Performing DELETE of photo");
         let deletePhoto = this.url + '/user/photos/delete';
         let headers = new Headers();
+        this.handleHeader(headers);
         headers.append('Content-Type', 'application/x-www-form-urlencoded');
         let body = new URLSearchParams();
         body.append("user_id", ""+user_id);
@@ -455,6 +474,7 @@ export class DBService {
         console.log("WEB: Performing DELETE of photo");
         let deletePhoto = this.url + '/user/videos/delete';
         let headers = new Headers();
+        this.handleHeader(headers);
         headers.append('Content-Type', 'application/x-www-form-urlencoded');
         let body = new URLSearchParams();
         body.append("user_id", ""+user_id);
@@ -477,6 +497,7 @@ export class DBService {
         console.log("WEB: Get num of photos");
         let get = this.url + '/user/photos/num';
         let headers = new Headers();
+        this.handleHeader(headers);
         headers.append('Content-Type', 'application/json');
         let params = new URLSearchParams();
         params.set('user_id', user_id+"");
@@ -495,6 +516,7 @@ export class DBService {
         console.log("Performing GET of system stats");
         let stats = this.url + '/system/stats';
         let headers = new Headers();
+        this.handleHeader(headers);
         headers.append('Content-Type', 'application/json');
         let params = new URLSearchParams();
         let jwt = sessionStorage.getItem('jwt');
@@ -510,6 +532,7 @@ export class DBService {
         console.log("Performing GET of system space used");
         let stats = this.url + '/system/stats/filesystem/spaceused';
         let headers = new Headers();
+        this.handleHeader(headers);
         headers.append('Content-Type', 'application/json');
         let params = new URLSearchParams();
         let jwt = sessionStorage.getItem('jwt');
@@ -525,6 +548,7 @@ export class DBService {
         console.log("Performing GET of database space used");
         let stats = this.url + '/system/stats/db/spaceused';
         let headers = new Headers();
+        this.handleHeader(headers);
         headers.append('Content-Type', 'application/json');
         let params = new URLSearchParams();
         let jwt = sessionStorage.getItem('jwt');
@@ -540,6 +564,7 @@ export class DBService {
         console.log("Performing GET of photos being processed");
         let stats = this.url + '/system/stats/photos/processing';
         let headers = new Headers();
+        this.handleHeader(headers);
         headers.append('Content-Type', 'application/json');
         let params = new URLSearchParams();
         let jwt = sessionStorage.getItem('jwt');
@@ -555,6 +580,7 @@ export class DBService {
         console.log("Performing GET of videos being processed");
         let stats = this.url + '/system/stats/videos/processing';
         let headers = new Headers();
+        this.handleHeader(headers);
         headers.append('Content-Type', 'application/json');
         let params = new URLSearchParams();
         let jwt = sessionStorage.getItem('jwt');
@@ -570,6 +596,7 @@ export class DBService {
         console.log("Performing GET of flagged photos");
         let stats = this.url + '/system/stats/photos/flagged';
         let headers = new Headers();
+        this.handleHeader(headers);
         headers.append('Content-Type', 'application/json');
         let params = new URLSearchParams();
         let jwt = sessionStorage.getItem('jwt');
@@ -585,6 +612,7 @@ export class DBService {
         console.log("Performing GET of flagged videos");
         let stats = this.url + '/system/stats/videos/flagged';
         let headers = new Headers();
+        this.handleHeader(headers);
         headers.append('Content-Type', 'application/json');
         let params = new URLSearchParams();
         let jwt = sessionStorage.getItem('jwt');
@@ -600,6 +628,7 @@ export class DBService {
         console.log("Performing GET of uploads in past day");
         let stats = this.url + '/system/stats/uploads/pastday';
         let headers = new Headers();
+        this.handleHeader(headers);
         headers.append('Content-Type', 'application/json');
         let params = new URLSearchParams();
         let jwt = sessionStorage.getItem('jwt');
@@ -615,6 +644,7 @@ export class DBService {
         console.log("Performing GET of uploads in past day");
         let stats = this.url + '/system/stats/uploads/pastweek';
         let headers = new Headers();
+        this.handleHeader(headers);
         headers.append('Content-Type', 'application/json');
         let params = new URLSearchParams();
         let jwt = sessionStorage.getItem('jwt');
@@ -630,6 +660,7 @@ export class DBService {
         console.log("Performing GET of uploads in past day");
         let stats = this.url + '/system/stats/uploads/pastmonth';
         let headers = new Headers();
+        this.handleHeader(headers);
         headers.append('Content-Type', 'application/json');
         let params = new URLSearchParams();
         let jwt = sessionStorage.getItem('jwt');

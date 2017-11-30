@@ -13,59 +13,27 @@ const PROPER_ID = 1;
 const MAX_PHOTO_UPLOADS_FREE = 2;
 
 /**
- * Performs JWT verification. Returns true if JWT is valid, otherwise returns error
- * Verifies that the id the user is passing belongs to them.
- * Used for authenticated routes
- */
-
- // HOLD ON. ONLY PAID CAN CALL API. 
- // CHECK TO SEE IF WEBSITE. ELSE IF NOT, CHECK TO SEE IF PAID USER.
-
-var verify = function(req, getres){
-    var token;
-    // JWT is passed either in query or in body
-    if(req.query.jwt != null){
-        token = req.query.jwt;
-    }
-    else if(req.body.jwt != null){
-        token = req.body.jwt;
-    }
-    try{
-        var decoded = jwt.verify(token, "thisisthekey");
-        var passed_user_id;
-        if(req.query.user_id != null){
-          passed_user_id = req.query.user_id;
-        }
-        else if(req.body.user_id != null){
-          passed_user_id = req.body.user_id;
-        }
-        console.log("Checking IDs");
-        console.log(passed_user_id);
-        console.log(token.user_id);
-        // See if passed user id matches the JWT they pass
-        if(passed_user_id != null){
-            if(passed_user_id != decoded.user_id){
-                getres.status(806);
-                getres.statusMessage = "Incorrect JWT token.";
-                getres.send("JWT does not match user id supplied. Please pass a valid JWT token for your user account.");
-                return false;
-            }
-        }
-        return true;
-    }
-    catch(err){
-        getres.status(800);
-        getres.statusMessage = "Invalid JWT token. Please pass a valid JWT token.";
-        getres.send("Invalid JWT token. Please pass a valid JWT token.");
-        return false;
-    }
-}
-
-/**
  * Performs JWT verification. Returns true if JWT is valid and user is a paid user, otherwise returns error
  * Used for authenticated routes that can be accessible only by a paid user.
  */
-var verifyPaid = async function(req, getres){
+var verifyPaid = async function(user_id){
+  // Return true if jwt is paid user, else return false
+  // Look up user id and see if they're a paid user
+  let queryText = "SELECT * FROM ASP_USERS LEFT JOIN paid_users ON asp_users.user_id = paid_users.paid_id WHERE user_ID = $1;";
+  let values = [user_id];
+  result = await db.param_query(queryText, values)
+  console.log(result.rows[0])
+  if(result.rows[0].paid_id != null){
+    return true;
+  }
+  else{
+    // They are a free user
+    return false;
+  }
+}
+
+// Verifies if JWT is good
+var getUserIdFromJWT = function(req, getres){
   console.log("Performing JWT verification")
   var token;
   // JWT is passed either in query or in body
@@ -77,51 +45,17 @@ var verifyPaid = async function(req, getres){
   }
   try{
       var decoded = jwt.verify(token, "thisisthekey");
-      var passed_user_id;
-      if(req.query.user_id != null){
-        passed_user_id = req.query.user_id;
-      }
-      else if(req.body.user_id != null){
-        passed_user_id = req.body.user_id;
-      }
-      if(passed_user_id == null){
-        getres.status(801);
-        getres.statusMessage = "Missing user id";
-        getres.send("Please supply your user id");
-        return false;
-      }
-      // See if passed user id matches the JWT they pass
-      if(passed_user_id != null){
-        if(passed_user_id != decoded.user_id){
-          getres.status(806);
-          getres.statusMessage = "Incorrect JWT token.";
-          getres.send("JWT does not match user id supplied. Please pass a valid JWT token for your user account.");
-          return false;
-        }
-      }
-      // Return true if jwt is paid user, else return false
-      // Look up user id and see if they're a paid user
-      let queryText = "SELECT * FROM ASP_USERS LEFT JOIN paid_users ON asp_users.user_id = paid_users.paid_id WHERE user_ID = $1;";
-      let values = [passed_user_id];
-      result = await db.param_query(queryText, values)
-      console.log(result.rows[0])
-      if(result.rows[0].paid_id != null){
-        return true;
-      }
-      else{
-        getres.status(303);
-        getres.statusMessage = "Unauthorized: Free User";
-        getres.send("Please upgrade account to utilize this feature")
-        return false;
-      }
+      return decoded.user_id;
   }
   catch(err){
     getres.status(800);
-    getres.statusMessage = "Invalid JWT token. Please pass a valid JWT token.";
+    getres.statusMessage = "Invalid JWT token";
     getres.send("Invalid JWT token. Please pass a valid JWT token.");
-    return false;
+    return null;
   }
 }
+
+// ---------------------------------------------------------------------------------------------------------------------------
 
 module.exports = function(app) {
     /**
@@ -138,15 +72,36 @@ module.exports = function(app) {
      */
     app.post('/user/create', (req, getres) => {
         console.log("POST - create account");
-        console.log(req.body);
+        // Verify if it's coming from website.
+        // Only the website may create users
+        if(req.headers.bus != undefined){
+          if(req.headers.bus != "Q2cxNw=="){
+            getres.status(201);
+            getres.statusMessage = "Unauthorized API request";
+            getres.send("Unauthorized API request");
+            return;
+          }
+        }
+        else{
+          getres.status(201);
+          getres.statusMessage = "Unauthorized API request";
+          getres.send("Unauthorized API request");
+          return;
+        }
+        if(req.body.first_name == null || req.body.last_name == null || req.body.email == null || req.body.password == null){
+          getres.status(406);
+          getres.statusMessage = "Missing info";
+          getres.send("Missing user information. Please provide all user information. Password is optional");
+          return;
+        }
         var firstName = req.body.first_name.trim();
         var lastName = req.body.last_name.trim();
         var email = req.body.email.trim();
-        var password = req.body.password.trim(); // Hash password
-        if(firstName == null || lastName == null || email == null || password == null || firstName == "" || lastName == "" || email == "" || password == ""){
+        var password = req.body.password;
+        if(req.body.first_name == "" || lastName == "" || email == "" || password == ""){
           getres.status(406);
           getres.statusMessage = "Missing info";
-          getres.send("Missing information. Refer to API documentation for all necessary information.");
+          getres.send("Missing user information. Please provide all user information. Password is optional");
           return;
         }
         if(!validator.isEmail(email)){
@@ -161,7 +116,7 @@ module.exports = function(app) {
         password = hash.digest('hex');
         var date = new Date(Date.now()).toLocaleDateString();
         // Verify email is unique
-        var queryText = "SELECT * FROM ASP_USERS WHERE email = LOWER($1);";
+        var queryText = "SELECT * FROM ASP_USERS WHERE LOWER(email) = LOWER($1);";
         let values = [email];
         db.param_query(queryText, values)
           .then(res => {
@@ -197,74 +152,105 @@ module.exports = function(app) {
      * Modifies an entry in the asp_users' table
      * Takes in the request body's parameters
      */
-    app.post('/user/alter', (req, getres) => {
+    app.post('/user/alter', async (req, getres) => {
         console.log("POST - alter account");
-        // Throw error if user_id not passed
-        if(!verify(req, getres)){
+        // This performs the JWT authorization
+        var user_id = getUserIdFromJWT(req, getres);
+        if(user_id == null){
+          return; // Authorization failed
+        }
+        else{
+          var isPaid = await verifyPaid(user_id);
+          if(req.headers.bus != undefined){
+            // If the website is making the API call
+            if(req.headers.bus != "Q2cxNw=="){
+              getres.status(201);
+              getres.statusMessage = "Unauthorized API request";
+              getres.send("Unauthorized API request");
+              return;
+            }
+          }
+          // Accessing through the API
+          else{
+            // If they're a paid API user and trying to access API not thru website
+            if(!isPaid){
+              // If they're not paid, isPaid returns error
+              getres.status(303);
+              getres.statusMessage = "Unauthorized: Free User";
+              getres.send("Please upgrade account to utilize this feature")
+              return;
+            }
+          }
+          // var id = req.body.user_id;
+          // Verify that they provided information to all the fields
+          if(req.body.first_name == null || req.body.last_name == null || req.body.email == null){
+            getres.status(406);
+            getres.statusMessage = "Missing info";
+            getres.send("Missing user information. Please provide all user information. Password is optional");
             return;
-        }
-        var id = req.body.user_id;
-        var firstName = req.body.first_name.trim();
-        var lastName = req.body.last_name.trim();
-        var email = req.body.email.trim();
-        var password = req.body.password.trim(); // Hash password
-        // Verify that they provided information to all the fields
-        if(id == null || firstName == null || lastName == null || email == null || firstName == "" || lastName == "" || email == ""){
-          getres.status(406);
-          getres.statusMessage = "Missing info";
-          getres.send("Missing user information. Please provide all user information. Password is optional");
-        }
-        if(!validator.isEmail(email)){
-          console.log(email)
-          console.log("Not a valid email")
-          getres.status(409);
-          getres.statusMessage = "Invalid email";
-          getres.send("Please enter a valid email.");
-          return;
-        }
-        // Verify email is unique
-        var queryText = "SELECT * FROM ASP_USERS WHERE email = $1 AND user_id != $2;";
-        console.log(queryText);
-        let values = [email, id];
-        db.param_query(queryText, values)
-          .then(res => {
-              if (res == undefined) {
-                  getres.send("Alter account failed");
-              } else if (res.rowCount > 0) {
-                  console.log("Email already registered to account");
-                  getres.status(401);
-                  getres.statusMessage = "Email already registered";
-                  getres.send("Email already registered to account");
-              } else {
-                  // Email is unique
-                  console.log("Email is unique");
-                  // If password is empty, leave it alone
-                  if (password == "" || password == null) {
-                      queryText = "UPDATE asp_users SET (first_name, last_name, email) = ($1, $2, $3) WHERE user_id = $4;";
-                      values = [firstName, lastName, email, id];
-                  } else {
-                      console.log(password);
-                      const hash = crypto.createHash('sha256');
-                      hash.update(password);
-                      password = hash.digest('hex');
-                      queryText = "UPDATE asp_users SET (first_name, last_name, email, password) = ($1, $2, $3, $4) WHERE user_id = $5;";
-                      values = [firstName, lastName, email, password, id];
-                  }
-                  console.log("new Query: " + queryText);
-                  db.param_query(queryText, values)
-                      .then(res => {
-                          console.log(res);
-                          if (res != undefined) {
-                              console.log("Account update successful!");
-                              getres.send("Account update successful!");
-                          } else {
-                              getres.send("Account update failed");
-                          }
-                      })
-                      .catch(e => console.error(e.stack))
-              }
-          })
-          .catch(e => console.error(e.stack))
+          }
+          var firstName = req.body.first_name.trim();
+          var lastName = req.body.last_name.trim();
+          var email = req.body.email.trim();
+          var password = req.body.password;
+          if(req.body.first_name == "" || lastName == "" || email == ""){
+            getres.status(406);
+            getres.statusMessage = "Missing info";
+            getres.send("Missing user information. Please provide all user information. Password is optional");
+            return;
+          }
+          if(!validator.isEmail(email)){
+            console.log(email)
+            console.log("Not a valid email")
+            getres.status(409);
+            getres.statusMessage = "Invalid email";
+            getres.send("Please enter a valid email.");
+            return;
+          }
+          // Verify email is unique
+          var queryText = "SELECT * FROM ASP_USERS WHERE LOWER(email) = LOWER($1) AND user_id != $2;";
+          console.log(queryText);
+          let values = [email, user_id];
+          db.param_query(queryText, values)
+            .then(res => {
+                if (res == undefined) {
+                    getres.send("Alter account failed");
+                } else if (res.rowCount > 0) {
+                    console.log("Email already registered to account");
+                    getres.status(401);
+                    getres.statusMessage = "Email already registered";
+                    getres.send("Email already registered to account");
+                } else {
+                    // Email is unique
+                    console.log("Email is unique");
+                    // If password is empty, leave it alone
+                    if (password == "" || password == null) {
+                        queryText = "UPDATE asp_users SET (first_name, last_name, email) = ($1, $2, $3) WHERE user_id = $4;";
+                        values = [firstName, lastName, email, user_id];
+                    } else {
+                        console.log(password);
+                        const hash = crypto.createHash('sha256');
+                        hash.update(password);
+                        password = hash.digest('hex');
+                        queryText = "UPDATE asp_users SET (first_name, last_name, email, password) = ($1, $2, $3, $4) WHERE user_id = $5;";
+                        values = [firstName, lastName, email, password, user_id];
+                    }
+                    console.log("new Query: " + queryText);
+                    db.param_query(queryText, values)
+                        .then(res => {
+                            console.log(res);
+                            if (res != undefined) {
+                                console.log("Account update successful!");
+                                getres.send("Account update successful!");
+                            } else {
+                                getres.send("Account update failed");
+                            }
+                        })
+                        .catch(e => console.error(e.stack))
+                }
+            })
+            .catch(e => console.error(e.stack))
+          }
     });
 
     /**
@@ -279,7 +265,7 @@ module.exports = function(app) {
         const hash = crypto.createHash('sha256');
         hash.update(password);
         password = hash.digest('hex');
-        // Verify if it's coming from website. If not, then verify that is a paid user.
+        // Verify if it's coming from website. If not, then verify that is a paid API user.
         console.log(req.headers)
         if(req.headers.bus != undefined){
           if(req.headers.bus != "Q2cxNw=="){
@@ -290,7 +276,7 @@ module.exports = function(app) {
           }
         }
         else{
-          // Verify if paid user
+          // Verify if paid user using EMAIL and PASSWORD credentials
           let queryText = "SELECT * FROM ASP_USERS LEFT JOIN paid_users ON asp_users.user_id = paid_users.paid_id WHERE email = $1 AND password = $2;";
           let values = [email, password];
           result = await db.param_query(queryText, values)
@@ -316,7 +302,7 @@ module.exports = function(app) {
         db.param_query(queryText, values)
             .then(res => {
                 if (res.rows[0] != null) {
-					stat.logStatLogin(res.rows[0].user_id);
+					          stat.logStatLogin(res.rows[0].user_id);
                     // Puts various user information into the JWT
                     console.log(res.rows);
                     // Put the user ID in the JWT payload
@@ -345,68 +331,171 @@ module.exports = function(app) {
      * Returns users that match a query string
      * Takes in the request query's parameters
      */
-    app.get('/user/search', (req, getres) => {
+    app.get('/user/search', async (req, getres) => {
         console.log("GET - search");
-		var requesterUserId = req.query.requesterUserId;
-		stat.logStatRequest(requesterUserId);
-        var searchString = "%" + req.query.searchString + "%";
-        let queryText = "SELECT * FROM ASP_USERS WHERE LOWER(first_name::text || last_name::text) LIKE LOWER($1)";
-        let values = [searchString];
-        db.param_query(queryText, values)
-            .then(res => {
-                getres.send(res.rows);
-            })
-            .catch(e => console.error(e.stack))
+          if(req.headers.bus != undefined){
+            // If the website is making the API call
+            if(req.headers.bus != "Q2cxNw=="){
+              getres.status(201);
+              getres.statusMessage = "Unauthorized API request";
+              getres.send("Unauthorized API request");
+              return;
+            }
+          }
+          // Accessing through the API
+          else{
+            // This performs the JWT authorization
+            var user_id = getUserIdFromJWT(req, getres);
+            if(user_id == null){
+              return; // Authorization failed
+            }
+            var isPaid = await verifyPaid(user_id);
+            // If they're a paid API user and trying to access API not thru website
+            if(!isPaid){
+              // If they're not paid, isPaid returns error
+              getres.status(303);
+              getres.statusMessage = "Unauthorized: Free User";
+              getres.send("Please upgrade account to utilize this feature")
+              return;
+            }
+          }
+          var requesterUserId = req.query.requesterUserId;
+          stat.logStatRequest(requesterUserId);
+          var searchString = "%" + req.query.searchString + "%";
+          let queryText = "SELECT * FROM ASP_USERS WHERE LOWER(first_name::text || last_name::text) LIKE LOWER($1)";
+          let values = [searchString];
+          db.param_query(queryText, values)
+              .then(res => {
+                  getres.send(res.rows);
+              })
+              .catch(e => console.error(e.stack))
     });
 
     /**
      * Returns user info for user with id
      * Takes in the request query's parameters
      */
-    app.get('/user/info', (req, getres) => {
+    app.get('/user/info', async (req, getres) => {
         console.log("GET - info $");
-		var requesterUserId = req.query.requesterUserId;
-		stat.logStatRequest(requesterUserId);
-        var id = req.query.id;
-        console.log("GET - info");
-        var id = req.query.user_id;
-        let queryText = "SELECT * FROM ASP_USERS WHERE user_ID = $1;";
-        let values = [id];
-        db.param_query(queryText, values)
-            .then(res => {
-                getres.send(res.rows);
-            })
-            .catch(e => console.error(e.stack))
+        if(req.headers.bus != undefined){
+          // If the website is making the API call
+          if(req.headers.bus != "Q2cxNw=="){
+            getres.status(201);
+            getres.statusMessage = "Unauthorized API request";
+            getres.send("Unauthorized API request");
+            return;
+          }
+        }
+        // Accessing through the API
+        else{
+          // This performs the JWT authorization
+          var user_id = getUserIdFromJWT(req, getres);
+          if(user_id == null){
+            return; // Authorization failed
+          }
+          var isPaid = await verifyPaid(user_id);
+          // If they're a paid API user and trying to access API not thru website
+          if(!isPaid){
+            // If they're not paid, isPaid returns error
+            getres.status(303);
+            getres.statusMessage = "Unauthorized: Free User";
+            getres.send("Please upgrade account to utilize this feature")
+            return;
+          }
+        }
+          var requesterUserId = req.query.requesterUserId;
+          stat.logStatRequest(requesterUserId);
+          console.log("GET - info");
+          var id = req.query.user_id;
+          let queryText = "SELECT * FROM ASP_USERS WHERE user_ID = $1;";
+          let values = [id];
+          db.param_query(queryText, values)
+              .then(res => {
+                  getres.send(res.rows);
+              })
+              .catch(e => console.error(e.stack))
     });
 
     /**
      * Returns user's unstyled photos for user with id
      * Takes in the request query's parameters
      */
-    app.get('/user/photos/unstyled', (req, getres) => {
+    app.get('/user/photos/unstyled', async (req, getres) => {
         console.log("GET - user unstyled photos");
-		var requesterUserId = req.query.requesterUserId;
-		stat.logStatRequest(requesterUserId);
-        var id = req.query.id;
-        var id = req.query.user_id;
-        let queryText = "SELECT * FROM unfiltered_photo WHERE unfiltered_photo_id IN (SELECT unfiltered_photo_id FROM USER_PHOTO WHERE user_ID = $1 AND (status = 'waiting' OR status = 'processing')) ORDER BY unfiltered_photo_id;";
-        let values = [id];
-        db.param_query(queryText, values)
-            .then(res => {
-                getres.send(res.rows);
-            })
-            .catch(e => console.error(e.stack))
+        if(req.headers.bus != undefined){
+          // If the website is making the API call
+          if(req.headers.bus != "Q2cxNw=="){
+            getres.status(201);
+            getres.statusMessage = "Unauthorized API request";
+            getres.send("Unauthorized API request");
+            return;
+          }
+        }
+        // Accessing through the API
+        else{
+          // This performs the JWT authorization
+          var user_id = getUserIdFromJWT(req, getres);
+          if(user_id == null){
+            return; // Authorization failed
+          }
+          var isPaid = await verifyPaid(user_id);
+          // If they're a paid API user and trying to access API not thru website
+          if(!isPaid){
+            // If they're not paid, isPaid returns error
+            getres.status(303);
+            getres.statusMessage = "Unauthorized: Free User";
+            getres.send("Please upgrade account to utilize this feature")
+            return;
+          }
+        }
+          var requesterUserId = req.query.requesterUserId;
+          stat.logStatRequest(requesterUserId);
+          var id = req.query.user_id;
+          let queryText = "SELECT * FROM unfiltered_photo WHERE unfiltered_photo_id IN (SELECT unfiltered_photo_id FROM USER_PHOTO WHERE user_ID = $1 AND (status = 'waiting' OR status = 'processing')) ORDER BY unfiltered_photo_id;";
+          let values = [id];
+          db.param_query(queryText, values)
+              .then(res => {
+                  getres.send(res.rows);
+              })
+              .catch(e => console.error(e.stack))
     });
 
     /**
      * Returns user's unstyled videos for user with id
      * Takes in the request query's parameters
      */
-    app.get('/user/videos/unstyled', (req, getres) => {
+    app.get('/user/videos/unstyled', async (req, getres) => {
         console.log("GET - user unstyled video");
-		var requesterUserId = req.query.requesterUserId;
-		stat.logStatRequest(requesterUserId);
-        var id = req.query.id;
+        // Making sure paid API user or website is accessing the API
+        // This performs the JWT authorization
+        if(req.headers.bus != undefined){
+          // If the website is making the API call
+          if(req.headers.bus != "Q2cxNw=="){
+            getres.status(201);
+            getres.statusMessage = "Unauthorized API request";
+            getres.send("Unauthorized API request");
+            return;
+          }
+        }
+        // Accessing through the API
+        else{
+          // This performs the JWT authorization
+          var user_id = getUserIdFromJWT(req, getres);
+          if(user_id == null){
+            return; // Authorization failed
+          }
+          var isPaid = await verifyPaid(user_id);
+          // If they're a paid API user and trying to access API not thru website
+          if(!isPaid){
+            // If they're not paid, isPaid returns error
+            getres.status(303);
+            getres.statusMessage = "Unauthorized: Free User";
+            getres.send("Please upgrade account to utilize this feature")
+            return;
+          }
+        }
+        var requesterUserId = req.query.requesterUserId;
+        stat.logStatRequest(requesterUserId);
         var id = req.query.user_id;
         let queryText = "SELECT * FROM unfiltered_video WHERE unfiltered_video_id IN (SELECT unfiltered_video_id FROM user_video WHERE user_ID = $1 AND (status = 'waiting' OR status = 'processing')) ORDER BY unfiltered_video_id;";
         let values = [id];
@@ -422,11 +511,38 @@ module.exports = function(app) {
      * Takes in the request body's parameters
      * TODO: How to hide from the public?
      */
-    app.post('/user/paid', (req, getres) => {
+    app.post('/user/paid', async (req, getres) => {
         console.log("Post - create paid user");
-		var requesterUserId = req.body.requesterUserId;
-		stat.logStatRequest(requesterUserId);
-        var id = req.body.id;
+        // Making sure paid API user or website is accessing the API
+        // This performs the JWT authorization
+        var user_id = getUserIdFromJWT(req, getres);
+        if(user_id == null){
+          return; // Authorization failed
+        }
+        else{
+          var isPaid = await verifyPaid(user_id);
+          if(req.headers.bus != undefined){
+            // If the website is making the API call
+            if(req.headers.bus != "Q2cxNw=="){
+              getres.status(201);
+              getres.statusMessage = "Unauthorized API request";
+              getres.send("Unauthorized API request");
+              return;
+            }
+          }
+          // Accessing through the API
+          else{
+            // If they're a paid API user and trying to access API not thru website
+            if(!isPaid){
+              // If they're not paid, isPaid returns error
+              getres.status(303);
+              getres.statusMessage = "Unauthorized: Free User";
+              getres.send("Please upgrade account to utilize this feature")
+              return;
+            }
+          }
+        var requesterUserId = req.body.requesterUserId;
+        stat.logStatRequest(requesterUserId);
         var id = req.body.user_id;
         var queryText = "SELECT * FROM Paid_Users WHERE user_id = $1;";
         let values = [id];
@@ -450,68 +566,139 @@ module.exports = function(app) {
                 }
             })
             .catch(e => console.error(e.stack))
+          }
     });
 
     /**
      * Set a photo to display or not on user profile on passed photo_id
      * Takes in the request body's parameters
+     * Make sure the photo is owned by the person 
      */
-    app.post('/user/photos/set-display', (req, getres) => {
+    app.post('/user/photos/set-display', async (req, getres) => {
         console.log("POST - set photo to display");
-		var requesterUserId = req.body.requesterUserId;
-		stat.logStatRequest(requesterUserId);
-        if(!verify(req, getres)){
+        // This performs the JWT authorization
+        var user_id = getUserIdFromJWT(req, getres);
+        if(user_id == null){
+          return; // Authorization failed
+        }
+        else{
+          var isPaid = await verifyPaid(user_id);
+          if(req.headers.bus != undefined){
+            // If the website is making the API call
+            if(req.headers.bus != "Q2cxNw=="){
+              getres.status(201);
+              getres.statusMessage = "Unauthorized API request";
+              getres.send("Unauthorized API request");
+              return;
+            }
+          }
+          // Accessing through the API
+          else{
+            // If they're a paid API user and trying to access API not thru website
+            if(!isPaid){
+              // If they're not paid, isPaid returns error
+              getres.status(303);
+              getres.statusMessage = "Unauthorized: Free User";
+              getres.send("Please upgrade account to utilize this feature")
+              return;
+            }
+          }
+          var requesterUserId = req.body.requesterUserId;
+          stat.logStatRequest(requesterUserId);
+          var photo_id = req.body.photo_id;
+          var display = req.body.display;
+          if(photo_id == null || display == null){
+            getres.status(406);
+            getres.statusMessage = "Missing info";
+            getres.send("Missing information. Refer to API documentation for all necessary information.");
             return;
-        }
-        var id = req.body.photo_id;
-        var display = req.body.display;
-        if(id == null || display == null){
-          getres.status(406);
-          getres.statusMessage = "Missing info";
-          getres.send("Missing information. Refer to API documentation for all necessary information.");
-          return;
-        }
-        var queryText = "UPDATE PHOTOS SET display = $1 WHERE photo_id = $2;";
-        let values = [display, id];
-        console.log(queryText);
-        db.param_query(queryText, values)
-            .then(res => {
-                if (res != undefined) {
-                    console.log("Photo profile display successful! Changed to " + req.body.display);
-                    getres.send("Photo profile display successful! Changed to " + req.body.display);
-                } else {
-                    getres.send("Photo profile display change failed");
-                }
-            })
-            .catch(e => {
-              console.error(e.stack); 
-              getres.status(402);
-              getres.statusMessage = "Error";
-              getres.send("Something went wrong. Please try again.");
-            })
+          }
+          var queryText = "SELECT * FROM USER_PHOTO WHERE photo_id = $1 AND user_id = $2";
+          let values = [photo_id, user_id]
+          var results = await db.param_query(queryText, values);
+          // If the photo does not belong to the user, return error
+          if(results.rows[0] == 0){
+            getres.status(408);
+            getres.statusMessage = "Photo Ownership Error";
+            getres.send("This photo does not belong to this account. Please try again.");
+            return;
+          }
+          var queryText = "UPDATE PHOTOS SET display = $1 WHERE photo_id = $2;";
+          values = [display, photo_id];
+          console.log(queryText);
+          db.param_query(queryText, values)
+              .then(res => {
+                  if (res != undefined) {
+                      console.log("Photo profile display successful! Changed to " + req.body.display);
+                      getres.send("Photo profile display successful! Changed to " + req.body.display);
+                  } else {
+                      getres.send("Photo profile display change failed");
+                  }
+              })
+              .catch(e => {
+                console.error(e.stack); 
+                getres.status(402);
+                getres.statusMessage = "Error";
+                getres.send("Something went wrong. Please try again.");
+              })
+            }
     });
 
     /**
      * Set a video to display or not on user profile on passed video_id
      * Takes in the request body's parameters
      */
-    app.post('/user/videos/set-display', (req, getres) => {
+    app.post('/user/videos/set-display', async (req, getres) => {
         console.log("POST - set video to display");
-		var requesterUserId = req.body.requesterUserId;
-		stat.logStatRequest(requesterUserId);
-        if(!verify(req, getres)){
-            return;
+        var requesterUserId = req.body.requesterUserId;
+        stat.logStatRequest(requesterUserId);
+        // This performs the JWT authorization
+        var user_id = getUserIdFromJWT(req, getres);
+        if(user_id == null){
+          return; // Authorization failed
         }
-        var id = req.body.video_id;
+        else{
+          var isPaid = await verifyPaid(user_id);
+          if(req.headers.bus != undefined){
+            // If the website is making the API call
+            if(req.headers.bus != "Q2cxNw=="){
+              getres.status(201);
+              getres.statusMessage = "Unauthorized API request";
+              getres.send("Unauthorized API request");
+              return;
+            }
+          }
+          // Accessing through the API
+          else{
+            // If they're a paid API user and trying to access API not thru website
+            if(!isPaid){
+              // If they're not paid, isPaid returns error
+              getres.status(303);
+              getres.statusMessage = "Unauthorized: Free User";
+              getres.send("Please upgrade account to utilize this feature")
+              return;
+            }
+          }
+        var video_id = req.body.video_id;
         var display = req.body.display;
-        if(id == null || display == null){
+        if(video_id == null || display == null){
           getres.status(406);
           getres.statusMessage = "Missing info";
           getres.send("Missing information. Refer to API documentation for all necessary information.");
           return;
         }
+        var queryText = "SELECT * FROM USER_VIDEO WHERE video_id = $1 AND user_id = $2";
+        let values = [video_id, user_id]
+        var results = await db.param_query(queryText, values);
+        // If the photo does not belong to the user, return error
+        if(results.rows[0] == 0){
+          getres.status(408);
+          getres.statusMessage = "Video Ownership Error";
+          getres.send("This video does not belong to this account. Please try again.");
+          return;
+        }
         var queryText = "UPDATE VIDEOS SET display = $1 WHERE video_id = $2;";
-        let values = [display, id];
+        values = [display, video_id];
         console.log(queryText);
         db.param_query(queryText, values)
             .then(res => {
@@ -523,17 +710,43 @@ module.exports = function(app) {
                 }
             })
             .catch(e => console.error(e.stack))
+          }
     });
 
     /**
      * Returns user's styled videos for user with id
      * Takes in the request query's parameters
      */
-    app.get('/user/videos', (req, getres) => {
+    app.get('/user/videos', async (req, getres) => {
         console.log("GET - user videos");
-		var requesterUserId = req.query.requesterUserId;
-		stat.logStatRequest(requesterUserId);
-        var id = req.query.id;
+        if(req.headers.bus != undefined){
+          // If the website is making the API call
+          if(req.headers.bus != "Q2cxNw=="){
+            getres.status(201);
+            getres.statusMessage = "Unauthorized API request";
+            getres.send("Unauthorized API request");
+            return;
+          }
+        }
+        // Accessing through the API
+        else{
+          // This performs the JWT authorization
+          var user_id = getUserIdFromJWT(req, getres);
+          if(user_id == null){
+            return; // Authorization failed
+          }
+          var isPaid = await verifyPaid(user_id);
+          // If they're a paid API user and trying to access API not thru website
+          if(!isPaid){
+            // If they're not paid, isPaid returns error
+            getres.status(303);
+            getres.statusMessage = "Unauthorized: Free User";
+            getres.send("Please upgrade account to utilize this feature")
+            return;
+          }
+        }
+        var requesterUserId = req.query.requesterUserId;
+        stat.logStatRequest(requesterUserId);
         var id = req.query.user_id;
         if(id == null){
           getres.status(406);
@@ -554,10 +767,38 @@ module.exports = function(app) {
      * Returns user's styled photos for user with id
      * Takes in the request query's parameters
      */
-    app.get('/user/photos', (req, getres) => {
+    app.get('/user/photos', async (req, getres) => {
         console.log("GET - user photos");
-		var requesterUserId = req.query.requesterUserId;
-		stat.logStatRequest(requesterUserId);
+        // Making sure paid user or website is accessing the API
+        // This performs the JWT authorization
+        if(req.headers.bus != undefined){
+          // If the website is making the API call
+          if(req.headers.bus != "Q2cxNw=="){
+            getres.status(201);
+            getres.statusMessage = "Unauthorized API request";
+            getres.send("Unauthorized API request");
+            return;
+          }
+        }
+        // Accessing through the API
+        else{
+          // This performs the JWT authorization
+          var user_id = getUserIdFromJWT(req, getres);
+          if(user_id == null){
+            return; // Authorization failed
+          }
+          var isPaid = await verifyPaid(user_id);
+          // If they're a paid API user and trying to access API not thru website
+          if(!isPaid){
+            // If they're not paid, isPaid returns error
+            getres.status(303);
+            getres.statusMessage = "Unauthorized: Free User";
+            getres.send("Please upgrade account to utilize this feature")
+            return;
+          }
+        }
+        var requesterUserId = req.query.requesterUserId;
+        stat.logStatRequest(requesterUserId);
         var id = req.query.id;
         var id = req.query.user_id;
         if(id == null){
@@ -579,13 +820,37 @@ module.exports = function(app) {
      * Deletes the photo id passed in that belongs to that user
      * TODO: Remove from FS
      */
-    app.post('/user/photos/delete', (req, getres) => {
+    app.post('/user/photos/delete', async (req, getres) => {
         console.log("POST - delete photo");
-		var requesterUserId = req.body.requesterUserId;
-		stat.logStatRequest(requesterUserId);
-        if(!verify(req, getres)){
-            return;
+        var requesterUserId = req.body.requesterUserId;
+        stat.logStatRequest(requesterUserId);
+        // This performs the JWT authorization
+        var user_id = getUserIdFromJWT(req, getres);
+        if(user_id == null){
+          return; // Authorization failed
         }
+        else{
+          var isPaid = await verifyPaid(user_id);
+          if(req.headers.bus != undefined){
+            // If the website is making the API call
+            if(req.headers.bus != "Q2cxNw=="){
+              getres.status(201);
+              getres.statusMessage = "Unauthorized API request";
+              getres.send("Unauthorized API request");
+              return;
+            }
+          }
+          // Accessing through the API
+          else{
+            // If they're a paid API user and trying to access API not thru website
+            if(!isPaid){
+              // If they're not paid, isPaid returns error
+              getres.status(303);
+              getres.statusMessage = "Unauthorized: Free User";
+              getres.send("Please upgrade account to utilize this feature")
+              return;
+            }
+          }
         var photoId = req.body.photo_id;
         var userId = req.body.user_id;
         if(photoId == null || userId == null){
@@ -596,30 +861,52 @@ module.exports = function(app) {
         }
         var queryText = "DELETE FROM user_photo WHERE photo_id = $1 AND user_id = $2;";
         console.log(queryText);
-        async function deletePhoto() {
-            var values = [photoId, userId];
-            result = await db.param_query(queryText, values);
-            queryText = "DELETE FROM photos WHERE photo_id = $1;";
-            values = [photoId];
-            console.log(queryText);
-            result = await db.param_query(queryText, values);
-            getres.send("Delete was a success!");
-        }
-        deletePhoto();
+        var values = [photoId, userId];
+        result = await db.param_query(queryText, values);
+        queryText = "DELETE FROM photos WHERE photo_id = $1;";
+        values = [photoId];
+        console.log(queryText);
+        result = await db.param_query(queryText, values);
+        getres.send("Delete was a success!");
+      }
     });
 
     /**
      * Deletes the video id passed in that belongs to that user
      * TODO: Remove from FS
      */
-    app.post('/user/videos/delete', (req, getres) => {
+    app.post('/user/videos/delete', async (req, getres) => {
         console.log("POST - delete video");
-		var requesterUserId = req.body.requesterUserId;
-		stat.logStatRequest(requesterUserId);
+        var requesterUserId = req.body.requesterUserId;
+        stat.logStatRequest(requesterUserId);
         console.log(req.body);
-        if(!verify(req, getres)){
-            return;
+        // This performs the JWT authorization
+        var user_id = getUserIdFromJWT(req, getres);
+        if(user_id == null){
+          return; // Authorization failed
         }
+        else{
+          var isPaid = await verifyPaid(user_id);
+          if(req.headers.bus != undefined){
+            // If the website is making the API call
+            if(req.headers.bus != "Q2cxNw=="){
+              getres.status(201);
+              getres.statusMessage = "Unauthorized API request";
+              getres.send("Unauthorized API request");
+              return;
+            }
+          }
+          // Accessing through the API
+          else{
+            // If they're a paid API user and trying to access API not thru website
+            if(!isPaid){
+              // If they're not paid, isPaid returns error
+              getres.status(303);
+              getres.statusMessage = "Unauthorized: Free User";
+              getres.send("Please upgrade account to utilize this feature")
+              return;
+            }
+          }
         var videoId = req.body.video_id;
         var userId = req.body.user_id;
         if(videoId == null || userId == null){
@@ -630,25 +917,50 @@ module.exports = function(app) {
         }
         var queryText = "DELETE FROM user_video WHERE video_id = $1 AND user_id = $2;";
         console.log(queryText);
-        async function deleteVideo() {
-            var values = [videoId, userId];
-            result = await db.param_query(queryText, values);
-            queryText = "DELETE FROM videos WHERE video_id = $1;";
-            console.log(queryText);
-            values = [videoId];
-            result = await db.param_query(queryText, values);
-            getres.send("Delete was a success!");
-        }
-        deleteVideo();
+        var values = [videoId, userId];
+        result = await db.param_query(queryText, values);
+        queryText = "DELETE FROM videos WHERE video_id = $1;";
+        console.log(queryText);
+        values = [videoId];
+        result = await db.param_query(queryText, values);
+        getres.send("Delete was a success!");
+      }
     });
 
     /**
      * Returns photos the user chooses to display on their profile
      */
-    app.get('/user/photos/display', (req, getres) => {
+    app.get('/user/photos/display', async (req, getres) => {
         console.log("GET - user profile display photos");
-		var requesterUserId = req.query.requesterUserId;
-		stat.logStatRequest(requesterUserId);
+        // This performs the JWT authorization
+        if(req.headers.bus != undefined){
+          // If the website is making the API call
+          if(req.headers.bus != "Q2cxNw=="){
+            getres.status(201);
+            getres.statusMessage = "Unauthorized API request";
+            getres.send("Unauthorized API request");
+            return;
+          }
+        }
+        // Accessing through the API
+        else{
+          // This performs the JWT authorization
+          var user_id = getUserIdFromJWT(req, getres);
+          if(user_id == null){
+            return; // Authorization failed
+          }
+          var isPaid = await verifyPaid(user_id);
+          // If they're a paid API user and trying to access API not thru website
+          if(!isPaid){
+            // If they're not paid, isPaid returns error
+            getres.status(303);
+            getres.statusMessage = "Unauthorized: Free User";
+            getres.send("Please upgrade account to utilize this feature")
+            return;
+          }
+        }
+        var requesterUserId = req.query.requesterUserId;
+        stat.logStatRequest(requesterUserId);
         var id = req.query.id;
         var id = req.query.user_id;
         if(id == null){
@@ -669,10 +981,37 @@ module.exports = function(app) {
     /**
      * Returns videos the user chooses to display on their profile
      */
-    app.get('/user/videos/display', (req, getres) => {
+    app.get('/user/videos/display', async (req, getres) => {
         console.log("GET - user profile display videos");
-		var requesterUserId = req.query.requesterUserId;
-		stat.logStatRequest(requesterUserId);
+        // This performs the JWT authorization
+        if(req.headers.bus != undefined){
+          // If the website is making the API call
+          if(req.headers.bus != "Q2cxNw=="){
+            getres.status(201);
+            getres.statusMessage = "Unauthorized API request";
+            getres.send("Unauthorized API request");
+            return;
+          }
+        }
+        // Accessing through the API
+        else{
+          // This performs the JWT authorization
+          var user_id = getUserIdFromJWT(req, getres);
+          if(user_id == null){
+            return; // Authorization failed
+          }
+          var isPaid = await verifyPaid(user_id);
+          // If they're a paid API user and trying to access API not thru website
+          if(!isPaid){
+            // If they're not paid, isPaid returns error
+            getres.status(303);
+            getres.statusMessage = "Unauthorized: Free User";
+            getres.send("Please upgrade account to utilize this feature")
+            return;
+          }
+        }
+        var requesterUserId = req.query.requesterUserId;
+        stat.logStatRequest(requesterUserId);
         var id = req.query.id;
         var id = req.query.user_id;
         if(id == null){
@@ -694,6 +1033,33 @@ module.exports = function(app) {
      * Returns the number of photos the user has
      */
     app.get('/user/photos/num', async (req, getres) => {
+      // This performs the JWT authorization
+      if(req.headers.bus != undefined){
+        // If the website is making the API call
+        if(req.headers.bus != "Q2cxNw=="){
+          getres.status(201);
+          getres.statusMessage = "Unauthorized API request";
+          getres.send("Unauthorized API request");
+          return;
+        }
+      }
+      // Accessing through the API
+      else{
+        // This performs the JWT authorization
+        var user_id = getUserIdFromJWT(req, getres);
+        if(user_id == null){
+          return; // Authorization failed
+        }
+        var isPaid = await verifyPaid(user_id);
+        // If they're a paid API user and trying to access API not thru website
+        if(!isPaid){
+          // If they're not paid, isPaid returns error
+          getres.status(303);
+          getres.statusMessage = "Unauthorized: Free User";
+          getres.send("Please upgrade account to utilize this feature")
+          return;
+        }
+      }
       console.log("GET - number of photos");
       let queryText = "SELECT COUNT(*) FROM user_photo WHERE user_id = $1";
       let values = [req.query.user_id];
@@ -706,6 +1072,50 @@ module.exports = function(app) {
         return;
       }
       getres.send(result.rows[0]);
-    })
+    });
 
 }
+
+
+
+
+
+// var verify = function(req, getres){
+//   var token;
+//   // JWT is passed either in query or in body
+//   if(req.query.jwt != null){
+//       token = req.query.jwt;
+//   }
+//   else if(req.body.jwt != null){
+//       token = req.body.jwt;
+//   }
+//   try{
+//       var decoded = jwt.verify(token, "thisisthekey");
+//       var passed_user_id;
+//       if(req.query.user_id != null){
+//         passed_user_id = req.query.user_id;
+//       }
+//       else if(req.body.user_id != null){
+//         passed_user_id = req.body.user_id;
+//       }
+//       console.log("Checking IDs");
+//       console.log(passed_user_id);
+//       console.log(token.user_id); 
+//       // See if passed user id matches the JWT they pass
+//       if(passed_user_id != null){
+//           if(passed_user_id != decoded.user_id){
+//               getres.status(806);
+//               getres.statusMessage = "Incorrect JWT token.";
+//               getres.send("JWT does not match user id supplied. Please pass a valid JWT token for your user account.");
+//               return false;
+//           }
+//       }
+//       return true;
+//   }
+//   catch(err){
+//       getres.status(800);
+//       getres.statusMessage = "Invalid JWT token. Please pass a valid JWT token.";
+//       getres.send("Invalid JWT token. Please pass a valid JWT token.");
+//       return false;
+//   }
+// }
