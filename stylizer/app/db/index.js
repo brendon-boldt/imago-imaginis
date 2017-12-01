@@ -90,7 +90,7 @@ module.exports = {
         return;
       }
 
-      let resource_id = (runInfo.photo_id) ? runInfo.photo_id : runInfo.video_id; 
+      let resource_id = (runInfo.photo_id !== undefined) ? runInfo.photo_id : runInfo.video_id; 
       options = { 
         qs: {
           resource_id: resource_id,
@@ -193,7 +193,8 @@ module.exports = {
   startWatching: async function() {
     let getRuns = this.getRuns;
     //setInterval(this.getRuns.bind(this), 1000);
-    this.getRuns('video');
+    //this.getRuns('video');
+    this.getRuns('image');
   },
   
   // Send run information to database
@@ -246,20 +247,22 @@ module.exports = {
 
     let upIdString = runInfo.user_id + '-' + runInfo.photo_id;
     //let outputFPath = `${config.outputPath}/${runInfo.photo_id}.jpg`;
-    let testRunParams = {
+    let runParams = {
       upId : upIdString,
       photo_id : runInfo.photo_id,
       contentPath : contentFPath,
-      contentSize : 16,
+      contentSize : config.contentSize,
       stylePath : styleFPath,
-      styleSize : 16,
+      styleSize : config.styleSize,
       outputName : `${runInfo.photo_id}.${contentFT}`
     };
 
-    let outputFPath = await stylizer.startStyle(testRunParams);
+    let outputFPath = await stylizer.startStyle(runParams);
 
     await this.insertResource(
         `${config.dbUrl}/${urlInsertImage}`,
         outputFPath, contentFT, runInfo);
+
+    stylizer.removeResource(outputFPath);
   }
 }

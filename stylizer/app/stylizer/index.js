@@ -62,12 +62,13 @@ module.exports = {
       })
       .then((result) => {
         log(`Styling runId ${runParams.upId} completed succesfully.`);
+        execFile('rm', [runParams.contentPath, runParams.stylePath]);
       });
     return `${config.outputPath}/${runParams.outputName}`;
   }, 
 
-  runComplete: function(runId, imagePath) {
-
+  removeResource: function(path) {
+    execFile('rm', [path]);
   }
 
 }

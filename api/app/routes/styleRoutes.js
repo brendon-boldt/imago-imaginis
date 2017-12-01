@@ -10,7 +10,7 @@ module.exports = function(app) {
   app.post('/style/insert/:type*', async (req, getres) => {
     console.log("Upload of type: " + req.params.type);
 
-    let outputPath, bridgetTable, resultTable, resource_id_name;
+    let outputPath, bridgeTable, resultTable, resource_id_name;
     if (req.params.type === 'image') {
       outputPath = config.outputPath;
       bridgeTable = 'user_photo';
@@ -23,6 +23,7 @@ module.exports = function(app) {
       resource_id_name = 'video_id';
     }
 
+    console.log("QUERY: ", req.query);
     let filepath = `${outputPath}/output-${req.query.resource_id}.${req.query.fileType}`; 
     console.log(`Writing file: ${filepath}`);
     fs.writeFile(filepath, req.body, (err) => {
@@ -40,7 +41,7 @@ module.exports = function(app) {
     console.log(photosQuery); 
     db.query(photosQuery); 
 
-    let user_photoQuery = `UPDATE ${bridgeTable} SET status='done' WHERE photo_id=${resource_id} AND user_id=${user_id}`;
+    let user_photoQuery = `UPDATE ${bridgeTable} SET status='done' WHERE ${resource_id_name}=${resource_id} AND user_id=${user_id}`;
     console.log(user_photoQuery); 
     db.query(user_photoQuery); 
     return 0;

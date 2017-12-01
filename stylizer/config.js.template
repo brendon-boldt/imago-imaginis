@@ -5,6 +5,8 @@ var config = {};
 config.thPath = '';
 config.stylizerPath = '';
 config.gpu = -1;
+config.contentSize = 32;
+config.styleSize = 32;
 
 config.dbUrl = '';
 config.stylePath = '';

@@ -4,9 +4,9 @@ var config = {};
 
 config.contentPath = '';
 config.stylePath = '';
-config.resultPath = '';
+config.outputPath = '';
 config.contentPathVideo = '';
-config.resultPathVideo = '';
+config.outputPathVideo = '';
 config.uploadsPath = '';
 config.videoUploadsPath = '';
 config.serve = '';
