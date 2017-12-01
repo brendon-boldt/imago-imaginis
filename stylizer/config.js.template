@@ -5,10 +5,16 @@ var config = {};
 config.thPath = '';
 config.stylizerPath = '';
 config.gpu = -1;
+config.contentSize = 32;
+config.styleSize = 32;
+config.contentSizeVideo = 16;
+config.styleSizeVideo = 16;
 
 config.dbUrl = '';
 config.stylePath = '';
 config.outputPath = '';
 config.contentPath = '';
+config.outputPathVideo = '';
+config.contentPathVideo = '';
 
 module.exports = config;
