@@ -535,15 +535,16 @@ module.exports = function(app) {
           }
         stat.logStatRequest(user_id);
         var id = req.body.user_id;
-        var queryText = "SELECT * FROM Paid_Users WHERE user_id = $1;";
+        var queryText = "SELECT * FROM Paid_Users WHERE paid_id = $1;";
         let values = [id];
         db.param_query(queryText, values)
             .then(res => {
                 if (res == undefined) {
+					getres.status(307);
                     getres.send("Paid user creation failed");
                 }
                 if (res.rowCount === 0) {
-                    queryText = "INSERT INTO Paid_Users (user_ID) VALUES ($1);";
+                    queryText = "INSERT INTO Paid_Users (paid_id) VALUES ($1);";
                     let values = [id];
                     db.param_query(queryText, values).then(res => {
                         if (res != undefined) {
@@ -552,6 +553,7 @@ module.exports = function(app) {
                         }
                     })
                 } else {
+					getres.status(421);
                     console.log("User is already paid account");
                     getres.send("User is already paid account");
                 }

@@ -18,7 +18,7 @@ It is routed to when the user clicks on a router link-->
 						Upload Profile Picture<input type="file" (change)="fileChangeEvent($event)" accept="image/*" hidden>
 					</label>
 					<br><br>
-					<button type="button" class="button btn btn-success btn-green btn-xl js-scroll-trigger center-block" (click)="this.upgradeAccount();">Upgrade Account</button>
+					<button type="button" class="button btn btn-success btn-green btn-xl js-scroll-trigger center-block" (click)="this.showUpgradeAccount();">Upgrade Account</button>
 					<br><br>
 					<div class="form-group">
 						<label class="control-label" name="user-first-name">First Name</label>
@@ -76,10 +76,13 @@ It is routed to when the user clicks on a router link-->
 				<form class="form-horizontal" role="form" data-toggle="validator" (keyup)="onKey($event)">
 					<div class="form-group">
 						<!-- <label class="control-label" name="card-info">Credit Card:</label> -->
-						<input type="text" class="form-control" style="background-color: lightgrey;" name="card-info" placeholder="Credit Card Info" [(ngModel)]="this.cardInfo">
+						<input type="text" class="form-control" style="background-color: lightgrey;" name="card-info" placeholder="Credit Card Info" [(ngModel)]="this.cardInfo" required>
+					</div>
+					<div [hidden]="this.isValidCard" class="alert alert-danger">
+						Invalid credit card
 					</div>
 				</form>
-				<button type="button" class="button btn btn-primary btn-green btn-sm js-scroll-trigger center-block" (click)="this.upgradeAccount();">Upgrade Account</button>
+				<button type="button" class="button btn btn-primary btn-green btn-sm js-scroll-trigger center-block" (click)="this.processUpgradeAccount();">Upgrade Account</button>
 			</div>
 			<div class="app-modal-footer">
 				<button type="button" class="btn btn-default" (click)="modalUpgrade.hide()">Close</button>

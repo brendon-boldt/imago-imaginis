@@ -31,6 +31,7 @@
     "ng2-charts": "^1.6.0",
     "rxjs": "^5.4.2",
     "sha.js": "^2.4.9",
+    "validator": "^9.1.2",
     "zone.js": "^0.8.14"
   },
   "devDependencies": {

@@ -12,6 +12,9 @@ import { UserService } from '../services/user.service';
 // Import the modal component
 import { ModalComponent } from '../modal/app-modal.component';
 
+// Import the validator
+import validator from 'validator';
+
 @Component({
   selector: 'user-settings',
   templateUrl: './user-settings.component.html',
@@ -26,7 +29,8 @@ export class UserSettingsComponent {
   password: string;
   fileToUpload: any;
   modalText: string;
-  cardInfo: string;
+  cardInfo: string = "";
+  isValidCard: boolean = true;
   form: any = {};
   constructor(private router: Router, private db: DBService, private user: UserService){
     // Set form info
@@ -39,12 +43,58 @@ export class UserSettingsComponent {
         this.form.email = this.user.email;
     });
   }
+
   /**
    * Pops up a modal to allow the user to upgrade their account
    */
-  upgradeAccount(): void {
+  showUpgradeAccount(): void {
     this.modalUpgrade.show();
   }
+  
+  /**
+   * Processes payment and upgrades account
+   */
+  processUpgradeAccount(): void {
+    //todo: hide on already paid user
+    if (validator.isCreditCard(this.cardInfo) === false) { // Validate credit card information
+      console.log("WEB: Invalid credit card info");
+      this.isValidCard = false;
+      return;
+    }
+    this.modalUpgrade.hide();
+    this.db.upgradeUser(this.user.userId).then(res => {
+        if (res.status == 201) {
+          // Unauthorized API request
+          this.modalText = "Unauthorized API request."
+          window.scrollTo(0, 0);
+          this.modal.show();
+        } else if (res.status == 303) {
+          // Unauthorized: Free User
+          this.modalText = "Unauthorized: Free User."
+          window.scrollTo(0, 0);
+          this.modal.show();
+        } else if (res.status == 307) {
+          // Account add error
+          this.modalText = "Error: user could not be upgraded. Please try again."
+          window.scrollTo(0, 0);
+          this.modal.show();
+        } else if (res.status == 421) {
+          // User already paid account
+          console.log("catching here");
+          this.modalText = "Error: user is already paid account"
+          window.scrollTo(0, 0);
+          this.modal.show();
+        } else {
+          this.modalText = "Account has been upgraded!";
+          this.user.refreshInfo();
+          // Scroll user to top of page
+          window.scrollTo(0, 0)
+          this.modal.show();
+        }
+      } // Relog the user in so JWT is updated
+    )
+  }
+  
   /**
    * Front-end method to save changes to user account
    */

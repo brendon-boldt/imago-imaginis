@@ -58,7 +58,6 @@ export class DBService {
         body.append("last_name", lastName);
         body.append("email", email);
         body.append("password", password);
-        console.log(password)
         let params = new URLSearchParams();
         let options = new RequestOptions({headers: headers, search: params});
         return this.http.post(createUser, body, options)
@@ -411,6 +410,28 @@ export class DBService {
         return this.http.post(setToDisplay, body.toString(), options)
         .toPromise()
         .then(response => response as Object)
+        .catch(this.handleError);
+    }
+	
+	/**
+     * Upgrades a user to paid
+     * @param id 
+     */
+    upgradeUser(id: number): Promise<any> {
+		console.log("WEB: Upgrading to paid account");
+        let upgradeUser = this.url + '/user/paid';
+        let headers = new Headers();
+        this.handleHeader(headers);
+        headers.append('Content-Type', 'application/x-www-form-urlencoded');
+        let body: any = new URLSearchParams();
+        body.append("user_id", id);
+		let jwt = sessionStorage.getItem('jwt');
+        body.append('jwt', jwt+"");
+        let params = new URLSearchParams();
+        let options = new RequestOptions({headers: headers, search: params});
+        return this.http.post(upgradeUser, body, options)
+        .toPromise()
+        .then(response => {return response as Object})
         .catch(this.handleError);
     }
 
