@@ -19,7 +19,7 @@ module.exports = {
       'styVid.sh',
       runParams.contentPath,
       runParams.stylePath,
-      `${config.outputPath}/${runParams.outputName}`,
+      `${config.outputPathVideo}/${runParams.outputName}`,
       runParams.contentSize,
       runParams.styleSize
     ];
@@ -34,9 +34,10 @@ module.exports = {
       })
       .then((result) => {
         log(`Styling runId ${runParams.upId} completed succesfully.`);
+        execFile('rm', [runParams.contentPath, runParams.stylePath]);
       });
     log('done');
-    return `${config.outputPath}/${runParams.outputName}`;
+    return `${config.outputPathVideo}/${runParams.outputName}`;
   }, 
 
   startStyle: async function(runParams) {

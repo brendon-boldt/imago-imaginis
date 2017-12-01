@@ -193,8 +193,8 @@ module.exports = {
   startWatching: async function() {
     let getRuns = this.getRuns;
     //setInterval(this.getRuns.bind(this), 1000);
-    //this.getRuns('video');
-    this.getRuns('image');
+    this.getRuns('video');
+    //this.getRuns('image');
   },
   
   // Send run information to database
@@ -225,10 +225,11 @@ module.exports = {
 
     let outputFPath = await stylizer.startStyleVideo(testRunParams);
 
-
     await this.insertResource(
         `${config.dbUrl}/${urlInsertVideo}`,
         outputFPath, contentFT, runInfo);
+
+    stylizer.removeResource(outputFPath);
   },
 
   // Send run information to database
