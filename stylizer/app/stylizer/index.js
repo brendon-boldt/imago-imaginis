@@ -2,7 +2,7 @@ const util = require('util');
 const execFile = util.promisify(require('child_process').execFile);
 const config = require('../../config.js');
 
-const log = (msg) => {console.log("STYLIZER: " + msg)};
+const log = (msg) => {console.log("STYLIZER: ", msg)};
 
 module.exports = {
   test: function(text) {
@@ -10,6 +10,37 @@ module.exports = {
   },
   
 	// "Run" refers to a styling run
+  startStyleVideo: async function(runParams) {
+    log("VIDEOS!!!!");
+    log(runParams);
+
+    const options = [
+      //stylizerPath + 'test.lua',
+      'styVid.sh',
+      runParams.contentPath,
+      runParams.stylePath,
+      `${config.outputPathVideo}/${runParams.outputName}`,
+      runParams.contentSize,
+      runParams.styleSize
+    ];
+
+    log(`video ${runParams.upId} started`);
+    log('bash' + options.join(' '));
+    await execFile('bash', options, {'cwd': config.stylizerPath})
+      .catch((err) => {
+        log(`The following error occurred with user_photo_id ${runParams.upId}`);
+        console.log(err);
+        throw err;
+      })
+      .then((result) => {
+        log(`Styling runId ${runParams.upId} completed succesfully.`);
+        //execFile('rm', [runParams.contentPath, runParams.stylePath]);
+        execFile('rm', [runParams.contentPath]);
+      });
+    log('done');
+    return `${config.outputPathVideo}/${runParams.outputName}`;
+  }, 
+
   startStyle: async function(runParams) {
 
     const options = [
@@ -33,12 +64,13 @@ module.exports = {
       })
       .then((result) => {
         log(`Styling runId ${runParams.upId} completed succesfully.`);
+        execFile('rm', [runParams.contentPath, runParams.stylePath]);
       });
     return `${config.outputPath}/${runParams.outputName}`;
   }, 
 
-  runComplete: function(runId, imagePath) {
-
+  removeResource: function(path) {
+    execFile('rm', [path]);
   }
 
 }
