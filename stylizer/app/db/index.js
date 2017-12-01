@@ -16,6 +16,8 @@ const urlInsertVideo = baseUrl + '/insert/video';
 
 const log = (msg) => {console.log("DB: ", msg)};
 
+var currentCounter = 0;
+
 module.exports = {
 
   /**
@@ -175,25 +177,33 @@ module.exports = {
   },
 
   getRuns: async function(type) {
+    if (currentCounter >= config.maxRuns)
+      return;
     let runInfoBuf = await this.selectRuns(type);
     let runInfoArr = JSON.parse(runInfoBuf);
     log(`Got ${runInfoArr.length} runs.`);
 
     let R = runInfoArr;
     for (let i = 0; i < R.length; ++i) {
-      if (type === 'image')
+      console.log('counter: ', currentCounter);
+      if (currentCounter >= config.maxRuns)
+        return;
+      if (type === 'image') {
+        currentCounter += 1;
         this.doRun(R[i]);
-      else
+      } else { 
+        currentCounter += 1;
         this.doVideoRun(R[i]);
-      break;
+      }
     }
     //this.doRun(runInfo);
   },
 
   startWatching: async function() {
     let getRuns = this.getRuns;
-    //setInterval(this.getRuns.bind(this), 1000);
-    this.getRuns('video');
+    setInterval(this.getRuns.bind(this), 1000, 'image');
+    setInterval(this.getRuns.bind(this), 1000, 'video');
+    //this.getRuns('video');
     //this.getRuns('image');
   },
   
@@ -217,9 +227,9 @@ module.exports = {
       upId : upIdString,
       video_id : runInfo.video_id,
       contentPath : contentFPath,
-      contentSize : 16,
+      contentSize : config.contentSizeVideo,
       stylePath : styleFPath,
-      styleSize : 16,
+      styleSize : config.styleSizeVideo,
       outputName : `${runInfo.video_id}.${contentFT}`
     };
 
@@ -229,6 +239,7 @@ module.exports = {
         `${config.dbUrl}/${urlInsertVideo}`,
         outputFPath, contentFT, runInfo);
 
+    currentCounter -= 1;
     stylizer.removeResource(outputFPath);
   },
 
@@ -264,6 +275,7 @@ module.exports = {
         `${config.dbUrl}/${urlInsertImage}`,
         outputFPath, contentFT, runInfo);
 
+    currentCounter -= 1;
     stylizer.removeResource(outputFPath);
   }
 }

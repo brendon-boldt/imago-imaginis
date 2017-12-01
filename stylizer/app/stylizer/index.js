@@ -34,7 +34,8 @@ module.exports = {
       })
       .then((result) => {
         log(`Styling runId ${runParams.upId} completed succesfully.`);
-        execFile('rm', [runParams.contentPath, runParams.stylePath]);
+        //execFile('rm', [runParams.contentPath, runParams.stylePath]);
+        execFile('rm', [runParams.contentPath]);
       });
     log('done');
     return `${config.outputPathVideo}/${runParams.outputName}`;
