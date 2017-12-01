@@ -10,5 +10,7 @@ config.dbUrl = '';
 config.stylePath = '';
 config.outputPath = '';
 config.contentPath = '';
+config.outputPathVideo = '';
+config.contentPathVideo = '';
 
 module.exports = config;
