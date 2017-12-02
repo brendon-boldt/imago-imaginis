@@ -26,7 +26,7 @@ export class LibraryComponent {
   @ViewChild('video') video;
   // Holder for photos pulled from the database
   photos: Array<Object> = [];
-  public placeholder: String = "../assets/placeholder.jpg";
+  public placeholder: String = "../assets/ii_logo_black.png";
   subscription: Subscription;
   timerSubscription: Subscription;
   // These are used for displaying the photos properly on the page

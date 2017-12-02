@@ -21,10 +21,11 @@ export class UserService {
     public firstName: string;
     public lastName: string;
     public email: string;
-    public profilePhoto: string = '../../assets/placeholder.jpg';
+    public profilePhoto: string = '../../assets/ii_logo_black.png.png';
     public isAdmin: boolean = false;
     public justLoggedIn: boolean = false;
     public dateJoined: any;
+    public isPaid: boolean = false;
     jwtHelper: JwtHelper = new JwtHelper();
     // public dataAvailable: boolean = false;
     constructor(private db: DBService){
@@ -80,11 +81,17 @@ export class UserService {
         this.email = res.email;
         this.isAdmin = res.admin;
         this.dateJoined = res.date_joined;
+        if(res.paid_id != null){
+            this.isPaid = true;
+        }
+        else{
+            this.isPaid = false;
+        }
         if(res.profile_photo != null){
             this.profilePhoto = this.db.url + res.profile_photo;
         }
         else{
-            this.profilePhoto = '../../assets/placeholder.jpg';
+            this.profilePhoto = '../../assets/ii_logo_black.png';
         }
         // this.dataAvailable = true;
         return res;

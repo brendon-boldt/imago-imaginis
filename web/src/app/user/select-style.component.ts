@@ -38,7 +38,7 @@ export class SelectStyleComponent {
         this.styles = filters;
         // Convert paths
         for(var i=0; i<this.styles.length; i++){
-          this.styles[i].path = this.db.url + "/" + this.styles[i].path;
+          this.styles[i].path = this.db.url + this.styles[i].path;
         }
         console.log(this.styles);
       });
@@ -62,41 +62,62 @@ export class SelectStyleComponent {
    * This uploads the user photo with appropriate filter id to be styled with
    */
   upload = function() {
-    if(this.selectedStyle.filter_id != "Select a style"){
-      // Calls the database service
-      // While waiting for an upload response (aka upload finished), display an unremovable modal displaying upload status
-      this.uploading.show();
-      // If the file being uploaded is a video, then...
-      if(this.gen.isVideoUpload){
-        // Used to get dimensions of the video uploaded
-        // TODO: GET DIMENSIONS OF VIDEO UPLOAD
-        // Upload the filter if custom is selected
-        if(this.selectedStyle.filter_id == "Upload a style"){
-          this.db.uploadFilter(this.filterToUpload, this.us.userId).then(res => {
-            // res._body returns the filter id that was just added
-            // TODO: Display loading animation while uploading, stop when response received.
-            this.db.uploadVideo(this.us.userId, this.us.uploadedPhoto, res._body).then(result => {
+    // Check to see if the user already has two photos if they're a free user
+    this.db.getNumPhotos(this.us.userId).then(async res => {
+      if(res.status == 605){
+        this.modalText = "You have reached your maximum number of uploaded photos. Please delete some photos before continuing, or upgrade your account. You will be redirected automatically in 5 seconds...";
+        this.modal.show();
+        var router = this.router;
+        setTimeout(function(){
+          router.navigate(['home']);
+        }, 5000);
+      }
+      if(this.selectedStyle.filter_id != "Select a style"){
+        // Calls the database service
+        // While waiting for an upload response (aka upload finished), display an unremovable modal displaying upload status
+        this.uploading.show();
+        // If the file being uploaded is a video, then...
+        if(this.gen.isVideoUpload){
+          // Used to get dimensions of the video uploaded
+          // TODO: GET DIMENSIONS OF VIDEO UPLOAD
+          // Upload the filter if custom is selected
+          if(this.selectedStyle.filter_id == "Upload a style"){
+            this.db.uploadFilter(this.filterToUpload, this.us.userId).then(res => {
+              // res._body returns the filter id that was just added
+              // TODO: Display loading animation while uploading, stop when response received.
+              this.db.uploadVideo(this.us.userId, this.us.uploadedPhoto, res._body).then(result => {
+                this.router.navigate(['library']);
+              });
+            });
+          }
+          else{
+            this.db.uploadVideo(this.us.userId, this.us.uploadedPhoto, this.selectedStyle['filter_id']).then(result => {
               this.router.navigate(['library']);
             });
-          });
+          }
         }
         else{
-          this.db.uploadVideo(this.us.userId, this.us.uploadedPhoto, this.selectedStyle['filter_id']).then(result => {
-            this.router.navigate(['library']);
-          });
-        }
-      }
-      // Else if it's a photo
-      else{
-        // Used to get dimensions of the photo uploaded
-        var img = new Image();
-        img.src = this.gen.uploadedImage;
-        // Upload the filter if custom is selected
-        if(this.selectedStyle.filter_id == "Upload a style"){
-          this.db.uploadFilter(this.filterToUpload, this.us.userId).then(res => {
-            // res._body returns the filter id that was just added
-            // TODO: Display loading animation while uploading, stop when response received.
-            this.db.uploadPhoto(this.us.userId, this.us.uploadedPhoto, res._body, img).then(result => {
+          // Used to get dimensions of the photo uploaded
+          var img = new Image();
+          img.src = this.gen.uploadedImage;
+          // Upload the filter if custom is selected
+          if(this.selectedStyle.filter_id == "Upload a style"){
+            this.db.uploadFilter(this.filterToUpload, this.us.userId).then(res => {
+              this.db.uploadPhoto(this.us.userId, this.us.uploadedPhoto, res._body, img).then(result => {
+                if(result.status == 501){
+                  // File size was too large
+                  this.modalText = "Max image file size exceeded! 7MB max.";
+                  this.uploading.hide();
+                  this.modal.show();
+                }
+                else{
+                  this.router.navigate(['library']);
+                }
+              });
+            });
+          }
+          else{
+            this.db.uploadPhoto(this.us.userId, this.us.uploadedPhoto, this.selectedStyle['filter_id'], img).then(result => {
               if(result.status == 501){
                 // File size was too large
                 this.modalText = "Max image file size exceeded! 7MB max.";
@@ -107,28 +128,16 @@ export class SelectStyleComponent {
                 this.router.navigate(['library']);
               }
             });
-          });
-        }
-        else{
-          this.db.uploadPhoto(this.us.userId, this.us.uploadedPhoto, this.selectedStyle['filter_id'], img).then(result => {
-            if(result.status == 501){
-              // File size was too large
-              this.modalText = "Max image file size exceeded! 7MB max.";
-              this.uploading.hide();
-              this.modal.show();
-            }
-            else{
-              this.router.navigate(['library']);
-            }
-          });
+          }
         }
       }
-    }
-    else{
-      this.modalText = "Please select a style!";
-      this.modal.show();
-    }
+      else{
+        this.modalText = "Please select a style!";
+        this.modal.show();
+      }
+    });
   }
+  
 
   /**
    * This event fires when a user uploads a filter
@@ -142,18 +151,6 @@ export class SelectStyleComponent {
         this.selectedStyle.path = e.target.result;
     }
     reader.readAsDataURL(this.filterToUpload);
-    // this.selectedStyle.path = this.filterToUpload;
     console.log(this.filterToUpload);
   }
-
-  // This is used to convert a base-64 encoded string back into a File
-  // Used for when the user reloads the page
-  // dataURLtoFile(dataurl, filename) {
-  //   var arr = dataurl.split(','), mime = arr[0].match(/:(.*?);/)[1],
-  //       bstr = atob(arr[1]), n = bstr.length, u8arr = new Uint8Array(n);
-  //   while(n--){
-  //       u8arr[n] = bstr.charCodeAt(n);
-  //   }
-  //   return new File([u8arr], filename, {type:mime});
-  // }
 }

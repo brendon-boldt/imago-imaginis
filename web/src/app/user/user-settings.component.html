@@ -18,7 +18,7 @@ It is routed to when the user clicks on a router link-->
 						Upload Profile Picture<input type="file" (change)="fileChangeEvent($event)" accept="image/*" hidden>
 					</label>
 					<br><br>
-					<button type="button" class="button btn btn-success btn-green btn-xl js-scroll-trigger center-block" (click)="this.showUpgradeAccount();">Upgrade Account</button>
+					<button *ngIf="!this.user.isPaid" type="button" class="button btn btn-success btn-green btn-xl js-scroll-trigger center-block" (click)="this.showUpgradeAccount();">Upgrade Account</button>
 					<br><br>
 					<div class="form-group">
 						<label class="control-label" name="user-first-name">First Name</label>

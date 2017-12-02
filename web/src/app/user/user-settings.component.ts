@@ -55,7 +55,6 @@ export class UserSettingsComponent {
    * Processes payment and upgrades account
    */
   processUpgradeAccount(): void {
-    //todo: hide on already paid user
     if (validator.isCreditCard(this.cardInfo) === false) { // Validate credit card information
       console.log("WEB: Invalid credit card info");
       this.isValidCard = false;
@@ -80,7 +79,6 @@ export class UserSettingsComponent {
           this.modal.show();
         } else if (res.status == 421) {
           // User already paid account
-          console.log("catching here");
           this.modalText = "Error: user is already paid account"
           window.scrollTo(0, 0);
           this.modal.show();

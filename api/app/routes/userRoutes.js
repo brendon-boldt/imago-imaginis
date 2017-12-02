@@ -404,7 +404,7 @@ module.exports = function(app) {
           stat.logStatRequest(0);
           console.log("GET - info");
           var id = req.query.user_id;
-          let queryText = "SELECT * FROM ASP_USERS WHERE user_ID = $1;";
+          let queryText = "SELECT user_id, first_name, last_name, email, date_joined, status, profile_photo, admin, paid_id FROM ASP_USERS LEFT JOIN paid_users ON asp_users.user_id = paid_users.paid_id WHERE user_ID = $1;";
           let values = [id];
           db.param_query(queryText, values)
               .then(res => {

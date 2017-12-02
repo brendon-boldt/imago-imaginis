@@ -27,7 +27,7 @@ export class UserComponent {
   public lastName: string;
   public email: string;
   public dateJoined: any;
-  public placeholder: String = "../assets/placeholder.jpg";
+  public placeholder: String = "../assets/ii_logo_black.png";
   outside: boolean = true;
   photos: Array<Object> = []; // array of filepaths of images
   profilePhoto: String = this.placeholder;
@@ -74,29 +74,15 @@ export class UserComponent {
           this.email = this.user.email;
           this.dateJoined = this.user.dateJoined;
           this.profilePhoto = this.user.profilePhoto;
-      // if(params.user_id == null){
-      //   this.user_id = this.user.user_id;
-      //   this.first_name = this.user.first_name;
-      //   this.last_name = this.user.last_name;
-      //   this.email = this.user.email;
-      //   this.dateJoined = this.user.dateJoined;
-      //   this.profilePhoto = this.user.profilePhoto;
-        // var test = Observable.fromPromise(this.user.getProfilePhoto());
-        // test.subscribe(res => {
-        //   console.log(res);
-        //   if(res != null){
-        //     this.profilePhoto = res
-        //   }
-        // });
-        // Get the user's photos to display on profile
-        this.db.getProfilePhotos(this.user.userId).then(res => {
-          console.log("WEB: Get user's profile display photos");
-          res = res.json();
-          for(var photo of res){
-            console.log(photo);
-            this.photos.push(photo);
-          }
-        });
+          // Get the user's photos to display on profile
+          this.db.getProfilePhotos(this.user.userId).then(res => {
+            console.log("WEB: Get user's profile display photos");
+            res = res.json();
+            for(var photo of res){
+              console.log(photo);
+              this.photos.push(photo);
+            }
+          });
         // Get the user's videos to display on profile
         this.db.getProfileVideos(this.user.userId).then(res => {
           console.log("WEB: Get user's profile display videos");
@@ -126,17 +112,6 @@ export class UserComponent {
               this.profilePhoto = this.db.url + res[0].profile_photo;
             }
           });
-          // Get that user's profile photo
-          // this.db.getProfilePhoto(params.user_id).then(res => {
-          //   if(res.json()[0].profile_photo == null){ // The user had no profile picture
-          //     console.log("User has no profile picture");
-          //   }
-          //   else{
-          //     this.profilePhoto = this.db.url + res.json()[0].profile_photo;
-          //     console.log(res.json());
-          //     console.log(this.profilePhoto);
-          //   }
-          // });
           // Get the photos that user wants to display on their profile
           this.db.getProfilePhotos(params.userId).then(res => {
             console.log("WEB: Get user's profile display photos");
