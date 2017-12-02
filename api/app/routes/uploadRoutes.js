@@ -376,6 +376,11 @@ module.exports = function(app) {
         var result = await db.query(queryText);
         var filter_id = result.rows[0].filter_id;
         file.filter_id = filter_id;
+        // Handling if photo uploaded is .jpeg instead of .jpg
+        var filename;
+        if(path.extname(file.originalname.toLowerCase()) == ".jpeg"){
+          filename = file.fieldname + '-' + filter_id + file.originalname.toLowerCase() + ".jpg";
+        } 
         var filename = 'filter' + '-' + filter_id + path.extname(file.originalname);
         cb(null, filename);
     }

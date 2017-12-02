@@ -29,6 +29,7 @@ export class UserComponent {
   public dateJoined: any;
   public placeholder: String = "../assets/ii_logo_black.png";
   public isPaid: any;
+  dataReady = false;
   outside: boolean = true;
   photos: Array<Object> = []; // array of filepaths of images
   profilePhoto: String = this.placeholder;
@@ -84,6 +85,7 @@ export class UserComponent {
               console.log(photo);
               this.photos.push(photo);
             }
+            this.dataReady = true;
           });
         // Get the user's videos to display on profile
         this.db.getProfileVideos(this.user.userId).then(res => {
@@ -93,6 +95,7 @@ export class UserComponent {
             console.log(video);
             this.photos.push(video);
           }
+          this.dataReady = true;
         });
         }
       // Looking up a user so display their information on the page
@@ -122,6 +125,7 @@ export class UserComponent {
               console.log(photo);
               this.photos.push(photo);
             }
+            this.dataReady = true;
           });
           // Get the user's videos to display on profile
           this.db.getProfileVideos(params.userId).then(res => {
@@ -131,6 +135,7 @@ export class UserComponent {
               console.log(video);
               this.photos.push(video);
             }
+            this.dataReady = true;
           });
         }
       }

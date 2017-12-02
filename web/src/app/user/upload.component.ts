@@ -92,13 +92,4 @@ export class UploadComponent {
     }
     reader.readAsDataURL(this.us.uploadedPhoto);
   }
-
-  /**
-   * When component is unloaded
-   */
-  ngOnDestroy() {
-    // Remove loading animation
-    this.loadingImage = false;
-  }
-
 }

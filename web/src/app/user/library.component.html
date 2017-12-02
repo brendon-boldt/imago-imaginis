@@ -3,6 +3,10 @@
       <div class="header-content-inner">
          <h1 id="homeHeading">Library</h1>
          <hr>
+         <div *ngIf="!dataReady">
+            <div style="float: none; margin: 0 auto;" class="loader"></div>
+            </div>
+         <div *ngIf="dataReady">
          <p *ngIf="this.photoArrOne.length == 0">You have no stylized photos</p>
          <p *ngIf="this.photoArrOne.length != 0">These are the photos you have stylized:</p>
          <div id="divMain" class="library-container d-flex justify-content-center scrollbar scrollbar-primary">
@@ -187,5 +191,6 @@
             </div>
         </picture-modal>
       </div>
+    </div>
    </div>
 </header>

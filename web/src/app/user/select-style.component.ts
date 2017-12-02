@@ -28,6 +28,7 @@ export class SelectStyleComponent {
   filterToUpload: File;
   video: any;
   modalText: String;
+  uploadingFilter: boolean = false;
   constructor(private us: UserService, private router: Router, private db: DBService, private gen: GeneralService){
     // Checks to see if the user uploaded a photo from the previous page
     if(this.us.uploadedPhoto != null){
@@ -141,16 +142,24 @@ export class SelectStyleComponent {
 
   /**
    * This event fires when a user uploads a filter
-   * TODO: Change so that they can only upload photos. Put more checks!
    */
   fileChangeEvent = function(fileInput: any) {
-    this.filterToUpload = fileInput.target.files[0];
-    this.selectedStyle = {"filter_id": "Upload a Style", "name":"Upload a Style", "path":"../../assets/brush.png"};
-    let reader = new FileReader();
-    reader.onload = (e: any) => {
-        this.selectedStyle.path = e.target.result;
+    // Verify their upload file type. Only allow .jpg or .png
+    if(fileInput.target.files[0].type == "image/jpeg" || fileInput.target.files[0].type == "image/png"){
+      this.filterToUpload = fileInput.target.files[0];
+      this.uploadingFilter = true;
+      this.selectedStyle = {"filter_id": "Upload a Style", "name":"Upload a Style", "path":"../../assets/brush.png"};
+      let reader = new FileReader();
+      reader.onload = (e: any) => {
+          this.selectedStyle.path = e.target.result;
+          this.uploadingFilter = false;
+      }
+      reader.readAsDataURL(this.filterToUpload);
+      console.log(this.filterToUpload);
     }
-    reader.readAsDataURL(this.filterToUpload);
-    console.log(this.filterToUpload);
+    else{
+      this.modalText = "Error: Filetypes accepted: JPG or PNG";
+      this.modal.show();
+    }
   }
 }

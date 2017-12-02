@@ -7,6 +7,10 @@
 <header class="masthead">
     <div class="header-content">
         <div class="header-content-inner">
+            <div *ngIf="!dataReady">
+                <div style="float: none; margin: 0 auto;" class="loader"></div>
+            </div>
+            <div *ngIf="dataReady">
 			<h1 id="homeHeading">{{this.firstName}} {{this.lastName}}</h1>
 			<hr>
             <div class="container center-text">
@@ -100,6 +104,6 @@
                 </div>
             </picture-modal>
         </div>
-
+        </div>
     </div>
 </header>

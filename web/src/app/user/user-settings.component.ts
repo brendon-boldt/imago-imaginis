@@ -32,6 +32,7 @@ export class UserSettingsComponent {
   cardInfo: string = "";
   isValidCard: boolean = true;
   form: any = {};
+  dataReady = false;
   constructor(private router: Router, private db: DBService, private user: UserService){
     // Set form info
     this.user.refreshInfo().then(() => {
@@ -41,6 +42,7 @@ export class UserSettingsComponent {
         this.form.firstName = this.user.firstName;
         this.form.lastName = this.user.lastName;
         this.form.email = this.user.email;
+        this.dataReady = true;
     });
   }
 

@@ -34,7 +34,7 @@ It is routed to when the user clicks on a router link-->
 									<a class="dropdown-item" (click)="selectStyle(style)">{{style.name}}</a>
 								</div>
 								<div class="dropdown-divider"></div>
-								<a class="dropdown-item">
+								<a *ngIf="this.us.isPaid" class="dropdown-item">
 									<label>
 										Upload a style <input type="file" (change)="fileChangeEvent($event)" accept="image/*" hidden>
 									</label>
@@ -42,7 +42,10 @@ It is routed to when the user clicks on a router link-->
 							</div>
 						</div>
 				<div class="card">
-					<img [src]="this.selectedStyle.path" class="card-img-top" alt="Image of Style Filter" id="style-img">
+					<img *ngIf="!this.uploadingFilter" [src]="this.selectedStyle.path" class="card-img-top" alt="Image of Style Filter" id="style-img">
+					<div *ngIf="this.uploadingFilter">
+						<div style="float: none; margin: 0 auto;" class="loader"></div>
+					</div>
 					<div class="card-block">
 					</div>
 					<div class="card-footer">
@@ -55,7 +58,7 @@ It is routed to when the user clicks on a router link-->
 		<label class="btn btn-primary btn-xl js-scroll-trigger" (click)="this.upload();">Style</label>
 		<br>
 		<label class="btn btn-secondary btn-sm js-scroll-trigger" (click)="this.router.navigate(['upload']);">Back</label>
-		<app-modal #modal>
+		<app-modal #modal [clickOutsideToHide] = "true">
 			<div class="app-modal-header">
 				<!--Error-->&nbsp;
 			</div>

@@ -37,21 +37,19 @@ export class LibraryComponent {
   photoArraysArray: Array<Array<Object>> = [this.photoArrOne, this.photoArrTwo, this.photoArrThree, this.photoArrFour];
   modalPhoto: Object = {}; // The photo to be displayed in the modal
   buttonDisplay: String = ""; // Color differently depending on if photo is displayed on user profile or not
+  dataReady = false;
   constructor(private router: Router, private db: DBService, private user: UserService, private lib: LibraryService){}
   ngOnInit() {
     this.loadPics(true);
   }
   loadPics(firstload: boolean) {
-    // if(this.subscription != null){
-    //   this.subscription.unsubscribe();
-    //   this.timerSubscription.unsubscribe();
-    // }
     this.subscription = this.lib.getPictures(firstload).subscribe(res => {
         this.photoArraysArray = res;
         this.photoArrOne = this.photoArraysArray[0];
         this.photoArrTwo = this.photoArraysArray[1];
         this.photoArrThree = this.photoArraysArray[2];
         this.photoArrFour = this.photoArraysArray[3];
+        this.dataReady = true;
     });
     this.refreshData();
   }
