@@ -106,7 +106,7 @@ module.exports = function(app) {
       queryText = 'SELECT video_id, user_id, unfiltered_video_id, filters.filter_id, unfiltered_video.path AS uvpath, filters.path AS fpath FROM user_video NATURAL JOIN unfiltered_video JOIN filters ON (filters.filter_id = user_video.filter_id) WHERE status=\'waiting\'';
     }
 
-    console.log("QUERYING: " + queryText);
+    //console.log("QUERYING: " + queryText);
     db.query(queryText)
       .then(res => {
         console.log(res.rows);

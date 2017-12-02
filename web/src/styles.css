@@ -1,6 +1,9 @@
 /* You can add global styles to this file, and also import other style files */
 body {
 	background-color: #CCCCCC;
+  background: url("./assets/starrynight.jpg");
+  background-attachment: fixed;
+  background-size: 100%;
 }
 
 .center-text {

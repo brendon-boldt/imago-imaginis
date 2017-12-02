@@ -9,7 +9,13 @@ html {
   height: 100%; }
 
 body {
-  font-family: 'Merriweather', 'Helvetica Neue', Arial, sans-serif; }
+  font-family: 'Merriweather', 'Helvetica Neue', Arial, sans-serif;
+  /* I don't think this does anything
+  background: url("../../assets/starrynight.jpg");
+  background-attachment: fixed;
+  background-size: 100%;
+  */
+}
 
 hr {
   max-width: 50px;
@@ -81,7 +87,8 @@ body {
 
 #mainNav {
   border-color: rgba(34, 34, 34, 0.05);
-  background-color: rgba(255,255,255,.4);
+  /*background-color: rgba(255,255,255,.4);*/
+  background-color: #00000080;
   font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
   -webkit-transition: all 0.2s;
   -moz-transition: all 0.2s;
@@ -90,6 +97,7 @@ body {
     /* font-size: 2vh; */
     font-weight: 700;
     white-space: normal;
+    text-shadow: 0 0 20px white;
     width: 100%;
     text-transform: uppercase;
     color: lightskyblue;
@@ -134,7 +142,7 @@ body {
         }
   @media (min-width: 992px) {
     #mainNav {
-      background-color: rgba(255,255,255,.1);
+      /*background-color: rgba(255,255,255,.1);*/
       border-color: rgba(255, 255, 255, 0.3);
       /*background-color: transparent;*/ }
       #mainNav #navbarResponsive{
@@ -197,7 +205,7 @@ header.masthead {
   /* height: 100%; */
   text-align: center;
   color: white;
-  background-color: #524a54;
+  background-color: #524a5477; /* brendon's change */
   /* background-image: url("../assets/starrynight.jpg");
   background-position: center;
   -webkit-background-size: cover;
@@ -246,7 +254,7 @@ header.masthead .header-content {
     font-size: 16px;
     font-weight: 300;
     /* margin-bottom: 50px; */
-    color: rgba(255, 255, 255, 0.7); }
+    color: rgba(255, 255, 255, 1.0); }
 @media (min-width: 992px) {
   header.masthead {
     min-height: 100vh;
@@ -430,7 +438,8 @@ margin: 50px auto 0; }
 .footer {
   display: flex;
   align-items: center;
-  background-color: grey; 
+  background-color: #00000080;  /* brendon */
+  color: #ddd;
   text-align: center;
   min-height: 50px; }
 
