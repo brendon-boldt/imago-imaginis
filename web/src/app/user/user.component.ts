@@ -9,6 +9,7 @@ import { Observable } from "rxjs/Observable";
 
 import { UserService } from '../services/user.service';
 import { DBService } from '../services/db.service';
+import { AuthService } from '../services/auth.service';
 
 import { ModalComponent } from '../modal/app-modal.component';
 import { PictureModalComponent } from '../modal/picture-modal.component';
@@ -35,7 +36,7 @@ export class UserComponent {
   profilePhoto: String = this.placeholder;
   modalPhoto: any = {};
   form = {};
-  constructor(private user: UserService, private route: ActivatedRoute, private router: Router, private db: DBService){
+  constructor(private user: UserService, private route: ActivatedRoute, private router: Router, private db: DBService, private auth: AuthService){
     this.photos = [];
   }
   /** 
@@ -68,8 +69,8 @@ export class UserComponent {
       this.userId = null;
       this.photos = [];
       // No params were passed, or the user id is the current user's id, so display the logged in user's profile
-      this.user.refreshInfo().then(() => {
-        if(params.userId == null){
+      if(params.userId == null){
+        this.user.refreshInfo().then(() => {
           this.userId = this.user.userId;
           this.firstName = this.user.firstName;
           this.lastName = this.user.lastName;
@@ -97,7 +98,8 @@ export class UserComponent {
           }
           this.dataReady = true;
         });
-        }
+        });
+      }
       // Looking up a user so display their information on the page
       else{
         console.log("WEB: Looking up user...")
@@ -107,6 +109,7 @@ export class UserComponent {
           this.router.navigate(['user']);
         }
         else{
+          console.log(params.userId)
           this.db.getUser(params.userId).then(res => {
             console.log(res);
             this.firstName = res[0].first_name;
@@ -139,7 +142,6 @@ export class UserComponent {
           });
         }
       }
-    });
     });
   }
 }

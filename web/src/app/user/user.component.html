@@ -99,7 +99,7 @@
                     </video>
                 </div>
                 <div class="app-modal-footer">
-                    <button *ngIf="this.userId != this.user.userId" type="button" class="btn btn-warning" (click)="modal.hide(); reportmodal.show()">Report</button>
+                    <button *ngIf="this.userId != this.user.userId && this.auth.isLoggedIn != false" type="button" class="btn btn-warning" (click)="modal.hide(); reportmodal.show()">Report</button>
                     <button type="button" class="btn btn-default" (click)="modal.hide();">Close</button>
                 </div>
             </picture-modal>

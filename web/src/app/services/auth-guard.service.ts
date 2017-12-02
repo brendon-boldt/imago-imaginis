@@ -18,7 +18,7 @@ export class AuthGuard implements CanActivate {
             }
         }
         // Check to see if the user is looking up a profile (not their own) and allow it
-        if(route.queryParams.user_id != null){
+        if(route.queryParams.userId != null){
             return true;
         }
         let url: string = state.url;
