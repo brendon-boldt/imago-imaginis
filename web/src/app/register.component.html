@@ -51,7 +51,7 @@ It is routed to when the user clicks on a router link-->
 						<label class="custom-control custom-checkbox">
 							<input [(ngModel)]="age" type="checkbox" name="age-gate" class="custom-control-input" required>
 							<span class="custom-control-indicator"></span>
-							<span class="custom-control-description">I am over 18 years of age</span>
+							<span class="custom-control-description">I am over 18 years of age<font color="red">*</font></span>
 						</label>
 					</div>
 					<button type="submit" [disabled]="!registerForm.form.valid || (form.password != form.confirm || confirm.pristine)" class="button btn btn-primary btn-xl js-scroll-trigger center-block" (click)="this.register();">Register</button>

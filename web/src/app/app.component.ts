@@ -16,7 +16,8 @@ import { AuthService} from './services/auth.service';
 })
 export class AppComponent {
   //The title that is displayed in the header. Example of two-way data binding.
-  title = 'Artistic Stylizer Platform';
+  // title = 'Artistic Stylizer Platform';
+  title = "";
   constructor(private router: Router, private user: UserService, private auth: AuthService) {}
   ngOnInit() {
       // // Check to see if the user is logged in

@@ -6,29 +6,22 @@ It is routed to when the user clicks on a router link-->
 	<div class="header-content-inner">
 	<h1 id="homeHeading">Upload</h1>
 	<hr>
-	<!-- <p>Enter URL or click browse to upload</p> -->
 	<p>Click browse to upload</p>
-	<!--<a class="btn btn-primary btn-xl js-scroll-trigger" (click)="this.btnClick();">Get Started</a>-->
 	</div>
 	<div class="container">
 	<div class="row">
-	<!-- <div class="col-md-5" style="float: none; margin: 0 auto;">
-		<div class="input-group">
-		<input type="text" class="form-control" name="image-url" placeholder="Enter URL"><br><br>
-		<span class="input-group-btn">
-			<button type="button" class="button btn btn-primary btn-lg" style="font-size:1.28rem;" type="submit" (click)="this.btnClick();">Enter</button>
-		</span>
-		</div>
-	</div> -->
 	</div>
 	</div>
 	<br>
 	<div class="row">
 	<div style="float: none; margin: 0 auto;">
 		<label class="button btn btn-primary btn-lg">
-			Browse <input type="file" (change)="fileChangeEvent($event)" accept="image/*, video/*" hidden>
+			Browse <input type="file" (change)="fileChangeEvent($event)" accept="image/*, image/*, video/*" hidden>
 		</label>
 	</div>
+	</div>
+	<div *ngIf="loadingImage">
+		<div style="float: none; margin: 0 auto;" class="loader"></div>
 	</div>
 	<div style="height: 200px"></div>
 	<app-modal #modal [clickOutsideToHide] = "false">
@@ -42,21 +35,18 @@ It is routed to when the user clicks on a router link-->
 			<!-- <button type="button" class="btn btn-default" (click)="modal.hide();">Close</button> -->
 		</div>
 	</app-modal>
+	<app-modal #typemodal [clickOutsideToHide] = "true">
+		<div class="app-modal-header">
+			<!--Error-->&nbsp;
+		</div>
+		<div class="app-modal-body">
+			{{modalText}}
+		</div>
+		<div class="app-modal-footer">
+			<button type="button" class="btn btn-default" (click)="typemodal.hide()">Close</button>
+		</div>
+	</app-modal>
 </div>
 </header>
 
-<!--<div class="container-fluid">
-<div class="center-text">
-	<div class="page-header">
-	<h1 class="display-2">Upload Image</h1>
-	</div>-->
-	<!-- <h3 class="lead">Here, we transform your images based on an art style of your choosing, to create something new and totally cool.</h3> -->
-	<!--<hr>
-	<h4>Enter URL or click browse to upload</h4>
-	<br>-->
-	<!-- <input class="input-box" name="image-url" placeholder="Enter URL"><br><br>
-	<button type="button" class="button btn btn-primary btn-lg" type="submit" value="Browse">Browse</button> -->
-<!--</div>-->
-
-<!--</div>-->
 

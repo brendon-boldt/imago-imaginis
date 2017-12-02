@@ -76,7 +76,7 @@ It is routed to when the user clicks on a router link-->
 				<form class="form-horizontal" role="form" data-toggle="validator" (keyup)="onKey($event)">
 					<div class="form-group">
 						<!-- <label class="control-label" name="card-info">Credit Card:</label> -->
-						<input type="text" class="form-control" style="background-color: lightgrey;" name="card-info" placeholder="Credit Card Info" [(ngModel)]="this.cardInfo" required>
+						<input type="text" class="form-control" style="background-color: lightgrey;" name="card-info" placeholder="Credit Card Number" [(ngModel)]="this.cardInfo" required>
 					</div>
 					<div [hidden]="this.isValidCard" class="alert alert-danger">
 						Invalid credit card

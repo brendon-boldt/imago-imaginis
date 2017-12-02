@@ -261,6 +261,13 @@ module.exports = function(app) {
         console.log("GET - login");
         var email = req.query.email;
         var password = req.query.password;
+        // Verify info was sent with call
+        if(email == null || password == null){
+          getres.status(406);
+          getres.statusMessage = "Missing info";
+          getres.send("Missing information. Refer to API documentation for all necessary information.");
+          return;
+        }
         const hash = crypto.createHash('sha256');
         hash.update(password);
         password = hash.digest('hex');
@@ -309,8 +316,8 @@ module.exports = function(app) {
                         user_id: res.rows[0].user_id,
                     };
                     var token = jwt.sign(payload, "thisisthekey", {
-                        expiresIn: '1h'
-                    }); // Sets the token to expire in an hour
+                        expiresIn: '1h' // Sets the token to expire in an hour
+                    }); 
                     var decoded = jwt.verify(token, "thisisthekey"); // For reference
                     // Return the token to the user
                     getres.statusMessage = "Login success";
@@ -359,6 +366,12 @@ module.exports = function(app) {
             }
           }
           stat.logStatRequest(0);
+          if(req.query.searchString == null){
+            getres.status(406);
+            getres.statusMessage = "Missing info";
+            getres.send("Missing information. Refer to API documentation for all necessary information.");
+            return;
+          }
           var searchString = "%" + req.query.searchString + "%";
           let queryText = "SELECT * FROM ASP_USERS WHERE LOWER(first_name::text || last_name::text) LIKE LOWER($1)";
           let values = [searchString];
@@ -404,7 +417,13 @@ module.exports = function(app) {
           stat.logStatRequest(0);
           console.log("GET - info");
           var id = req.query.user_id;
-          let queryText = "SELECT user_id, first_name, last_name, email, date_joined, status, profile_photo, admin, paid_id FROM ASP_USERS LEFT JOIN paid_users ON asp_users.user_id = paid_users.paid_id WHERE user_ID = $1;";
+          if(id == null){
+            getres.status(406);
+            getres.statusMessage = "Missing info";
+            getres.send("Missing information. Refer to API documentation for all necessary information.");
+            return;
+          }
+          let queryText = "SELECT user_id, first_name, last_name, email, CAST(date_joined AS DATE), status, profile_photo, admin, paid_id FROM ASP_USERS LEFT JOIN paid_users ON asp_users.user_id = paid_users.paid_id WHERE user_ID = $1;";
           let values = [id];
           db.param_query(queryText, values)
               .then(res => {
@@ -447,6 +466,12 @@ module.exports = function(app) {
         }
           stat.logStatRequest(0);
           var id = req.query.user_id;
+          if(id == null){
+            getres.status(406);
+            getres.statusMessage = "Missing info";
+            getres.send("Missing information. Refer to API documentation for all necessary information.");
+            return;
+          }
           let queryText = "SELECT * FROM unfiltered_photo WHERE unfiltered_photo_id IN (SELECT unfiltered_photo_id FROM USER_PHOTO WHERE user_ID = $1 AND (status = 'waiting' OR status = 'processing')) ORDER BY unfiltered_photo_id;";
           let values = [id];
           db.param_query(queryText, values)
@@ -492,6 +517,12 @@ module.exports = function(app) {
         }
         stat.logStatRequest(0);
         var id = req.query.user_id;
+        if(id == null){
+          getres.status(406);
+          getres.statusMessage = "Missing info";
+          getres.send("Missing information. Refer to API documentation for all necessary information.");
+          return;
+        }
         let queryText = "SELECT * FROM unfiltered_video WHERE unfiltered_video_id IN (SELECT unfiltered_video_id FROM user_video WHERE user_ID = $1 AND (status = 'waiting' OR status = 'processing')) ORDER BY unfiltered_video_id;";
         let values = [id];
         db.param_query(queryText, values)
@@ -535,6 +566,12 @@ module.exports = function(app) {
           }
         stat.logStatRequest(user_id);
         var id = req.body.user_id;
+        if(id == null){
+          getres.status(406);
+          getres.statusMessage = "Missing info";
+          getres.send("Missing information. Refer to API documentation for all necessary information.");
+          return;
+        }
         var queryText = "SELECT * FROM Paid_Users WHERE paid_id = $1;";
         let values = [id];
         db.param_query(queryText, values)
@@ -787,7 +824,6 @@ module.exports = function(app) {
           }
         }
         stat.logStatRequest(0);
-        var id = req.query.id;
         var id = req.query.user_id;
         if(id == null){
           getres.status(406);
@@ -1027,7 +1063,6 @@ module.exports = function(app) {
           }
         }
         stat.logStatRequest(0);
-        var id = req.query.id;
         var id = req.query.user_id;
         if(id == null){
           getres.status(406);
@@ -1078,6 +1113,12 @@ module.exports = function(app) {
       }
       stat.logStatRequest(0);
       console.log("GET - number of photos");
+      if(req.query.user_id == null){
+        getres.status(406);
+        getres.statusMessage = "Missing info";
+        getres.send("Missing information. Refer to API documentation for all necessary information.");
+        return;
+      }
       let queryText = "SELECT COUNT(*) FROM user_photo WHERE user_id = $1";
       let values = [req.query.user_id];
       var result = await db.param_query(queryText, values)

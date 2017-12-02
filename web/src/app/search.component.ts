@@ -16,12 +16,14 @@ import { DBService } from './services/db.service';
 export class SearchComponent {
   showSearch: boolean;
   searchString: String = "";
+  searchedString: String = "";
   results: Array<Object>;
   constructor(private router: Router, private db: DBService){
     this.results = [{}];
   }
   search = function() {
-    console.log("Search string: " + this.searchString);
+    this.searchedString = this.searchString.valueOf();
+    console.log("Search string: " + this.searchedString);
     // Get users that matched the query string
     this.db.searchUsers(this.searchString).then(result => {
       this.results = result;

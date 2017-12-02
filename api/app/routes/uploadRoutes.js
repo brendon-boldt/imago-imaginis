@@ -8,7 +8,6 @@ var watermark = require('image-watermark');
 var options = {
   'text' : 'ImagoImaginis',
   'override-image' : true,
-  'dstPath' : '/home/administrator/files/images/ii_logo_color.png'
 }
 
 const config = require('../../config.js');
@@ -101,7 +100,12 @@ module.exports = function(app) {
       var result = await db.query(queryText);
       var unfiltered_photo_id = result.rows[0].unfiltered_photo_id;
       file.unfiltered_photo_id = unfiltered_photo_id;
-      var filename = file.fieldname + '-' + unfiltered_photo_id + path.extname(file.originalname.toLowerCase());
+      // Handling if photo uploaded is .jpeg instead of .jpg
+      var filename;
+      if(path.extname(file.originalname.toLowerCase()) == ".jpeg"){
+        filename = file.fieldname + '-' + unfiltered_photo_id + file.originalname.toLowerCase() + ".jpg";
+      } 
+      filename = file.fieldname + '-' + unfiltered_photo_id + path.extname(file.originalname.toLowerCase());
       cb(null, filename);
     }
   });

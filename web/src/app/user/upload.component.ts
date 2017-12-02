@@ -17,8 +17,10 @@ import { GeneralService } from '../services/general.service';
 })
 export class UploadComponent {
   @ViewChild('modal') modal;
+  @ViewChild('typemodal') typemodal;
   fileToUpload: File;
   modalText: String;
+  loadingImage = false;
   constructor(private router: Router, private db: DBService, private us: UserService, private gen: GeneralService){
     this.fileToUpload = null;
   }
@@ -42,18 +44,38 @@ export class UploadComponent {
   }
   /**
    * This event fires when a user uploads a file
+   * Also, if they're a paid user, allow them to upload videos.
    * TODO: Change so that they can only upload photos. Put more checks!
    */
   fileChangeEvent(fileInput: any): void {
     this.fileToUpload = fileInput.target.files;
-    console.log(this.fileToUpload);
-    this.upload();
+    // If they're a free user, don't allow them to upload videos
+    if(this.us.isPaid == true){
+      // Verify their upload file type. Only allow .jpg or .png or .mp4
+      if(this.fileToUpload[0].type == "image/jpeg" || this.fileToUpload[0].type == "image/png" || this.fileToUpload[0].type == "video/mp4"){
+        this.upload();
+      }
+      else{
+        this.modalText = "Error: Filetypes accepted: JPG, PNG, MP4";
+        this.typemodal.show();
+      }
+    }
+    else{
+      // Verify their upload file type. Only allow .jpg or .png
+      if(this.fileToUpload[0].type == "image/jpeg" || this.fileToUpload[0].type == "image/png"){
+        this.upload();
+      }
+      else{
+        this.modalText = "Error: Filetypes accepted: JPG or PNG. Upgrade your account to upload videos!";
+        this.typemodal.show();
+      }
+    }
   }
   /**
    * Performs necessary file conversions for display and takes user to next page
    */
   upload(): void {
-    console.log("Redirecting to select style...");
+    this.loadingImage = true;
     // Set the photo selected to user.service so we can access it in next page
     this.us.uploadedPhoto = this.fileToUpload[0];
     // If video upload, let the general service know so we can display properly on next page
@@ -68,8 +90,15 @@ export class UploadComponent {
         // Navigate to style selection page
         this.router.navigate(['select-style']);
     }
-    // reader.readAsDataURL(this.uploadedImage);
     reader.readAsDataURL(this.us.uploadedPhoto);
+  }
+
+  /**
+   * When component is unloaded
+   */
+  ngOnDestroy() {
+    // Remove loading animation
+    this.loadingImage = false;
   }
 
 }
