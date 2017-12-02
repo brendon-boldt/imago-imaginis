@@ -28,6 +28,7 @@ export class UserComponent {
   public email: string;
   public dateJoined: any;
   public placeholder: String = "../assets/ii_logo_black.png";
+  public isPaid: any;
   outside: boolean = true;
   photos: Array<Object> = []; // array of filepaths of images
   profilePhoto: String = this.placeholder;
@@ -74,6 +75,7 @@ export class UserComponent {
           this.email = this.user.email;
           this.dateJoined = this.user.dateJoined;
           this.profilePhoto = this.user.profilePhoto;
+          this.isPaid = this.user.isPaid;
           // Get the user's photos to display on profile
           this.db.getProfilePhotos(this.user.userId).then(res => {
             console.log("WEB: Get user's profile display photos");

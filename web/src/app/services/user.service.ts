@@ -27,46 +27,11 @@ export class UserService {
     public dateJoined: any;
     public isPaid: boolean = false;
     jwtHelper: JwtHelper = new JwtHelper();
-    // public dataAvailable: boolean = false;
-    constructor(private db: DBService){
-        // Get the user profile picture
-        // if(this.user_id != null){
-        //     this.db.getProfilePhoto(this.user_id).then(res => {
-        //         console.log("WEB: User service GET profile photo");
-        //         console.log(res.json());
-        //         if(res.json()[0].profile_photo != null){
-        //             this.profilePhoto = res.json()[0].profile_photo;
-        //         }
-        //     });
-        // }
-    }
+    constructor(private db: DBService){}
     setInfo(jwt): void {
         console.log("USERSERVICE - Setting info:");
         jwt = this.jwtHelper.decodeToken(jwt)
-        console.log(jwt);
         this.userId = jwt.user_id;
-        // this.first_name = jwt.first_name;
-        // this.last_name = jwt.last_name;
-        // this.email = jwt.email;
-        // this.isAdmin = jwt.isAdmin;
-        // this.dateJoined = jwt.dateJoined;
-        // if(jwt.profilePhoto != null){ // Keep placeholder if user does not have a profile picture
-        //     this.profilePhoto = this.db.url + jwt.profilePhoto;
-        // }
-        // From the user id received, get the user's other info
-        // var test = Observable.fromPromise(this.refreshInfo());
-        // test.subscribe(res => {
-        //   console.log(res);
-        //   this.user_id = res.user_id;
-        //   this.first_name = res.first_name;
-        //   this.last_name = res.last_name;
-        //   this.email = res.email;
-        //   this.isAdmin = res.admin;
-        //   this.dateJoined = res.dateJoined;
-        //   if(res.profile_photo != null){
-        //       this.profilePhoto = this.db.url + res.profile_photo;
-        //   }
-        // });
         this.refreshInfo();
     }
     // Refreshes the user info. Typically called after account update
@@ -93,7 +58,6 @@ export class UserService {
         else{
             this.profilePhoto = '../../assets/ii_logo_black.png';
         }
-        // this.dataAvailable = true;
         return res;
       });
     }
