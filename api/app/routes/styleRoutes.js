@@ -36,6 +36,23 @@ let shouldWatermark = async function(resource_id, type){
 
 
 module.exports = function(app) {
+
+  app.get('/style/refresh/:type', async (req, getres) => {
+    let refreshVideos = "update user_video set status = 'waiting' where status = 'processing'";
+    let refreshPhotos = "update user_photo set status = 'waiting' where status = 'processing'";
+    if (req.params.type === "images") {
+      db.query(refreshPhotos);
+    } else if (req.params.type === "videos") {
+      db.query(refreshVideos);
+    } else {
+      db.query(refreshPhotos);
+      db.query(refreshVideos);
+    }
+
+    getres.send();
+  });
+
+
   app.post('/style/insert/:type*', async (req, getres) => {
     console.log("Upload of type: " + req.params.type);
 
