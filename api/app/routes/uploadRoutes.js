@@ -100,8 +100,6 @@ module.exports = function(app) {
       var result = await db.query(queryText);
       var unfiltered_photo_id = result.rows[0].unfiltered_photo_id;
       file.unfiltered_photo_id = unfiltered_photo_id;
-      // Handling if photo uploaded is .jpeg instead of .jpg
-      // Should be uploaded as .jpg if file is .jpeg
       var filename = file.fieldname + '-' + unfiltered_photo_id + path.extname(file.originalname.toLowerCase());
       cb(null, filename);
     }
@@ -354,7 +352,7 @@ module.exports = function(app) {
       queryText = "INSERT INTO videos (size, creation_date, path, process_time, flag, display) VALUES ($1, NOW(), '', 0, false, false) RETURNING video_id;";
       values = [req.file.size];
       console.log("Query: " + queryText);
-      result = await db.query(queryText); 
+      result = await db.param_query(queryText); 
       var video_id = result.rows[0].video_id;
       // We also need to create a new entry in User_Video
       queryText = "INSERT INTO user_video (user_id, video_id, filter_id, status, wait_time, unfiltered_video_id) VALUES ($1, $2, $3, 'waiting', 0, $4);";
