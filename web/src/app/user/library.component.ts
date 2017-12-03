@@ -81,6 +81,7 @@ export class LibraryComponent {
   deletePhoto(): void {
     this.db.deletePhoto(this.user.userId, this.modalPhoto['photo_id']).then(res => {
       console.log(res);
+      // Update the library display
       this.subscription.unsubscribe();
       this.timerSubscription.unsubscribe();
       this.photoArrOne = [];
@@ -89,7 +90,6 @@ export class LibraryComponent {
       this.photoArrFour = [];
       this.loadPics(false);
       this.modal.hide();
-      // Update the library display
       // this.getPictures();
       // location.reload();
     });
@@ -101,8 +101,16 @@ export class LibraryComponent {
     this.db.deleteVideo(this.user.userId, this.modalPhoto['video_id']).then(res => {
       console.log(res);
       // Update the library display
+      this.subscription.unsubscribe();
+      this.timerSubscription.unsubscribe();
+      this.photoArrOne = [];
+      this.photoArrTwo = [];
+      this.photoArrThree = [];
+      this.photoArrFour = [];
+      this.loadPics(false);
+      this.modal.hide();
       // this.getPictures();
-      location.reload();
+      // location.reload();
     });
   }
   /**
