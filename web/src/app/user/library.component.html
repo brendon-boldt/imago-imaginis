@@ -179,6 +179,11 @@
                 </div> -->
                 <div *ngIf="this.modalPhoto.photo_id != null && this.modalPhoto.unfiltered_photo_id == null;then photostyled else photounstyled"></div>
                 <ng-template #photostyled>
+                    <a id="twitter-button" class="btn btn-info" 
+					href="https://twitter.com/intent/tweet?url=http://imagino.reev.us
+					&text=Check out this awesome image%0A{{this.db.url}}{{this.modalPhoto['path']}}%0AMade with ">
+                    <img id="twitter-icon" src="../../assets/twitter-icon.png" style="max-height: 25px;" alt="Twitter Icon">
+                    Tweet</a>
                     <button type="button" class="btn btn-danger" (click)="this.deletePhoto();">Delete</button>
                     <button type="button" class="btn btn-info" [style.background-color]="this.buttonDisplay" (click)="this.displayPictureProfile();">Display on Profile</button>
                 </ng-template>
