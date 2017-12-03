@@ -2,9 +2,38 @@ const db = require('../db');
 const path = require('path');
 const fs = require('fs');
 const formDataModule = require('form-data');
+const watermark = require('image-watermark'); 
+let options = {
+  'text' : 'ImagoImaginis',
+  'override-image' : true,
+}
 
 
 const config = require('../../config.js');
+
+let shouldWatermark = async function(resource_id, type){
+  if (type !== 'image') {
+    return false;
+  }
+  // Return true if jwt is paid user, else return false
+  // Look up user id and see if they're a paid user
+  //let queryText = "SELECT * FROM ASP_USERS LEFT JOIN paid_users ON asp_users.user_id = paid_users.paid_id WHERE user_ID = $1;";
+  let queryText = 'SELECT * FROM ASP_USERS LEFT JOIN paid_users ON asp_users.user_id = paid_users.paid_id LEFT JOIN user_photo ON (user_photo.user_id = paid_users.paid_id) WHERE photo_id = $1';
+  let values = [resource_id];
+  result = await db.param_query(queryText, values)
+  console.log(result.rows[0])
+  //if(result.rows[0] !== null){
+  console.log(result.rows);
+  if(result.rows.length !== 0){
+    console.log("VERIFY: Paid user, NO WATERMARK");
+    return false;
+  } else{
+    // They are a free user
+    console.log("VERIFY: Free user, WATERMARK");
+    return true;
+  }
+}
+
 
 module.exports = function(app) {
   app.post('/style/insert/:type*', async (req, getres) => {
@@ -26,11 +55,18 @@ module.exports = function(app) {
     console.log("QUERY: ", req.query);
     let filepath = `${outputPath}/output-${req.query.resource_id}.${req.query.fileType}`; 
     console.log(`Writing file: ${filepath}`);
-    fs.writeFile(filepath, req.body, (err) => {
+    fs.writeFile(filepath, req.body, async (err) => {
         if (err) {
           throw err;    
         }
+        //execFile('rm', [config.contentPath+`/upload-${uf_resource_id]);
         getres.json({'status': 0});
+        try {
+          if (await shouldWatermark(req.query.resource_id, req.params.type)) {
+            await watermark.embedWatermark(filepath, options);
+          }
+        }
+        catch(e){ console.log(e); }
       });
 
     let resource_id = parseInt(req.query.resource_id);
