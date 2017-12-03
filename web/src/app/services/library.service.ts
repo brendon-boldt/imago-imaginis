@@ -62,7 +62,7 @@ export class LibraryService {
                             this.photoArraysArray[arrNum].push(this.photos.pop());
                             arrNum++;
                             if(arrNum == numOfArrs){
-                            arrNum = 0;;
+                                arrNum = 0;
                             }
                         }
                         // Iterate through previous array and current array to find differences

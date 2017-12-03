@@ -35,9 +35,10 @@ export class LibraryComponent {
   photoArrThree: Array<Object> = [];
   photoArrFour: Array<Object> = [];
   photoArraysArray: Array<Array<Object>> = [this.photoArrOne, this.photoArrTwo, this.photoArrThree, this.photoArrFour];
-  modalPhoto: Object = {}; // The photo to be displayed in the modal
+  modalPhoto: any = {}; // The photo to be displayed in the modal
   buttonDisplay: String = ""; // Color differently depending on if photo is displayed on user profile or not
   dataReady = false;
+  rerender = false;
   constructor(private router: Router, private db: DBService, private user: UserService, private lib: LibraryService){}
   ngOnInit() {
     this.loadPics(true);
@@ -66,14 +67,17 @@ export class LibraryComponent {
    * Displays picture that was clicked in a pop-up modal
   */
   showPicture(photo: Object): void {
+    this.rerender = true;
     this.modalPhoto = photo;
+    console.log(this.modalPhoto);
     if(photo['display']){
       this.buttonDisplay = "lightgreen";
     }
     else{
       this.buttonDisplay = "lightgrey";
     }
-    this.modal.show();
+    setTimeout(() => this.modal.show(), 5);
+    setTimeout(() => this.rerender = false, 5);
   }
   /**
    * Deletes a photo
