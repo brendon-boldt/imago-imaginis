@@ -3,7 +3,8 @@ body {
 	background-color: #CCCCCC;
   background: url("./assets/starrynight.jpg");
   background-attachment: fixed;
-  background-size: 100%;
+  background-size: cover;
+  /*min-height: 100vh;*/
 }
 
 .center-text {
@@ -18,4 +19,8 @@ body {
 	-moz-border-radius: 10px;
 	-webkit-border-radius: 10px;
 	border-radius: 10px;
+}
+
+.btn {
+  cursor: pointer;
 }

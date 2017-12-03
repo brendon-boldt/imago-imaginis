@@ -94,13 +94,15 @@ body {
   -moz-transition: all 0.2s;
   transition: all 0.2s; }
   #mainNav .navbar-brand {
-    /* font-size: 2vh; */
+    font-size: 1.1rem;
     font-weight: 700;
     white-space: normal;
     text-shadow: 0 0 20px white;
-    width: 100%;
+    color: rgba(255, 255, 255, 0.7);
+    width: 70%;
+    left: 0px;
     text-transform: uppercase;
-    color: lightskyblue;
+    /*color: lightskyblue;*/
     font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif; }
     #mainNav .navbar-brand:focus, #mainNav .navbar-brand:hover {
       color: lightskyblue; }
@@ -134,8 +136,9 @@ body {
       color: lightskyblue; }
     #mainNav .navbar-nav > li.nav-item > a.nav-link:focus.active,
     #mainNav .navbar-nav > li.nav-item > a.nav-link.active {
-      /* background-color: rgba(255,255,255,.7); */
-      color: lightskyblue !important;
+       /*background-color: rgba(255,255,255,.7);*/
+      color: white !important;
+      text-shadow: 0 0 10px grey;
       }
       #mainNav .navbar-nav > li.nav-item > a.nav-link:focus.active:hover,
       #mainNav .navbar-nav > li.nav-item > a.nav-link.active:hover {
@@ -149,7 +152,6 @@ body {
         background-color: rgba(255,255,255,0);
       }
       #mainNav .navbar-brand {
-        color: rgba(255, 255, 255, 0.7);
         width: 100%;
        }
         #mainNav .navbar-brand:focus, #mainNav .navbar-brand:hover {
@@ -194,7 +196,7 @@ body {
           color: lightskyblue; }
           #mainNav.navbar-shrink .navbar-nav > li.nav-item > a.nav-link:hover,
           #mainNav.navbar-shrink .navbar-nav > li.nav-item > a.nav-link:focus:hover {
-            color: lightskyblue; } }
+            color: black; } }
 
 header.masthead {
   position: relative;
@@ -217,8 +219,8 @@ header.masthead:before{
   display: block;
   position: absolute;
   opacity: 0.4;
-  background-image: url("../../assets/starrynight.jpg");
-  background-color: #524a54;
+  /*background-image: url("../../assets/starrynight.jpg");*/
+  /*background-color: #524a54;*/
   background-attachment: fixed;
   background-size: 100%;
   /*background-clip: border-box;*/
@@ -438,7 +440,7 @@ margin: 50px auto 0; }
 .footer {
   display: flex;
   align-items: center;
-  background-color: #00000080;  /* brendon */
+  background-color: #000000b0;  /* brendon */
   color: #ddd;
   text-align: center;
   min-height: 50px; }
