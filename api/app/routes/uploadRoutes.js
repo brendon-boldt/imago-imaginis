@@ -224,9 +224,10 @@ module.exports = function(app) {
         console.log(e)
       }
       // Need to generate entry in Photos to have photo id so we can create entry in user_photo
-      queryText = "INSERT INTO photos (size, creation_date, path, process_time, flag, display, height, width) VALUES (.00000001, '1970-01-01', '', 0, false, false, 0, 0) RETURNING photo_id;";
+      queryText = "INSERT INTO photos (size, creation_date, path, process_time, flag, display, height, width) VALUES ($1, NOW(), '', 0, false, false, 0, 0) RETURNING photo_id;";
+      values = [req.file.size];
       console.log("Query: " + queryText);
-      result = await db.query(queryText); 
+      result = await db.param_query(queryText, values); 
       var photo_id = result.rows[0].photo_id;
       // We also need to create a new entry in User_Photo. Need to use generated unfiltered_photo_id
       queryText = "INSERT INTO user_photo (user_id, photo_id, filter_id, status, wait_time, unfiltered_photo_id) VALUES ($1, $2, $3, 'waiting', 0, $4);";
@@ -342,7 +343,8 @@ module.exports = function(app) {
       result = await db.param_query(queryText, values);
       // Need to generate entry in Videos to have photo id so we can create entry in user_photo
       // TODO: Insert height and width of video
-      queryText = "INSERT INTO videos (size, creation_date, path, process_time, flag, display) VALUES (.00000001, '1970-01-01', '', 0, false, false) RETURNING video_id;";
+      queryText = "INSERT INTO videos (size, creation_date, path, process_time, flag, display) VALUES ($1, NOW(), '', 0, false, false) RETURNING video_id;";
+      values = [req.file.size];
       console.log("Query: " + queryText);
       result = await db.query(queryText); 
       var video_id = result.rows[0].video_id;
