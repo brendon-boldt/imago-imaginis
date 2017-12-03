@@ -103,9 +103,11 @@ module.exports = function(app) {
       // Handling if photo uploaded is .jpeg instead of .jpg
       var filename;
       if(path.extname(file.originalname.toLowerCase()) == ".jpeg"){
-        filename = file.fieldname + '-' + unfiltered_photo_id + file.originalname.toLowerCase() + ".jpg";
-      } 
-      filename = file.fieldname + '-' + unfiltered_photo_id + path.extname(file.originalname.toLowerCase());
+        filename = file.fieldname + '-' + unfiltered_photo_id + ".jpg";
+      }
+      else{
+        filename = file.fieldname + '-' + unfiltered_photo_id + path.extname(file.originalname.toLowerCase());
+      }
       cb(null, filename);
     }
   });
