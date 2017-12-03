@@ -9,7 +9,7 @@
       "outDir": "dist",
       "assets": [
         "assets",
-        "favicon.ico"
+        "ii_logo_black.png"
       ],
       "index": "index.html",
       "main": "main.ts",

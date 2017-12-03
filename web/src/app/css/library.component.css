@@ -54,6 +54,15 @@
     overflow-y: hidden; */
 }
 
+#twitter-icon {
+	border: none;
+	border-radius: none;
+	background: none;
+}
+
+#twitter-button {
+	color: #FFFFFF;
+}
 
 .preview {
     position: relative;

@@ -82,7 +82,7 @@ export class SelectStyleComponent {
           // Used to get dimensions of the video uploaded
           // TODO: GET DIMENSIONS OF VIDEO UPLOAD
           // Upload the filter if custom is selected
-          if(this.selectedStyle.filter_id == "Upload a style"){
+          if(this.selectedStyle.filter_id == "uploadStyle"){
             this.db.uploadFilter(this.filterToUpload, this.us.userId).then(res => {
               // res._body returns the filter id that was just added
               // TODO: Display loading animation while uploading, stop when response received.
@@ -102,8 +102,11 @@ export class SelectStyleComponent {
           var img = new Image();
           img.src = this.gen.uploadedImage;
           // Upload the filter if custom is selected
-          if(this.selectedStyle.filter_id == "Upload a style"){
+          console.log(this.selectedStyle)
+          console.log(this.filterToUpload)
+          if(this.selectedStyle.filter_id == "uploadStyle"){
             this.db.uploadFilter(this.filterToUpload, this.us.userId).then(res => {
+              console.log(res)
               this.db.uploadPhoto(this.us.userId, this.us.uploadedPhoto, res._body, img).then(result => {
                 if(result.status == 501){
                   // File size was too large
@@ -147,8 +150,9 @@ export class SelectStyleComponent {
     // Verify their upload file type. Only allow .jpg or .png
     if(fileInput.target.files[0].type == "image/jpeg" || fileInput.target.files[0].type == "image/png"){
       this.filterToUpload = fileInput.target.files[0];
+      console.log(this.filterToUpload);
       this.uploadingFilter = true;
-      this.selectedStyle = {"filter_id": "Upload a Style", "name":"Upload a Style", "path":"../../assets/brush.png"};
+      this.selectedStyle = {"filter_id": "uploadStyle", "name":"Upload a Style", "path":"../../assets/brush.png"};
       let reader = new FileReader();
       reader.onload = (e: any) => {
           this.selectedStyle.path = e.target.result;

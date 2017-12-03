@@ -423,7 +423,7 @@ module.exports = function(app) {
             getres.send("Missing information. Refer to API documentation for all necessary information.");
             return;
           }
-          let queryText = "SELECT user_id, first_name, last_name, email, CAST(date_joined AS DATE), status, profile_photo, admin, paid_id FROM ASP_USERS LEFT JOIN paid_users ON asp_users.user_id = paid_users.paid_id WHERE user_ID = $1;";
+          let queryText = "SELECT user_id, first_name, last_name, email, date_joined::timestamp::date, status, profile_photo, admin, paid_id FROM ASP_USERS LEFT JOIN paid_users ON asp_users.user_id = paid_users.paid_id WHERE user_ID = $1;";
           let values = [id];
           db.param_query(queryText, values)
               .then(res => {

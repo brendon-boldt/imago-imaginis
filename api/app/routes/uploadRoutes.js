@@ -166,13 +166,6 @@ module.exports = function(app) {
           deleteFailedPhotoFromDB(req.file.unfiltered_photo_id); // Delete the unfiltered photo entry in the DB, given its photo id
           return;
         }
-        // If they're a free user, put a watermark on their uploaded image. Muahaahaha!
-        try{
-          await watermark.embedWatermark(config.uploadsPath + "/" + req.file.filename, options);
-        }
-        catch(e){
-          console.log(e);
-        }
       }
       console.log("POST - upload");
       console.log(req.file);
