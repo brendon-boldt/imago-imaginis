@@ -352,7 +352,7 @@ module.exports = function(app) {
       queryText = "INSERT INTO videos (size, creation_date, path, process_time, flag, display) VALUES ($1, NOW(), '', 0, false, false) RETURNING video_id;";
       values = [req.file.size];
       console.log("Query: " + queryText);
-      result = await db.param_query(queryText); 
+      result = await db.param_query(queryText, values); 
       var video_id = result.rows[0].video_id;
       // We also need to create a new entry in User_Video
       queryText = "INSERT INTO user_video (user_id, video_id, filter_id, status, wait_time, unfiltered_video_id) VALUES ($1, $2, $3, 'waiting', 0, $4);";
