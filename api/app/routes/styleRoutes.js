@@ -72,14 +72,15 @@ module.exports = function(app) {
     let resource_id = parseInt(req.query.resource_id);
     console.log(resource_id);
     let user_id = parseInt(req.query.user_id);
-    let path = config.resultPath;
-    let photosQuery = `UPDATE ${resultTable} SET path = '${filepath}' WHERE ${resource_id_name} = ${resource_id}`;
-    console.log(photosQuery); 
-    db.query(photosQuery); 
+    let resourceQuery = `UPDATE ${resultTable} SET (path, process_time)=($1,$2) WHERE ${resource_id_name} = $3`;
+    console.log(resourceQuery); 
+    let resourceParams = [filepath, req.query.process_time, resource_id];
+    db.param_query(resourceQuery, resourceParams); 
 
-    let user_photoQuery = `UPDATE ${bridgeTable} SET status='done' WHERE ${resource_id_name}=${resource_id} AND user_id=${user_id}`;
-    console.log(user_photoQuery); 
-    db.query(user_photoQuery); 
+    let bridgeQuery = `UPDATE ${bridgeTable} SET status='done' WHERE ${resource_id_name}=$1 AND user_id=$2`;
+    let bridgeParams = [resource_id, user_id];
+    console.log(bridgeQuery); 
+    db.param_query(bridgeQuery, bridgeParams); 
     return 0;
   });
 
