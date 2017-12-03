@@ -27,10 +27,14 @@ export class LoginComponent {
   public style: String = "../assets/style.jpg";
   private email: string;
   private password: string;
+  form: any = {};
   constructor(private db: DBService, private user: UserService, private router: Router, private auth: AuthService){
     if(this.auth.isLoggedIn){
       this.router.navigate(['home']);
     }
+  }
+  onSubmit() {
+    this.login();
   }
   login(): void {
     async function func(auth, email, password, modal) {
@@ -43,7 +47,7 @@ export class LoginComponent {
         console.log('WEB: Login was a success!');
       }
     }
-    func(this.auth, this.email, this.password, this.modal);
+    func(this.auth, this.form.email, this.form.password, this.modal);
   }
   /**
    * Submits the form when pressing the enter key

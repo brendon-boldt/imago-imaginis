@@ -11,16 +11,22 @@ It is routed to when the user clicks on a router link-->
 		<div class="row">
 			<div class="col"></div>
 			<div class="col-md-4">
-				<form class="form-horizontal" role="form" data-toggle="validator" (keyup)="onKey($event)">
+				<form class="form-horizontal" role="form" data-toggle="validator" (keyup)="onKey($event)" (ngSubmit)="onSubmit()" #loginForm="ngForm">
 					<div class="form-group">
-						<label class="control-label" name="user-email">Email</label>
-						<input focusMe type="email" class="form-control" name="email" [(ngModel)]="this.email">
+						<label class="control-label" name="user-email">Email<font color="red">*</font></label>
+						<input focusMe type="email" class="form-control" name="email" [(ngModel)]="form.email" #email="ngModel" required>
+						<div [hidden]="email.valid || email.pristine" class="alert alert-danger">
+							Email is required
+						</div>
 					</div>
 					<div class="form-group">
-						<label class="control-label" name="user-password">Password</label>
-						<input type="password" class="form-control" name="password" [(ngModel)]="this.password">
+						<label class="control-label" name="user-password">Password<font color="red">*</font></label>
+						<input type="password" class="form-control" name="password" [(ngModel)]="form.password" #password="ngModel" required>
+						<div [hidden]="password.valid || password.pristine" class="alert alert-danger">
+							Password is required
+						</div>
 					</div>
-					<button type="button" class="button btn btn-primary btn-xl js-scroll-trigger center-block" (click)="this.login();">Login</button>
+					<button type="submit" [disabled]="!loginForm.form.valid" class="button btn btn-primary btn-xl js-scroll-trigger center-block">Login</button>
 				</form>
 			</div>
 			<div class="col"></div>

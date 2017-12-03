@@ -81,6 +81,12 @@ export class LibraryComponent {
   deletePhoto(): void {
     this.db.deletePhoto(this.user.userId, this.modalPhoto['photo_id']).then(res => {
       console.log(res);
+      this.subscription.unsubscribe();
+      this.timerSubscription.unsubscribe();
+      this.photoArrOne = [];
+      this.photoArrTwo = [];
+      this.photoArrThree = [];
+      this.photoArrFour = [];
       this.loadPics(false);
       this.modal.hide();
       // Update the library display
