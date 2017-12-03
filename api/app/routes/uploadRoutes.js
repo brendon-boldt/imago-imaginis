@@ -101,23 +101,25 @@ module.exports = function(app) {
       var unfiltered_photo_id = result.rows[0].unfiltered_photo_id;
       file.unfiltered_photo_id = unfiltered_photo_id;
       // Handling if photo uploaded is .jpeg instead of .jpg
-      var filename;
-      if(path.extname(file.originalname.toLowerCase()) == ".jpeg"){
-        filename = file.fieldname + '-' + unfiltered_photo_id + ".jpg";
-      }
-      else{
-        filename = file.fieldname + '-' + unfiltered_photo_id + path.extname(file.originalname.toLowerCase());
-      }
+      // Should be uploaded as .jpg if file is .jpeg
+      var filename = file.fieldname + '-' + unfiltered_photo_id + path.extname(file.originalname.toLowerCase());
       cb(null, filename);
     }
   });
   app.post('/upload/photo', multer({storage: photoStorage, limits: { fileSize: MAX_PHOTO_UPLOAD_SIZE }, fileFilter: function (req, file, cb) { 
-    console.log("POST - upload");
+    console.log("Performing file filter");
     console.log(file)
     if(!(file.mimetype == 'image/png' || file.mimetype == 'image/jpeg')){
       console.log(file.mimetype);
       req.fileValidationError = 'goes wrong on the mimetype';
       return cb(null, false, new Error('goes wrong on the mimetype'));
+    }
+    // Make sure the file extension name matches the file type
+    if(file.mimetype == 'image/png'){
+      file.originalname = "placeholder.png";
+    }
+    if(file.mimetype == 'image/jpeg'){
+      file.originalname = "placeholder.jpg";
     }
     cb(null, true); 
   }}).single("upload"), async (req, getres) => {
@@ -265,6 +267,10 @@ module.exports = function(app) {
       req.fileValidationError = 'goes wrong on the mimetype';
       return cb(null, false, new Error('goes wrong on the mimetype'));
     }
+    // Make sure the file extension name matches the file type
+    if(file.mimetype == 'video/mp4'){
+      file.originalname = "placeholder.mp4";
+    }
     cb(null, true); 
   }}).single("upload"), async (req, getres) => {
     // This performs the JWT authorization
@@ -374,11 +380,7 @@ module.exports = function(app) {
         var filter_id = result.rows[0].filter_id;
         file.filter_id = filter_id;
         // Handling if photo uploaded is .jpeg instead of .jpg
-        var filename;
-        if(path.extname(file.originalname.toLowerCase()) == ".jpeg"){
-          filename = file.fieldname + '-' + filter_id + file.originalname.toLowerCase() + ".jpg";
-        } 
-        var filename = 'filter' + '-' + filter_id + path.extname(file.originalname);
+        var filename = 'filter' + '-' + filter_id + path.extname(file.originalname.toLowerCase());
         cb(null, filename);
     }
   });
@@ -387,6 +389,13 @@ module.exports = function(app) {
       console.log(file.mimetype);
       req.fileValidationError = 'goes wrong on the mimetype';
       return cb(null, false, new Error('goes wrong on the mimetype'));
+    }
+    // Make sure the file extension name matches the file type
+    if(file.mimetype == 'image/png'){
+      file.originalname = "placeholder.png";
+    }
+    if(file.mimetype == 'image/jpeg'){
+      file.originalname = "placeholder.jpg";
     }
     cb(null, true); 
   }}).single("upload"), async (req, getres) => {
