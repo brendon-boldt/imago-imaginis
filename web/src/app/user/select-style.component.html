@@ -8,7 +8,9 @@ It is routed to when the user clicks on a router link-->
 			<h1 id="homeHeading">Stylize Image</h1>
 			<hr>
 			<br><br>
-			<div class="card-deck" id="card-deck">
+			<div class="container style-container d-flex justify-content-center">
+			<!-- <div class="card-deck" id="card-deck"> -->
+			<div class="container-one">
 				<div class="card">
 					<video *ngIf="this.gen.isVideoUpload" width="320" height="240" controls style="margin: auto">
 						<source [src]="this.gen.uploadedImage" type="video/mp4">
@@ -23,8 +25,10 @@ It is routed to when the user clicks on a router link-->
 						Your Image
 					</div>
 				</div>
-				<!--<div class="card">
-					<div class="card-block">-->
+			</div>
+				<!-- <div class="card">
+					<div class="card-block"> -->
+					<div class="container-two">
 						<div class="dropdown" style="margin-top: 150px; margin-bottom: 150px; margin-left: 50px; margin-right: 50px;">
 							<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 								{{this.selectedStyle.name}}
@@ -33,7 +37,7 @@ It is routed to when the user clicks on a router link-->
 								<div *ngFor="let style of styles">
 									<a class="dropdown-item" (click)="selectStyle(style)">{{style.name}}</a>
 								</div>
-								<div class="dropdown-divider"></div>
+								<div *ngIf="this.us.isPaid" class="dropdown-divider"></div>
 								<a *ngIf="this.us.isPaid" class="dropdown-item">
 									<label>
 										Upload a style <input type="file" (change)="fileChangeEvent($event)" accept="image/*" hidden>
@@ -41,6 +45,10 @@ It is routed to when the user clicks on a router link-->
 								</a>
 							</div>
 						</div>
+					</div>
+					<!-- </div>
+				</div> -->
+				<div class="container-three">
 				<div class="card">
 					<img *ngIf="!this.uploadingFilter" [src]="this.selectedStyle.path" class="card-img-top" alt="Image of Style Filter" id="style-img">
 					<div *ngIf="this.uploadingFilter">
@@ -52,7 +60,9 @@ It is routed to when the user clicks on a router link-->
 						Style Example
 					</div>
 				</div>
+				</div>
 			</div>
+			<!-- </div> -->
 		</div>
 		<br><br>
 		<label class="btn btn-primary btn-xl js-scroll-trigger" (click)="this.upload();">Style</label>
@@ -74,7 +84,7 @@ It is routed to when the user clicks on a router link-->
 				<!--Error-->&nbsp;
 			</div>
 			<div class="app-modal-body">
-				Uploading, please wait!
+				{{modalText}}
 			</div>
 			<div class="app-modal-footer">
 				&nbsp;

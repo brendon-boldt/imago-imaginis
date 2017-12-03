@@ -32,3 +32,63 @@
   padding-right: 5px;
   overflow-y: hidden;
 }
+
+.card {
+  min-height: 300px;
+  max-height: 300px;
+}
+
+.style-container {
+  display:flex;
+  flex-wrap:wrap;
+  flex-direction:row;
+  justify-content:flex-start;
+}
+
+.container-one {
+  order:1;
+  flex-basis:100%;
+  padding: 2.5px;
+}
+
+.container-two {
+  order:2;
+  flex-basis:100%;
+  padding: 2.5px;
+}
+
+.container-three {
+  order:3;
+  flex-basis:100%;
+  padding: 2.5px;
+}
+
+.container-four {
+  order:4;
+  flex-basis:100%;
+  padding: 2.5px;
+}
+
+@media screen and (min-width:992px) {
+  .style-container {
+      flex-wrap:wrap;
+  }
+  /* #divMain {
+      padding: 50px;
+      height: 1000px;
+      max-width: 110%;
+      overflow-y: auto; 
+  } */
+}
+
+@media screen and (min-width:1100px) {
+  .style-container {
+      flex-wrap:nowrap;
+  }
+  /* #divMain {
+      padding: 50px;
+      height: 1000px;
+      margin: -50px;
+      overflow-y: auto; 
+  } */
+}

@@ -66,16 +66,18 @@ export class SelectStyleComponent {
     // Check to see if the user already has two photos if they're a free user
     this.db.getNumPhotos(this.us.userId).then(async res => {
       if(res.status == 605){
-        this.modalText = "You have reached your maximum number of uploaded photos. Please delete some photos before continuing, or upgrade your account. You will be redirected automatically in 5 seconds...";
-        this.modal.show();
+        this.modalText = "You have reached your maximum number of uploaded photos. Please delete some photos before continuing, or upgrade your account.";
+        this.uploading.show();
         var router = this.router;
-        setTimeout(function(){
-          router.navigate(['home']);
-        }, 5000);
+        // setTimeout(function(){
+        //   router.navigate(['home']);
+        // }, 5000);
+        return;
       }
       if(this.selectedStyle.filter_id != "Select a style"){
         // Calls the database service
         // While waiting for an upload response (aka upload finished), display an unremovable modal displaying upload status
+        this.modalText = "Uploading, please wait!";
         this.uploading.show();
         // If the file being uploaded is a video, then...
         if(this.gen.isVideoUpload){
