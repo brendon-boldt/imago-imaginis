@@ -34,10 +34,26 @@ let shouldWatermark = async function(resource_id, type){
   }
 }
 
+let verifyRequest = function(req) {
+  return req.query.token === config.styleApiToken;
+}
+
+let verificationFailed = function(res) {
+  res.status(401);
+  res.statusMessage = "Unauthorized style request";
+  res.send("Unauthorized style request");
+}
+
 
 module.exports = function(app) {
 
   app.get('/style/refresh/:type', async (req, getres) => {
+    if (!verifyRequest(req)) {
+      verificationFailed(getres);
+      return;
+    }
+
+
     let refreshVideos = "update user_video set status = 'waiting' where status = 'processing'";
     let refreshPhotos = "update user_photo set status = 'waiting' where status = 'processing'";
     if (req.params.type === "images") {
@@ -54,6 +70,10 @@ module.exports = function(app) {
 
 
   app.post('/style/insert/:type*', async (req, getres) => {
+    if (!verifyRequest(req)) {
+      verificationFailed(getres);
+      return;
+    }
     console.log("Upload of type: " + req.params.type);
 
     let outputPath, bridgeTable, resultTable, resource_id_name;
@@ -102,6 +122,10 @@ module.exports = function(app) {
   });
 
   app.post('/style/select/:type', (req, res) => {
+    if (!verifyRequest(req)) {
+      verificationFailed(getres);
+      return;
+    }
     console.log("Received: ", req.body);
 
   
@@ -135,6 +159,10 @@ module.exports = function(app) {
 
   // Not used?
   app.post('/style/select/run', (req, getres) => {
+    if (!verifyRequest(req)) {
+      verificationFailed(getres);
+      return;
+    }
     let user_id = parseInt(req.body.user_id);
     let photo_id = parseInt(req.body.photo_id);
     let queryText =
@@ -153,6 +181,10 @@ module.exports = function(app) {
 
   // Multiple runs
   app.post('/style/selectRuns/:type', (req, getres) => {
+    if (!verifyRequest(req)) {
+      verificationFailed(getres);
+      return;
+    }
     let queryText;
     if (req.params.type === 'images') {
       queryText = 'SELECT photo_id, user_id, unfiltered_photo_id, filters.filter_id, unfiltered_photo.path AS uppath, filters.path AS fpath FROM user_photo NATURAL JOIN unfiltered_photo JOIN filters ON (filters.filter_id = user_photo.filter_id) WHERE status=\'waiting\'';
