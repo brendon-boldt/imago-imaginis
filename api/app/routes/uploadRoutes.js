@@ -166,13 +166,6 @@ module.exports = function(app) {
           deleteFailedPhotoFromDB(req.file.unfiltered_photo_id); // Delete the unfiltered photo entry in the DB, given its photo id
           return;
         }
-        // If they're a free user, put a watermark on their uploaded image. Muahaahaha!
-        try{
-          await watermark.embedWatermark(config.uploadsPath + "/" + req.file.filename, options);
-        }
-        catch(e){
-          console.log(e);
-        }
       }
       console.log("POST - upload");
       console.log(req.file);
@@ -441,6 +434,7 @@ module.exports = function(app) {
           getres.send("Please upload a photo");
           deleteFromFS(config.stylePath + "/" + req.file.filename); // Delete the photo from the file system, given its path
           deleteFailedFilterFromDB(req.file.filter_id); // Delete the unfiltered photo entry in the DB, given its photo id
+          return;
         }
         if(req.fileValidationError){
           res.status(502);
@@ -450,6 +444,7 @@ module.exports = function(app) {
           deleteFailedFilterFromDB(req.file.filter_id); // Delete the unfiltered photo entry in the DB, given its photo id
           return;
         }
+      }
         // Do verification that this is indeed a photo upload
         console.log("POST - upload");
         stat.logStatUploadPhoto(user_id);
@@ -461,8 +456,7 @@ module.exports = function(app) {
         var values = [user_id, path, req.file.filter_id];
         console.log("Query: " + queryText);
         result = await db.param_query(queryText, values);
-        getres.send(""+req.file.filter_id);
-      }
+        getres.send(""+req.file.filter_id); // Return the filter ID
     } 
   });
 
