@@ -2,6 +2,8 @@
 
 var config = {};
 
+config.styleApiToken = '';
+
 // Paths to where things are stored in the local file stystem
 // Use `bash create_file_tree.sh ~/files` to create a file system tree
 config.contentPath = '';
