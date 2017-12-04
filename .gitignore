@@ -1,6 +1,8 @@
 web/node_modules
 web/dist
 api/node_modules
+api/fullchain.pem
+api/privkey.pem
 node_modules/
 package-lock.json
 *.swp

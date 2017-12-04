@@ -1,6 +1,8 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const mountRoutes = require('./app/routes');
+const https = require('https');
+const fs = require('fs');
 
 const app = express();
 
@@ -16,6 +18,7 @@ try {
 // Allows for cross-origin resource sharing
 // https://github.com/expressjs/cors
 var cors = require('cors');
+var helmet = require('helmet');
 
 const port = 8000;
 
@@ -27,11 +30,17 @@ app.use(bodyParser.json());
 app.use(bodyParser.raw({limit: '50mb'}));
 app.use(bodyParser.urlencoded({ extended: true, limit: '50mb' }));
 app.use(cors());
+app.use(helmet());
 
 console.log(config);
 app.use(express.static(config.serve));
 
+const options = {
+  cert: fs.readFileSync('./fullchain.pem'),
+  key: fs.readFileSync('./privkey.pem')
+}
+
 require('./app/routes')(app);
-app.listen(port, () => {
+https.createServer(options, app).listen(port, () => {
     console.log('We are live on ' + port);
-})
+});
