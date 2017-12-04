@@ -1,6 +1,5 @@
 const stylizer = require('../stylizer');
 const db = require('../db');
-//const request = require('request');
 const request = require('request-promise-native');
 const fs = require('fs');
 

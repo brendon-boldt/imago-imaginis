@@ -5,16 +5,11 @@ const config = require('../../config.js');
 const log = (msg) => {console.log("STYLIZER: ", msg)};
 
 module.exports = {
-  test: function(text) {
-    return text;
-  },
-  
-	// "Run" refers to a styling run
-  startStyleVideo: async function(runParams) {
-    //log(runParams);
 
+  startStyleVideo: async function(runParams) {
+
+    // The command line args being passed to the stylzier
     const options = [
-      //stylizerPath + 'test.lua',
       'styVid.sh',
       runParams.contentPath,
       runParams.stylePath,
@@ -25,7 +20,9 @@ module.exports = {
 
     log(`video ${runParams.upId} started`);
     log('bash' + options.join(' '));
+    // Record the milliseconds elapsed during the run
     let start = new Date();
+    // Execute!
     await execFile('bash', options, {'cwd': config.stylizerPath})
       .catch((err) => {
         log(`The following error occurred with user_photo_id ${runParams.upId}`);
@@ -35,6 +32,7 @@ module.exports = {
       .then((result) => {
         log(`Styling runId ${runParams.upId} completed succesfully.`);
         //execFile('rm', [runParams.contentPath, runParams.stylePath]);
+        // Remove the unstyled video since we do not need it any more
         execFile('rm', [runParams.contentPath]);
       });
     log('done');
@@ -44,10 +42,13 @@ module.exports = {
     return obj;
   }, 
 
+  /**
+   * Start styling an image.
+   */
   startStyle: async function(runParams) {
 
+    // Command line args to be passed to the stylizer
     const options = [
-      //stylizerPath + 'test.lua',
       'test.lua',
       '-content', runParams.contentPath,
       '-contentSize', runParams.contentSize,
@@ -59,7 +60,9 @@ module.exports = {
     ];
 
     log(`runId ${runParams.upId} started`);
+    // Record the duration of the run
     let start = new Date();
+    // Let the image styling begin!
     await execFile(config.thPath, options, {'cwd': config.stylizerPath})
       .catch((err) => {
         log(`The following error occurred with user_photo_id ${runParams.upId}`);
@@ -68,14 +71,19 @@ module.exports = {
       })
       .then((result) => {
         log(`Styling runId ${runParams.upId} completed succesfully.`);
-        execFile('rm', [runParams.contentPath, runParams.stylePath]);
+        // Remove the unstyled image when finished
+        execFile('rm', [runParams.contentPath/*, runParams.stylePath*/]);
       });
     let obj = {};
+    // Calculate the elapsed
     obj.process_time = new Date() - start;
     obj.filepath = `${config.outputPath}/${runParams.outputName}`;
     return obj;
   }, 
 
+  /**
+   * Delete a file
+   */
   removeResource: function(path) {
     execFile('rm', [path]);
   }
