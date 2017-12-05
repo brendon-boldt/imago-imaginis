@@ -1,5 +1,11 @@
 /**
- * This is the modal component that we use in our Angular environment
+ * Imago Imaginis 
+ * ----------------------------
+ * This is the modal component that we use in our Angular environment.
+ * It is loaded into other components that require the use of a modal.
+ * It has its own styling, events, variables, and HTML templating.
+ * Components that load the modal fill the ng-content tags with their own content.
+ * This modal is devoted to displaying photos/videos to their actual/full size.
  * https://stackoverflow.com/questions/34513558/angular-2-0-and-modal-dialog
  */
 import { Component, Input, ViewChild } from '@angular/core';

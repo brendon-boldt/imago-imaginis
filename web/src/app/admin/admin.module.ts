@@ -1,20 +1,21 @@
 /**
- * This TypeScript file is used to bind all of the different components, modules, and services together.
- * This is so that Angular knows how to put everything together properly.
+ * Imagino Imaginis
+ * ---------------------------------------------------------------------------
+ * Binds all of the different admin components, modules, and services together.
+ * This is so that Angular framework knows how to put everything together properly.
  */
 // Imports for the modules
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
-import { HttpModule } from '@angular/http'; // This module allows us to make HTTP calls
-import { FormsModule } from '@angular/forms'; // This module allows us to have two-way data binding in forms
+import { HttpModule } from '@angular/http'; // Allows us to make HTTP calls
+import { FormsModule } from '@angular/forms'; // Allows us to have two-way data binding in forms
 import { AdminRoutingModule } from './admin-routing.module';
-import { ChartsModule } from 'ng2-charts';
+import { ChartsModule } from 'ng2-charts'; // Allows us to have easy-to-implement charts
 
-// References to all the components in the application
+// All the components to be used in the admin module
 import { SystemStatsComponent } from './system-stats.component';
 
-// References to all the services in the application
-// Are these services needed?
+// All the services to be used in the admin module
 import { DBService } from '../services/db.service';
 import { UserService } from '../services/user.service';
 import { AuthService } from '../services/auth.service';

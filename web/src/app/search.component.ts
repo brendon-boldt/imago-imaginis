@@ -1,11 +1,15 @@
 /**
- * This is the TypeScript backend for the search component.
- * Here, we reference search.component.html as the HTML for this component, as well as the app's css
+ * Imago Imaginis
+ * -------------------------------------------
+ * Backend for the search component page.
+ * This ties in the HTML template and any CSS that goes along with it.
+ * Also controls page functionality and imports data from Angular services.
  */
+
 import { Component } from '@angular/core';
 import { RouterModule, Routes, Router } from '@angular/router';
 
-// Import services
+// Import services to import data from DB
 import { DBService } from './services/db.service';
 
 @Component({
@@ -14,13 +18,19 @@ import { DBService } from './services/db.service';
   styleUrls: ['./css/app.component.css', './css/search.component.css']
 })
 export class SearchComponent {
-  showSearch: boolean;
-  searchString: String = "";
-  searchedString: String = "";
-  results: Array<Object>;
+  showSearch: boolean; // flag to display the results of the search
+  searchString: String = ""; // what the user typed into the box
+  searchedString: String = ""; // what the user searched
+  results: Array<Object>; // rows returned by the DB
+  /**
+   * Constructor for the page, sets search results to empty
+   */
   constructor(private router: Router, private db: DBService){
     this.results = [{}];
   }
+  /**
+   * Performs the search 
+   */
   search = function() {
     this.searchedString = this.searchString.valueOf();
     console.log("Search string: " + this.searchedString);
@@ -45,10 +55,12 @@ export class SearchComponent {
       }
     });
   }
+  /**
+   * When the search entry is clicked, go to the profile for that user
+   */
   goToProfile = function(index) {
     // Get the user based on the table index selected
     let user = this.results[index];
-    console.log(user);
     // Navigate to the user profile, with route parameters set
     this.router.navigate(['user'], { queryParams: { userId: user.user_id }});
   }

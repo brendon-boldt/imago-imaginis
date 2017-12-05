@@ -1,7 +1,7 @@
-<!--This is the sty;e component, which is displayed underneath the app component.
-  Allows for the user to style photos to the platform.
-It is routed to when the user clicks on a router link-->
-
+<!-- Imagino Imaginis
+Angular HTML template for the style selection page
+Allows a user to select a style to style their image with on their uploaded photo/video
+Plesae refer to the official Angular documentation for more information on Angular templating -->
 <header class="masthead">
 	<div class="header-content">
 		<div class="header-content-inner">
@@ -9,46 +9,38 @@ It is routed to when the user clicks on a router link-->
 			<hr>
 			<br><br>
 			<div class="container style-container d-flex justify-content-center">
-			<!-- <div class="card-deck" id="card-deck"> -->
 			<div class="container-one">
 				<div class="card">
 					<video *ngIf="this.gen.isVideoUpload" width="320" height="240" controls style="margin: auto">
 						<source [src]="this.gen.uploadedImage" type="video/mp4">
 						Your browser does not support the video tag.
 					</video>
-					<!-- <img *ngIf="!this.gen.isVideoUpload" [src]="this.uploadedImage" class="card-img-top" id="upload-img"> -->
 					<img *ngIf="!this.gen.isVideoUpload" [src]="this.gen.uploadedImage" class="card-img-top" id="upload-img">
-					<div class="card-block">
-						<!--style="height: 100%; max-height: 300px;"-->
-					</div>
+					<div class="card-block"></div>
 					<div class="card-footer">
 						Your Image
 					</div>
 				</div>
 			</div>
-				<!-- <div class="card">
-					<div class="card-block"> -->
-					<div class="container-two">
-						<div class="dropdown" style="margin-top: 150px; margin-bottom: 150px; margin-left: 50px; margin-right: 50px;">
-							<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								{{this.selectedStyle.name}}
-							</button>
-							<div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="width: 200px;">
-								<div *ngFor="let style of styles">
-									<a class="dropdown-item" (click)="selectStyle(style)">{{style.name}}</a>
-								</div>
-								<div *ngIf="this.us.isPaid" class="dropdown-divider"></div>
-								<a *ngIf="this.us.isPaid" class="dropdown-item">
-									<label>
-										Upload a style <input type="file" (change)="fileChangeEvent($event)" accept="image/*" hidden>
-									</label>
-								</a>
-							</div>
-						</div>
-					</div>
-					<!-- </div>
-				</div> -->
-				<div class="container-three">
+      <div class="container-two">
+        <div class="dropdown" style="margin-top: 150px; margin-bottom: 150px; margin-left: 50px; margin-right: 50px;">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {{this.selectedStyle.name}}
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="width: 200px;">
+            <div *ngFor="let style of styles">
+              <a class="dropdown-item" (click)="selectStyle(style)">{{style.name}}</a>
+            </div>
+            <div *ngIf="this.us.isPaid" class="dropdown-divider"></div>
+            <a *ngIf="this.us.isPaid" class="dropdown-item">
+              <label>
+                Upload a style <input type="file" (change)="fileChangeEvent($event)" accept="image/*" hidden>
+              </label>
+            </a>
+          </div>
+        </div>
+      </div>
+      <div class="container-three">
 				<div class="card">
 					<img *ngIf="!this.uploadingFilter" [src]="this.selectedStyle.path" class="card-img-top" alt="Image of Style Filter" id="style-img">
 					<div *ngIf="this.uploadingFilter">
@@ -62,7 +54,6 @@ It is routed to when the user clicks on a router link-->
 				</div>
 				</div>
 			</div>
-			<!-- </div> -->
 		</div>
 		<br><br>
 		<label class="btn btn-primary btn-xl js-scroll-trigger" (click)="this.upload();">Style</label>
@@ -92,67 +83,3 @@ It is routed to when the user clicks on a router link-->
 		</app-modal>
 	</div>
 </header>
-
-
-
-<!--<div class="container-fluid">
-	<div class="center-text">
-		<div class="page-header">
-			<h1 class="display-2">Stylize Image</h1>
-		</div>
-		<hr>
-	</div>-->
-
-  <!-- <h3>Stylize Image</h3> -->
-  <!--<br>-->
-  <!-- <div style="width:900px; margin:0 auto;"> -->
-	<!-- <div style="float:left; width:300px;"> -->
-		<!-- Your Image: -->
-		<!--<br>-->
-<!--<div class="container">
-	<div class="row justify-content-center align-items-center">
-		<div class="col-md-3 center-text">
-			<img src="../assets/monalisa.jpg" alt="uploaded_image" class="img-border" style="width: 200px; height: auto;">
-			<p class="lead">Choose a style</p>
-		</div>
-		<div class="col-md-3 center-text">
-			<div class="dropdown">
-				<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" style="width: 200px;">
-					{{selectedStyle.style}}
-				</button>
-				<ul class="dropdown-menu" aria-labelledby="dropdownMenuButton" style="width: 200px;">
-					<li *ngFor="let style of styles"><a class="dropdown-item" (click)="update(style)">{{style.style}}</a></li>
-				</ul>
-			</div>
-		</div>
-		<div class="col-md-3 center-text">
-			<img [src]="selectedStyle.example" class="img-border" alt="style_image" style="width: 200px; height: auto;">
-			<p class="lead">Style Example</p>
-		</div>
-	</div>
-</div>
-		-->
-<!--</div>-->
-
-<!-- <img src="http://cumbrianrun.co.uk/wp-content/uploads/2014/02/default-placeholder-300x300.png" alt="Image caption" height="100" width="100"> -->
-<!-- </div> -->
-<!-- <div style="float:left; width:300px;"> -->
-	<!-- Choose a style:
-	<br>
-	<select name="style">
-		<option value="cubism">Cubism</option>
-		<option value="flowers">Flowers</option>
-		<option value="starry-night">Starry Night</option>
-		<option value="oil-painting">Oil Painting</option>
-		<option value="impressionism">Impressionism</option>
-		<option value="custom" disabled>Custom</option>
-	</select> -->
-<!-- </div> -->
-<!-- <div style="float:left; width:300px;"> -->
-	<!-- Generate Image: -->
-	<!-- <br> -->
-	<!-- <img src="http://cumbrianrun.co.uk/wp-content/uploads/2014/02/default-placeholder-300x300.png" alt="Image caption" height="100" width="100"> -->
-<!-- </div> -->
-<!--<br style="clear:left;"/>-->
-<!-- </div> -->
-<!--<br>-->

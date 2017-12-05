@@ -1,15 +1,19 @@
 /**
- * This is the TypeScript backend for the upload component.
- * Here, we reference upload.component.html as the HTML for this component, as well as the app's css
+ * Imago Imaginis
+ * -------------------------------------------
+ * Backend for the login component page.
+ * This ties in the HTML template and any CSS that goes along with it.
+ * Also controls page functionality and imports data from Angular services.
  */
 import { Component, ViewChild } from '@angular/core';
 import { RouterModule, Routes, Router } from '@angular/router';
 
-// Importing database service so we can check to see if the user login information exists
+// Importing services so we can import data and communicate with other parts of the application
 import { DBService } from './services/db.service';
 import { UserService } from './services/user.service';
 import { AuthService } from './services/auth.service';
 
+// Import custom directives
 import { FocusDirective } from './directives/focus.directive';
 
 // Import the modal component
@@ -22,20 +26,32 @@ import { ModalComponent } from './modal/app-modal.component';
 })
 export class LoginComponent {
   @ViewChild('modal') modal;
-  public keyboard: String = "../assets/keyboard.jpg";
-  public upload: String = "../assets/upload.jpg";
-  public style: String = "../assets/style.jpg";
-  private email: string;
-  private password: string;
-  form: any = {};
+  // Images to display on the login page
+  keyboard: String = "../assets/keyboard.jpg";
+  upload: String = "../assets/upload.jpg";
+  style: String = "../assets/style.jpg";
+  email: string; // email that the user has entered
+  password: string; // password that the user has entered
+  form: any = {}; // object to hold the form data
+  /**
+   * Constructor for the page. If the user accesses this page while logged in already, they will be navigated
+   * to the home page.
+   */
   constructor(private db: DBService, private user: UserService, private router: Router, private auth: AuthService){
     if(this.auth.isLoggedIn){
       this.router.navigate(['home']);
     }
   }
+  /**
+   * Fires when the user clicks the submit button
+   */
   onSubmit() {
     this.login();
   }
+  /**
+   * Performs the user login, passing credentials to the auth service which will call the DB to see if
+   * their credentials match an entry in the DB
+   */
   login(): void {
     async function func(auth, email, password, modal) {
       var login = await auth.login(email, password);
@@ -51,10 +67,13 @@ export class LoginComponent {
   }
   /**
    * Submits the form when pressing the enter key
+   * TODO: is this really needed?
    */
   onKey(event: any): void {
-    if(event.key == "Enter"){
-      this.login();
+    if(this.form.valid){
+      if(event.key == "Enter"){
+        this.login();
+      }
     }
   }
 }

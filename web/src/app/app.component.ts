@@ -1,6 +1,9 @@
 /**
- * This is the TypeScript backend for the app component.
- * Here, we reference app.component.html as the HTML for this component, as well as the css
+ * Imago Imaginis
+ * -------------------------------------------
+ * Backend for the app component page.
+ * This ties in the HTML template and any CSS that goes along with it.
+ * Also controls page functionality and imports data from Angular services.
  */
 import { Component } from '@angular/core';
 import { RouterModule, Routes, Router, NavigationEnd } from '@angular/router';
@@ -15,30 +18,29 @@ import { AuthService} from './services/auth.service';
   styleUrls: ['./css/app.component.css']
 })
 export class AppComponent {
-  //The title that is displayed in the header. Example of two-way data binding.
-  // title = 'Artistic Stylizer Platform';
-  title = "";
+  title = "Imago Imaginis"; // title that is displayed in the header
+  /**
+   * Constructor for app component. Called on site creation
+   */
   constructor(private router: Router, private user: UserService, private auth: AuthService) {}
+  /**
+   * Called on site load
+   */
   ngOnInit() {
-      // // Check to see if the user is logged in
-      // if(this.auth.checkLogin()){
-      //   this.auth.isLoggedIn = true;
-      //   // Set user info from JWT
-      //   this.user.setInfo(sessionStorage.getItem('jwt'));
-      // }
-      // This will make the window scroll to the top of the page
-      // whenever the user is router to another page
-      this.router.events.subscribe((evt) => {
-          if (!(evt instanceof NavigationEnd)) {
-              return;
-          }
-          window.scrollTo(0, 0)
-      });
+    // This will make the window scroll to the top of the page
+    // whenever the user is routed to another page
+    this.router.events.subscribe((evt) => {
+      if (!(evt instanceof NavigationEnd)) {
+          return;
+      }
+      window.scrollTo(0, 0)
+    });
   }
+  /**
+   * Logs the user out of the website by calling the logout method in the auth service
+   */
   logOut = function(){
     console.log("WEB: Logging user out");
     this.auth.logout();
-    sessionStorage.clear();
-    console.log(sessionStorage);
   }
 }
