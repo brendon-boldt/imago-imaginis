@@ -214,10 +214,10 @@ module.exports = {
         return;
       if (type === 'image') {
         currentCounter += 1;
-        this.doRun(R[i]);
+        this.doRun(R[i]).catch(currentCounter -= 1);
       } else { 
         currentCounter += 1;
-        this.doVideoRun(R[i]);
+        this.doVideoRun(R[i]).catch(currentCounter -= 1);
       }
     }
   },
