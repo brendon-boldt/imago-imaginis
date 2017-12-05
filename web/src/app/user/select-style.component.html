@@ -52,7 +52,10 @@ It is routed to when the user clicks on a router link-->
 				<div class="card">
 					<img *ngIf="!this.uploadingFilter" [src]="this.selectedStyle.path" class="card-img-top" alt="Image of Style Filter" id="style-img">
 					<div *ngIf="this.uploadingFilter">
+            <!--
 						<div style="float: none; margin: 0 auto;" class="loader"></div>
+            -->
+            <img src="assets/ii_logo_color.png" class="loadingImage"/>
 					</div>
 					<div class="card-block">
 					</div>

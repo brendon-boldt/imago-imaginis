@@ -5,6 +5,9 @@
          <hr>
          <div *ngIf="!dataReady">
             <div style="float: none; margin: 0 auto;" class="loader"></div>
+            <!--
+            <img src="assets/ii_logo_color.png" class="loadingImage"/>
+            -->
             </div>
          <div *ngIf="dataReady">
          <p *ngIf="this.photoArrOne.length == 0">You have no stylized photos</p>
@@ -16,7 +19,10 @@
                         <div id="photo" *ngIf="photo.unfiltered_photo_id != null">
                             <div id="text" (click)="this.showPicture(photo)">
                                 <p class="process">Processing</p>
+                                <!--
                                 <div style="float: none; margin: 0 auto;" class="loader"></div>
+                                -->
+                                <img src="assets/ii_logo_color.png" class="loadingImage"/>
                             </div>
                             <div id="picture">
                                 <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)">
@@ -53,7 +59,10 @@
                         <div id="photo" *ngIf="photo.unfiltered_photo_id != null">
                             <div id="text" (click)="this.showPicture(photo)">
                                 <p class="process">Processing</p>
+                                <!--
                                 <div style="float: none; margin: 0 auto;" class="loader"></div>
+                                -->
+                                <img src="assets/ii_logo_color.png" class="loadingImage"/>
                             </div>
                             <div id="picture">
                                 <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)">
@@ -62,7 +71,10 @@
                         <div id="photo" *ngIf="photo.unfiltered_video_id != null">
                             <div id="text" (click)="this.showPicture(photo)">
                                 <p class="process">Processing</p>
+                                <!--
                                 <div style="float: none; margin: 0 auto;" class="loader"></div>
+                                -->
+                                <img src="assets/ii_logo_color.png" class="loadingImage"/>
                             </div>
                             <div id="picture">
                                 <!-- <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)"> -->
@@ -91,7 +103,10 @@
                         <div id="photo" *ngIf="photo.unfiltered_photo_id != null">
                             <div id="text" (click)="this.showPicture(photo)">
                                 <p class="process">Processing</p>
+                                <!--
                                 <div style="float: none; margin: 0 auto;" class="loader"></div>
+                                -->
+                                <img src="assets/ii_logo_color.png" class="loadingImage"/>
                             </div>
                             <div id="picture">
                                 <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)">
@@ -100,7 +115,10 @@
                         <div id="photo" *ngIf="photo.unfiltered_video_id != null">
                             <div id="text" (click)="this.showPicture(photo)">
                                 <p class="process">Processing</p>
+                                <!--
                                 <div style="float: none; margin: 0 auto;" class="loader"></div>
+                                -->
+                                <img src="assets/ii_logo_color.png" class="loadingImage"/>
                             </div>
                             <div id="picture">
                                 <!-- <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)"> -->
@@ -129,7 +147,10 @@
                         <div id="photo" *ngIf="photo.unfiltered_photo_id != null">
                             <div id="text" (click)="this.showPicture(photo)">
                                 <p class="process">Processing</p>
+                                <!--
                                 <div style="float: none; margin: 0 auto;" class="loader"></div>
+                                -->
+                                <img src="assets/ii_logo_color.png" class="loadingImage"/>
                             </div>
                             <div id="picture">
                                 <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)">
@@ -138,7 +159,10 @@
                         <div id="photo" *ngIf="photo.unfiltered_video_id != null">
                             <div id="text" (click)="this.showPicture(photo)">
                                 <p class="process">Processing</p>
+                                <!--
                                 <div style="float: none; margin: 0 auto;" class="loader"></div>
+                                -->
+                                <img src="assets/ii_logo_color.png" class="loadingImage"/>
                             </div>
                             <div id="picture">
                                 <!-- <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)"> -->

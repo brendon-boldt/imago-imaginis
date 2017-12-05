@@ -88,7 +88,7 @@ body {
 #mainNav {
   border-color: rgba(34, 34, 34, 0.05);
   /*background-color: rgba(255,255,255,.4);*/
-  background-color: #00000080;
+  background-color: rgba(0,0,0,0.5);
   font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
   -webkit-transition: all 0.2s;
   -moz-transition: all 0.2s;
@@ -440,7 +440,7 @@ margin: 50px auto 0; }
 .footer {
   display: flex;
   align-items: center;
-  background-color: #000000b0;  /* brendon */
+  background-color: rgba(0,0,0,0.75);  /* brendon */
   color: #ddd;
   text-align: center;
   min-height: 50px; }
