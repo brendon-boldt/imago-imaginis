@@ -2,6 +2,7 @@
 
 var config = {};
 
+// This token should be identical to the one in the stylizer config.js
 config.styleApiToken = '';
 
 // Paths to where things are stored in the local file stystem
@@ -11,6 +12,7 @@ config.stylePath = '';
 config.outputPath = '';
 config.contentPathVideo = '';
 config.outputPathVideo = '';
+
 config.uploadsPath = '';
 config.videoUploadsPath = '';
 
