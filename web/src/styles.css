@@ -24,3 +24,17 @@ body {
 .btn {
   cursor: pointer;
 }
+
+.loadingImage {
+  background: rgba(0,0,0,0) !important;
+  border: none !important;
+  height: 50%;
+  animation: spin 1s infinite ease-in-out;
+  -webkit-animation: spin 1s infinite ease-in-out;
+  animation-direction: reverse;
+
+}
+
+.process {
+  text-shadow: 0 0 0.5em black;
+}
