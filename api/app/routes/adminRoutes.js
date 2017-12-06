@@ -54,6 +54,7 @@ module.exports = function(app) {
   /**
    * Get all system stats
    * Takes in the request query's parameters
+   * Only admins may access this route
    */
   app.get('/system/stats', async (req, getres) => {
     // This performs the JWT authorization
@@ -63,7 +64,7 @@ module.exports = function(app) {
     } else {
       var isAdmin = await verifyAdmin(user_id);
       if (req.headers.bus != undefined) {
-        // If the website is making the API call
+        // If the website is making the API call, allow it through
         if (req.headers.bus != "Q2cxNw==") {
           getres.status(201);
           getres.statusMessage = "Unauthorized API request";
@@ -73,7 +74,7 @@ module.exports = function(app) {
       }
       // Accessing through the API
       else {
-        // If they're a paid API user and trying to access API not thru website
+        // If they're an admin and trying to access API not thru website
         if (!isAdmin) {
           // If they're not an admin, return an error
           getres.status(309);
@@ -91,7 +92,10 @@ module.exports = function(app) {
     }
   });
 
-  // Get all flagged photos
+  /**
+   * Get all flagged photos
+   * Only admins may access this route
+   */
   app.get('/system/stats/photos/flagged', async (req, getres) => {
     // This performs the JWT authorization
     var user_id = getUserIdFromJWT(req, getres);
@@ -100,7 +104,7 @@ module.exports = function(app) {
     } else {
       var isAdmin = await verifyAdmin(user_id);
       if (req.headers.bus != undefined) {
-        // If the website is making the API call
+        // If the website is making the API call, allow it through
         if (req.headers.bus != "Q2cxNw==") {
           getres.status(201);
           getres.statusMessage = "Unauthorized API request";
@@ -129,7 +133,10 @@ module.exports = function(app) {
     }
   });
 
-  // Get all flagged videos
+  /**
+   * Get all flagged videos
+   * Only accessible to admins
+   */
   app.get('/system/stats/videos/flagged', async (req, getres) => {
     // This performs the JWT authorization
     var user_id = getUserIdFromJWT(req, getres);
@@ -138,7 +145,7 @@ module.exports = function(app) {
     } else {
       var isAdmin = await verifyAdmin(user_id);
       if (req.headers.bus != undefined) {
-        // If the website is making the API call
+        // If the website is making the API call, allow it through
         if (req.headers.bus != "Q2cxNw==") {
           getres.status(201);
           getres.statusMessage = "Unauthorized API request";
@@ -167,7 +174,10 @@ module.exports = function(app) {
     }
   });
 
-  // Get all photos being processed
+  /**
+   * Get all photos being processed
+   * Only accessible to admins
+   */
   app.get('/system/stats/photos/processing', async (req, getres) => {
     // This performs the JWT authorization
     var user_id = getUserIdFromJWT(req, getres);
@@ -176,7 +186,7 @@ module.exports = function(app) {
     } else {
       var isAdmin = await verifyAdmin(user_id);
       if (req.headers.bus != undefined) {
-        // If the website is making the API call
+        // If the website is making the API call, allow it through
         if (req.headers.bus != "Q2cxNw==") {
           getres.status(201);
           getres.statusMessage = "Unauthorized API request";
@@ -186,7 +196,7 @@ module.exports = function(app) {
       }
       // Accessing through the API
       else {
-        // If they're a paid API user and trying to access API not thru website
+        // If they're an admin and trying to access API not thru website
         if (!isAdmin) {
           // If they're not an admin, return an error
           getres.status(309);
@@ -205,7 +215,10 @@ module.exports = function(app) {
     }
   });
 
-  // Get all videos being processed
+  /**
+   * Get all videos being processed
+   * Only accessible to admins
+   */
   app.get('/system/stats/videos/processing', async (req, getres) => {
     // This performs the JWT authorization
     var user_id = getUserIdFromJWT(req, getres);
@@ -214,7 +227,7 @@ module.exports = function(app) {
     } else {
       var isAdmin = await verifyAdmin(user_id);
       if (req.headers.bus != undefined) {
-        // If the website is making the API call
+        // If the website is making the API call, allow it through
         if (req.headers.bus != "Q2cxNw==") {
           getres.status(201);
           getres.statusMessage = "Unauthorized API request";
@@ -243,7 +256,10 @@ module.exports = function(app) {
     }
   });
 
-  // Get all uploads from past day
+  /**
+   * Get all uploads from past day
+   * Only acccessible to admins
+   */
   app.get('/system/stats/uploads/pastday', async (req, getres) => {
     // This performs the JWT authorization
     var user_id = getUserIdFromJWT(req, getres);
@@ -252,7 +268,7 @@ module.exports = function(app) {
     } else {
       var isAdmin = await verifyAdmin(user_id);
       if (req.headers.bus != undefined) {
-        // If the website is making the API call
+        // If the website is making the API call, allow it through
         if (req.headers.bus != "Q2cxNw==") {
           getres.status(201);
           getres.statusMessage = "Unauthorized API request";
@@ -262,7 +278,7 @@ module.exports = function(app) {
       }
       // Accessing through the API
       else {
-        // If they're a paid API user and trying to access API not thru website
+        // If they're an admin and trying to access API not thru website
         if (!isAdmin) {
           // If they're not an admin, return an error
           getres.status(309);
@@ -280,7 +296,10 @@ module.exports = function(app) {
     }
   });
 
-  // Get all uploads from past week
+  /**
+   * Get all uploads from past week
+   * Only acccessible to admins
+   */
   app.get('/system/stats/uploads/pastweek', async (req, getres) => {
     // This performs the JWT authorization
     var user_id = getUserIdFromJWT(req, getres);
@@ -289,7 +308,7 @@ module.exports = function(app) {
     } else {
       var isAdmin = await verifyAdmin(user_id);
       if (req.headers.bus != undefined) {
-        // If the website is making the API call
+        // If the website is making the API call, allow it through
         if (req.headers.bus != "Q2cxNw==") {
           getres.status(201);
           getres.statusMessage = "Unauthorized API request";
@@ -299,7 +318,7 @@ module.exports = function(app) {
       }
       // Accessing through the API
       else {
-        // If they're a paid API user and trying to access API not thru website
+        // If they're an admin and trying to access API not thru website
         if (!isAdmin) {
           // If they're not an admin, return an error
           getres.status(309);
@@ -317,7 +336,10 @@ module.exports = function(app) {
     }
   });
 
-  // Get all uploads from past month
+  /**
+   * Get all uploads from past month
+   * Only acccessible to admins
+   */
   app.get('/system/stats/uploads/pastmonth', async (req, getres) => {
     // This performs the JWT authorization
     var user_id = getUserIdFromJWT(req, getres);
@@ -326,7 +348,7 @@ module.exports = function(app) {
     } else {
       var isAdmin = await verifyAdmin(user_id);
       if (req.headers.bus != undefined) {
-        // If the website is making the API call
+        // If the website is making the API call, allow it through
         if (req.headers.bus != "Q2cxNw==") {
           getres.status(201);
           getres.statusMessage = "Unauthorized API request";
@@ -336,7 +358,7 @@ module.exports = function(app) {
       }
       // Accessing through the API
       else {
-        // If they're a paid API user and trying to access API not thru website
+        // If they're an admin and trying to access API not thru website
         if (!isAdmin) {
           // If they're not an admin, return an error
           getres.status(309);
@@ -345,8 +367,6 @@ module.exports = function(app) {
           return;
         }
       }
-      // let queryText = "SELECT photos.photo_id, user_photo.user_id, photos.creation_date FROM photos, user_photo WHERE photos.photo_id = user_photo.photo_id AND photos.creation_date BETWEEN LOCALTIMESTAMP - INTERVAL '1 month' AND LOCALTIMESTAMP";
-      // let queryText = "SELECT COUNT(*) FROM usage, stat_types WHERE stat_types.stat_id = usage.stat_id AND TIMESTAMP BETWEEN now() - INTERVAL '1 month' AND now()";
       let queryText = "SELECT CAST(TIMESTAMP AS DATE), COUNT(*) FROM usage, stat_types WHERE stat_types.stat_id = usage.stat_id AND (TIMESTAMP BETWEEN now() - INTERVAL '1 month' AND now()) AND (usage.stat_id = 2 OR usage.stat_id = 3) GROUP BY cast(TIMESTAMP AS DATE) ORDER BY timestamp";
       db.query(queryText)
         .then(res => {
@@ -356,7 +376,10 @@ module.exports = function(app) {
     }
   });
 
-  // Get all reqs from past day
+  /**
+   * Get all requests from past day
+   * Only acccessible to admins
+   */
   app.get('/system/stats/reqs/pastday', async (req, getres) => {
     // This performs the JWT authorization
     var user_id = getUserIdFromJWT(req, getres);
@@ -365,7 +388,7 @@ module.exports = function(app) {
     } else {
       var isAdmin = await verifyAdmin(user_id);
       if (req.headers.bus != undefined) {
-        // If the website is making the API call
+        // If the website is making the API call, allow it through
         if (req.headers.bus != "Q2cxNw==") {
           getres.status(201);
           getres.statusMessage = "Unauthorized API request";
@@ -375,7 +398,7 @@ module.exports = function(app) {
       }
       // Accessing through the API
       else {
-        // If they're a paid API user and trying to access API not thru website
+        // If they're an admin and trying to access API not thru website
         if (!isAdmin) {
           // If they're not an admin, return an error
           getres.status(309);
@@ -393,7 +416,10 @@ module.exports = function(app) {
     }
   });
 
-  // Get all reqs from past week
+  /**
+   * Get all requests from past week
+   * Only acccessible to admins
+   */
   app.get('/system/stats/reqs/pastweek', async (req, getres) => {
     // This performs the JWT authorization
     var user_id = getUserIdFromJWT(req, getres);
@@ -402,7 +428,7 @@ module.exports = function(app) {
     } else {
       var isAdmin = await verifyAdmin(user_id);
       if (req.headers.bus != undefined) {
-        // If the website is making the API call
+        // If the website is making the API call, allow it through
         if (req.headers.bus != "Q2cxNw==") {
           getres.status(201);
           getres.statusMessage = "Unauthorized API request";
@@ -412,7 +438,7 @@ module.exports = function(app) {
       }
       // Accessing through the API
       else {
-        // If they're a paid API user and trying to access API not thru website
+        // If they're an admin and trying to access API not thru website
         if (!isAdmin) {
           // If they're not an admin, return an error
           getres.status(309);
@@ -430,7 +456,10 @@ module.exports = function(app) {
     }
   });
 
-  // Get all reqs from past month
+  /**
+   * Get all uploads from past month
+   * Only acccessible to admins
+   */
   app.get('/system/stats/reqs/pastmonth', async (req, getres) => {
     // This performs the JWT authorization
     var user_id = getUserIdFromJWT(req, getres);
@@ -439,7 +468,7 @@ module.exports = function(app) {
     } else {
       var isAdmin = await verifyAdmin(user_id);
       if (req.headers.bus != undefined) {
-        // If the website is making the API call
+        // If the website is making the API call, allow it through
         if (req.headers.bus != "Q2cxNw==") {
           getres.status(201);
           getres.statusMessage = "Unauthorized API request";
@@ -467,8 +496,11 @@ module.exports = function(app) {
     }
   });
 
-  // Get space used by DB
-  app.get('/system/stats/db/spaceused', async (req, getres) => {
+  /**
+   * Get total processing time from past year
+   * Only accessible to admins
+   */
+  app.get('/system/stats/process/pastyear', async (req, getres) => {
     // This performs the JWT authorization
     var user_id = getUserIdFromJWT(req, getres);
     if (user_id == null) {
@@ -476,7 +508,7 @@ module.exports = function(app) {
     } else {
       var isAdmin = await verifyAdmin(user_id);
       if (req.headers.bus != undefined) {
-        // If the website is making the API call
+        // If the website is making the API call, allow it through
         if (req.headers.bus != "Q2cxNw==") {
           getres.status(201);
           getres.statusMessage = "Unauthorized API request";
@@ -495,8 +527,7 @@ module.exports = function(app) {
           return;
         }
       }
-      let queryText = "select pg_size_pretty(pg_database_size('aspdb'))";
-
+      let queryText = "SELECT creation_date, SUM(process_time) FROM photos WHERE (creation_date BETWEEN now() - INTERVAL '1 YEAR' AND now()) GROUP BY creation_date ORDER BY creation_date;";
       db.query(queryText)
         .then(res => {
           getres.send(res.rows);
@@ -505,8 +536,11 @@ module.exports = function(app) {
     }
   });
 
-  // Get diskspace used by linux filesystem: free, used, and total (as well as health status)
-  app.get('/system/stats/filesystem/spaceused', async (req, getres) => {
+  /**
+   * Get total processing time from past week
+   * Only accessible to admins
+   */
+  app.get('/system/stats/process/pastweek', async (req, getres) => {
     // This performs the JWT authorization
     var user_id = getUserIdFromJWT(req, getres);
     if (user_id == null) {
@@ -514,7 +548,7 @@ module.exports = function(app) {
     } else {
       var isAdmin = await verifyAdmin(user_id);
       if (req.headers.bus != undefined) {
-        // If the website is making the API call
+        // If the website is making the API call, allow it through
         if (req.headers.bus != "Q2cxNw==") {
           getres.status(201);
           getres.statusMessage = "Unauthorized API request";
@@ -525,6 +559,127 @@ module.exports = function(app) {
       // Accessing through the API
       else {
         // If they're a paid API user and trying to access API not thru website
+        if (!isAdmin) {
+          // If they're not an admin, return an error
+          getres.status(309);
+          getres.statusMessage = "Unauthorized: Regular User";
+          getres.send("Only admins may access this.");
+          return;
+        }
+      }
+      let queryText = "SELECT creation_date, SUM(process_time) FROM photos WHERE (creation_date BETWEEN now() - INTERVAL '7 DAYS' AND now()) GROUP BY creation_date ORDER BY creation_date;";
+      db.query(queryText)
+        .then(res => {
+          getres.send(res.rows);
+        })
+        .catch(e => console.error(e.stack))
+    }
+  });
+
+  /**
+   * Get total processing time from past month
+   * Only accessible to admins
+   */
+  app.get('/system/stats/process/pastmonth', async (req, getres) => {
+    // This performs the JWT authorization
+    var user_id = getUserIdFromJWT(req, getres);
+    if (user_id == null) {
+      return; // Authorization failed
+    } else {
+      var isAdmin = await verifyAdmin(user_id);
+      if (req.headers.bus != undefined) {
+        // If the website is making the API call, allow it through
+        if (req.headers.bus != "Q2cxNw==") {
+          getres.status(201);
+          getres.statusMessage = "Unauthorized API request";
+          getres.send("Unauthorized API request");
+          return;
+        }
+      }
+      // Accessing through the API
+      else {
+        // If they're a paid API user and trying to access API not thru website
+        if (!isAdmin) {
+          // If they're not an admin, return an error
+          getres.status(309);
+          getres.statusMessage = "Unauthorized: Regular User";
+          getres.send("Only admins may access this.");
+          return;
+        }
+      }
+      let queryText = "SELECT creation_date, SUM(process_time) FROM photos WHERE (creation_date BETWEEN now() - INTERVAL '1 MONTH' AND now()) GROUP BY creation_date ORDER BY creation_date;";
+      db.query(queryText)
+        .then(res => {
+          getres.send(res.rows);
+        })
+        .catch(e => console.error(e.stack))
+    }
+  });
+
+  /**
+   * Get spaced used in the database
+   * Only acccessible to admins
+   */
+  app.get('/system/stats/db/spaceused', async (req, getres) => {
+    // This performs the JWT authorization
+    var user_id = getUserIdFromJWT(req, getres);
+    if (user_id == null) {
+      return; // Authorization failed
+    } else {
+      var isAdmin = await verifyAdmin(user_id);
+      if (req.headers.bus != undefined) {
+        // If the website is making the API call, allow it through
+        if (req.headers.bus != "Q2cxNw==") {
+          getres.status(201);
+          getres.statusMessage = "Unauthorized API request";
+          getres.send("Unauthorized API request");
+          return;
+        }
+      }
+      // Accessing through the API
+      else {
+        // If they're an admin and trying to access API not thru website
+        if (!isAdmin) {
+          // If they're not an admin, return an error
+          getres.status(309);
+          getres.statusMessage = "Unauthorized: Regular User";
+          getres.send("Only admins may access this.");
+          return;
+        }
+      }
+      let queryText = "select pg_size_pretty(pg_database_size('aspdb'))";
+
+      db.query(queryText)
+        .then(res => {
+          getres.send(res.rows);
+        })
+        .catch(e => console.error(e.stack))
+    }
+  });
+
+  /**
+   * Get diskspace used by linux filesystem: free, used, and total (as well as health status)
+   * Only accessible to admins
+   */
+  app.get('/system/stats/filesystem/spaceused', async (req, getres) => {
+    // This performs the JWT authorization
+    var user_id = getUserIdFromJWT(req, getres);
+    if (user_id == null) {
+      return; // Authorization failed
+    } else {
+      var isAdmin = await verifyAdmin(user_id);
+      if (req.headers.bus != undefined) {
+        // If the website is making the API call, allow it through
+        if (req.headers.bus != "Q2cxNw==") {
+          getres.status(201);
+          getres.statusMessage = "Unauthorized API request";
+          getres.send("Unauthorized API request");
+          return;
+        }
+      }
+      // Accessing through the API
+      else {
+        // If they're an admin and trying to access API not thru website
         if (!isAdmin) {
           // If they're not an admin, return an error
           getres.status(309);

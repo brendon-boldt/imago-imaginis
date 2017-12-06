@@ -64,6 +64,24 @@
           </table>
         </div>
         <br><br>
+        <h3>Processing Times</h3>
+        <button class="btn btn-small graphbtn" (click)="this.displayWeekProcTimes();">Past Week</button>
+        <button class="btn btn-small graphbtn" (click)="this.displayMonthProcTimes();">Past Month</button>
+        <button class="btn btn-small graphbtn" (click)="this.displayYearProcTimes();">Past Year</button>
+        <br><br>
+        <div style="display: block;">
+          <canvas id="graph"
+            baseChart
+            [chartType]="'line'"
+            [datasets]="chartDataProcs"
+            [labels]="chartLabelsProcs"
+            [options]="chartOptions"
+            [legend]="true"
+            [colors]="chartColors"
+            (chartClick)="onChartClick($event)">
+          </canvas>
+        </div>
+        <br><br>
         <h3>Processing Videos</h3>
         <div class="table-responsive" style="overflow: auto; max-height: 300px;">
           <table style="float: none; margin: 0 auto;" id="statsTable" class="table-striped" height=4>

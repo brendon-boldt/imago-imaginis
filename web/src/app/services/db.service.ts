@@ -788,6 +788,66 @@ export class DBService {
     }
 
     /**
+     * Gets the stats for processing times in the past year
+     * Only accessible by admins (JWT passed to call)
+     */
+    getPastYearProcessingTime(): Promise<any> {
+      console.log("Performing GET of processing time in past year");
+      let stats = this.url + '/system/stats/process/pastyear';
+      let headers = new Headers();
+      this.handleHeader(headers);
+      headers.append('Content-Type', 'application/json');
+      let params = new URLSearchParams();
+      let jwt = sessionStorage.getItem('jwt');
+      params.append('jwt', jwt+"");
+      let options = new RequestOptions({headers: headers, search: params});
+      return this.http.get(stats, options)
+      .toPromise()
+      .then(response => response as Object)
+      .catch(this.handleError);
+    }
+
+    /**
+     * Gets the stats for processing times in the past week
+     * Only accessible by admins (JWT passed to call)
+     */
+    getPastWeekProcessingTime(): Promise<any> {
+      console.log("Performing GET of processing time in past week");
+      let stats = this.url + '/system/stats/process/pastweek';
+      let headers = new Headers();
+      this.handleHeader(headers);
+      headers.append('Content-Type', 'application/json');
+      let params = new URLSearchParams();
+      let jwt = sessionStorage.getItem('jwt');
+      params.append('jwt', jwt+"");
+      let options = new RequestOptions({headers: headers, search: params});
+      return this.http.get(stats, options)
+      .toPromise()
+      .then(response => response as Object)
+      .catch(this.handleError);
+    }
+
+    /**
+     * Gets the stats for processing times in the past month
+     * Only accessible by admins (JWT passed to call)
+     */
+    getPastMonthProcessingTime(): Promise<any> {
+      console.log("Performing GET of processing time in past month");
+      let stats = this.url + '/system/stats/process/pastmonth';
+      let headers = new Headers();
+      this.handleHeader(headers);
+      headers.append('Content-Type', 'application/json');
+      let params = new URLSearchParams();
+      let jwt = sessionStorage.getItem('jwt');
+      params.append('jwt', jwt+"");
+      let options = new RequestOptions({headers: headers, search: params});
+      return this.http.get(stats, options)
+      .toPromise()
+      .then(response => response as Object)
+      .catch(this.handleError);
+    }
+
+    /**
      * Sets a photo as reported
      * Only accessible to users (JWT passed to call)
      * @param photo_id the id of the photo to be marked as flagged

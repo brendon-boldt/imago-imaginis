@@ -28,6 +28,9 @@ export class SystemStatsComponent {
   pastDayReqCount: any;
   pastWeekReqCount: any;
   pastMonthReqCount: any;
+  pastYearProcTime: any;
+  pastMonthProcTime: any;
+  pastWeekProcTime: any;
   flaggedPhotos: any;
   flaggedVideos: any;
 // ------------------------------------- CHARTS -------------------------------------------
@@ -43,6 +46,10 @@ export class SystemStatsComponent {
   // Data for the number of data requests
   chartDataReqs = [
     { data: [], label: 'Requests' },
+  ];
+  // Data for processing time
+  chartDataProcs = [
+    { data: [], label: 'Processing Time (seconds)' },
   ];
   // Settings for chart colors on the page
   chartColors = [
@@ -64,6 +71,7 @@ export class SystemStatsComponent {
   // The different x-axis points for the graphs
   chartLabelsUploads = [];
   chartLabelsReqs = [];
+  chartLabelsProcs = [];
 // -----------------------------------------------------------------------------------------
   
   // Constructor for the page
@@ -98,9 +106,16 @@ export class SystemStatsComponent {
     this.flaggedPhotos = res.json();
     res = await this.db.getFlaggedVideos();
     this.flaggedVideos = res.json();
-    // Display charts for number of uploads and number of requests within the past month
+    res = await this.db.getPastYearProcessingTime();
+    this.pastYearProcTime = res.json();
+    res = await this.db.getPastMonthProcessingTime();
+    this.pastMonthProcTime = res.json();
+    res = await this.db.getPastWeekProcessingTime();
+    this.pastWeekProcTime = res.json();
+    // Display charts for number of uploads, number of requests, and processing times within the past month
     this.displayMonthUploads();
     this.displayMonthReqs();
+    this.displayMonthProcTimes();
     // Once all data has been loaded, we can display the charts
     this.dataReady = true;
   }
@@ -161,6 +176,33 @@ export class SystemStatsComponent {
     for(var i=0; i<this.pastWeekReqCount.length; i++){
       this.chartLabelsReqs.push(this.pastWeekReqCount[i].timestamp);
       this.chartDataReqs[0].data.push(this.pastWeekReqCount[i].count);
+    }
+  }
+  // Puts received data from DB about processing time from past year into processing time chart
+  displayYearProcTimes() {
+    this.chartLabelsProcs = [];
+    this.chartDataProcs[0].data = [];
+    for(var i=0; i<this.pastYearProcTime.length; i++){
+      this.chartLabelsProcs.push(this.pastYearProcTime[i].creation_date);
+      this.chartDataProcs[0].data.push(this.pastYearProcTime[i].sum/1000);
+    }
+  }
+  // Puts received data from DB about processing time from past month into processing time chart
+  displayMonthProcTimes() {
+    this.chartLabelsProcs = [];
+    this.chartDataProcs[0].data = [];
+    for(var i=0; i<this.pastMonthProcTime.length; i++){
+      this.chartLabelsProcs.push(this.pastMonthProcTime[i].creation_date);
+      this.chartDataProcs[0].data.push(this.pastMonthProcTime[i].sum/1000);
+    }
+  }
+  // Puts received data from DB about processing time from past week into processing time chart
+  displayWeekProcTimes() {
+    this.chartLabelsProcs = [];
+    this.chartDataProcs[0].data = [];
+    for(var i=0; i<this.pastWeekProcTime.length; i++){
+      this.chartLabelsProcs.push(this.pastWeekProcTime[i].creation_date);
+      this.chartDataProcs[0].data.push(this.pastWeekProcTime[i].sum/1000);
     }
   }
 }
