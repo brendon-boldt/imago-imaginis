@@ -1,3 +1,11 @@
+/**
+ * Imago Imaginis
+ * -----------------------------------------------------
+ * These are the routes that are called in order to do general interface functions with the database, such as getting filters and reporting content.
+ * These are only accessible to any users of the website, and paid users via the API.
+ * These routes are protected from public API usage, unless the caller has a JWT that is verified to be a paid user.
+ * Some of these routes are only accessible to users who have been authenticated
+ */
 const db = require('../db');
 const multer = require('multer');
 const path = require('path');
@@ -24,7 +32,9 @@ var verifyPaid = async function(user_id) {
   }
 }
 
-// Verifies if JWT is good
+/**
+ * Verifies if the JWT passed in the call is valid
+ */
 var getUserIdFromJWT = function(req, getres) {
   var token;
   // JWT is passed either in query or in body
@@ -47,10 +57,10 @@ var getUserIdFromJWT = function(req, getres) {
 module.exports = function(app) {
   /**
    * Returns all filter ids and their names
+   * This route is only accessible via API to paid users.
+   * Accessible to all through website
    */
   app.get('/filters', async (req, getres) => {
-    // Making sure paid user or website is accessing the API
-    // This performs the JWT authorization
     if (req.headers.bus != undefined) {
       // If the website is making the API call
       if (req.headers.bus != "Q2cxNw==") {
@@ -89,6 +99,8 @@ module.exports = function(app) {
   /**
    * Get filter path based on passed filter_id
    * Takes in the request query's parameters
+   * This route is only accessible via API to paid users.
+   * Accessible to all through website
    */
   app.get('/filter', async (req, getres) => {
     if (req.query.id == null) {
@@ -96,10 +108,8 @@ module.exports = function(app) {
       getres.statusMessage = "Missing Filter ID";
       getres.send("Please specify a filter id.")
     }
-    // Making sure paid user or website is accessing the API
-    // This performs the JWT authorization
     if (req.headers.bus != undefined) {
-      // If the website is making the API call
+      // If the website is making the API call, allow it through
       if (req.headers.bus != "Q2cxNw==") {
         getres.status(201);
         getres.statusMessage = "Unauthorized API request";
@@ -138,6 +148,8 @@ module.exports = function(app) {
   /**
    * Set a photo as reported on passed photo_id
    * Takes in the request body's parameters
+   * This route is only accessible via API to paid users.
+   * This route is only accessible via website for users who are logged in.
    */
   app.post('/report/photo', async (req, getres) => {
     // This performs the JWT authorization
@@ -147,7 +159,7 @@ module.exports = function(app) {
     } else {
       var isPaid = await verifyPaid(user_id);
       if (req.headers.bus != undefined) {
-        // If the website is making the API call
+        // If the website is making the API call, let it through
         if (req.headers.bus != "Q2cxNw==") {
           getres.status(201);
           getres.statusMessage = "Unauthorized API request";
@@ -185,6 +197,8 @@ module.exports = function(app) {
   /**
    * Set a video as reported on passed video_id
    * Takes in the request body's parameters
+   * This route is only accessible via API to paid users.
+   * This route is only acccessible through the website for users who are logged in
    */
   app.post('/report/video', async (req, getres) => {
     // This performs the JWT authorization
@@ -194,7 +208,7 @@ module.exports = function(app) {
     } else {
       var isPaid = await verifyPaid(user_id);
       if (req.headers.bus != undefined) {
-        // If the website is making the API call
+        // If the website is making the API call, allow it through
         if (req.headers.bus != "Q2cxNw==") {
           getres.status(201);
           getres.statusMessage = "Unauthorized API request";
@@ -228,5 +242,4 @@ module.exports = function(app) {
         .catch(e => console.error(e.stack))
     }
   });
-
 }

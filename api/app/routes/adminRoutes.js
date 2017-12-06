@@ -1,3 +1,9 @@
+/**
+ * Imagino Imaginis
+ * --------------------------------------------
+ * These are the routes that are accessible by an administrator account
+ * Only admins are allowed to access these routes
+ */
 const db = require('../db');
 const multer = require('multer');
 const path = require('path');
@@ -265,8 +271,6 @@ module.exports = function(app) {
           return;
         }
       }
-      // let queryText = "SELECT photos.photo_id, user_photo.user_id, photos.creation_date FROM photos, user_photo WHERE photos.photo_id = user_photo.photo_id AND photos.creation_date BETWEEN LOCALTIMESTAMP - INTERVAL '1 day' AND LOCALTIMESTAMP";
-      // let queryText = "SELECT COUNT(*) FROM usage, stat_types WHERE stat_types.stat_id = usage.stat_id AND TIMESTAMP BETWEEN now() - INTERVAL '1 day' AND now()";
       let queryText = "SELECT CAST(TIMESTAMP AS TIME), COUNT(*) FROM usage, stat_types WHERE stat_types.stat_id = usage.stat_id AND (TIMESTAMP BETWEEN now() - INTERVAL '1 day' AND now()) AND (usage.stat_id = 2 OR usage.stat_id = 3) GROUP BY cast(TIMESTAMP AS TIME) ORDER BY timestamp";
       db.query(queryText)
         .then(res => {
@@ -304,8 +308,6 @@ module.exports = function(app) {
           return;
         }
       }
-      // let queryText = "SELECT photos.photo_id, user_photo.user_id, photos.creation_date FROM photos, user_photo WHERE photos.photo_id = user_photo.photo_id AND photos.creation_date BETWEEN LOCALTIMESTAMP - INTERVAL '7 days' AND LOCALTIMESTAMP";
-      // let queryText = "SELECT COUNT(*) FROM usage, stat_types WHERE stat_types.stat_id = usage.stat_id AND TIMESTAMP BETWEEN now() - INTERVAL '7 days' AND now()";
       let queryText = "SELECT CAST(TIMESTAMP AS DATE), COUNT(*) FROM usage, stat_types WHERE stat_types.stat_id = usage.stat_id AND (TIMESTAMP BETWEEN now() - INTERVAL '7 days' AND now()) AND (usage.stat_id = 2 OR usage.stat_id = 3) GROUP BY cast(TIMESTAMP AS DATE) ORDER BY timestamp";
       db.query(queryText)
         .then(res => {

@@ -1,7 +1,14 @@
+/**
+ * Imagino Imaginis
+ * ----------------------------------------------------------------
+ * This is the core API server, served on https.
+ * It serves as the middleware between the database and the front-end and stylizer.
+ * This API may also be used by users outside of the website, provided they are a paid user.
+ */
 const express = require('express');
-const bodyParser = require('body-parser');
+const bodyParser = require('body-parser'); // required to parse JSON 
 const mountRoutes = require('./app/routes');
-const https = require('https');
+const https = require('https'); // serve on https
 const fs = require('fs');
 
 const app = express();

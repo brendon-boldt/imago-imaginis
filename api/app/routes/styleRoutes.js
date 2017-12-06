@@ -1,3 +1,10 @@
+/**
+ * Imago Imaginis
+ * --------------------------------------------------------------------------
+ * These are the routes that the stylizer calls upon.
+ * Only the stylizer can call these routes, as the hash in the config.js file must
+ * match the hash located in the config.js file on the stylizer.
+ */
 const db = require('../db');
 const path = require('path');
 const fs = require('fs');

@@ -1,3 +1,10 @@
+/**
+ * Imago Imaginis
+ * -----------------------------------------------------
+ * These are the routes that are called in order to upload photos and videos to the database.
+ * These are only accessible to any users of the website, and paid users via the API.
+ * These routes are protected from public API usage, unless the caller has a JWT that is verified to be a paid user.
+ */
 const db = require('../db');
 const multer = require('multer');
 const path = require('path');
@@ -34,7 +41,9 @@ var verifyPaid = async function(user_id) {
   }
 }
 
-// Verifies if JWT is good
+/**
+ * Verifies that a JWT is valid.
+ */
 var getUserIdFromJWT = function(req, getres) {
   var token;
   // JWT is passed either in query or in body
@@ -54,22 +63,37 @@ var getUserIdFromJWT = function(req, getres) {
   }
 }
 
+/**
+ * Performs a file system deletion
+ */
 var deleteFromFS = function(path) {
   fs.unlinkSync(path);
 }
 
+/**
+ * Performs a deletion of a record from unfiltered_photos.
+ * Called when a photo fails to meet validation requirements
+ */
 var deleteFailedPhotoFromDB = function(photo_id) {
   let queryText = "DELETE FROM unfiltered_photo WHERE unfiltered_photo_id = $1";
   let values = [photo_id];
   var result = db.param_query(queryText, values);
 }
 
+/**
+ * Performs a deletion of a record from unfiltered_videos.
+ * Called when a video fails to meet validation requirements
+ */
 var deleteFailedVideoFromDB = function(video_id) {
   let queryText = "DELETE FROM unfiltered_video WHERE unfiltered_video_id = $1";
   let values = [video_id];
   var result = db.param_query(queryText, values);
 }
 
+/**
+ * Performs a deletion of a record from filters.
+ * Called when a filter fails to meet validation requirements
+ */
 var deleteFailedFilterFromDB = function(filter_id) {
   let queryText = "DELETE FROM filters WHERE filter_id = $1";
   let values = [filter_id];
@@ -151,7 +175,7 @@ module.exports = function(app) {
       if (!isPaid) {
         let queryText = "SELECT COUNT(*) FROM user_photo WHERE user_id = $1";
         let values = [user_id];
-        result = await db.param_query(queryText, values)
+        var result = await db.param_query(queryText, values)
         if (result.rows[0] >= MAX_PHOTO_UPLOADS_FREE) {
           getres.status(605);
           getres.statusMessage = "Max uploads";
@@ -161,6 +185,8 @@ module.exports = function(app) {
           return;
         }
       }
+      // PERFORM FILE VALIDATIONS
+      // If no file was passed to the API
       if (!req.file) {
         getres.status(503);
         getres.statusMessage = "No photo";
@@ -169,6 +195,7 @@ module.exports = function(app) {
         deleteFailedPhotoFromDB(req.file.unfiltered_photo_id); // Delete the unfiltered photo entry in the DB, given its photo id
         return;
       }
+      // If the file passed to the API was not a PNG or JPG
       if (req.fileValidationError) {
         getres.status(502);
         getres.statusMessage = "Invalid file format";
@@ -177,15 +204,7 @@ module.exports = function(app) {
         deleteFailedPhotoFromDB(req.file.unfiltered_photo_id); // Delete the unfiltered photo entry in the DB, given its photo id
         return;
       }
-      // TODO: Sending headers with file size checking currently not working
-      if (req.fileTooBig) {
-        getres.status(501);
-        getres.statusMessage = "File size limit exceeded! 7MB max";
-        getres.send("File size limit exceeded! 7MB max");
-        deleteFromFS(config.uploadsPath + "/" + req.file.filename); // Delete the photo from the file system, given its path
-        deleteFailedPhotoFromDB(req.file.unfiltered_photo_id); // Delete the unfiltered photo entry in the DB, given its photo id
-        return;
-      }
+      // If the file passed to the API was too big
       if (req.file.size > MAX_PHOTO_UPLOAD_SIZE) {
         getres.status(501);
         getres.statusMessage = "File size limit exceeded! 7MB max";
@@ -194,6 +213,7 @@ module.exports = function(app) {
         deleteFailedPhotoFromDB(req.file.unfiltered_photo_id); // Delete the unfiltered photo entry in the DB, given its photo id
         return;
       }
+      // If no filter id was passed to the API
       if (!req.body.filter_id) {
         getres.status(504);
         getres.statusMessage = "No filter id";
@@ -207,10 +227,7 @@ module.exports = function(app) {
       // Update record in DB to have file size and path
       var queryText = "UPDATE unfiltered_photo SET (size, height, width, path) = ($1, $2, $3, $4) WHERE unfiltered_photo_id = $5;";
       var values = [req.file.size, 260, 260, path, req.file.unfiltered_photo_id];
-      try {
-        result = await db.param_query(queryText, values);
-      } catch (e) {
-      }
+      var result = await db.param_query(queryText, values);
       // Need to generate entry in Photos to have photo id so we can create entry in user_photo
       queryText = "INSERT INTO photos (size, creation_date, path, process_time, flag, display, height, width) VALUES ($1, NOW(), '', 0, false, false, 0, 0) RETURNING photo_id;";
       values = [req.file.size];
@@ -285,7 +302,7 @@ module.exports = function(app) {
           return;
         }
       }
-      // Accessing through the API and if they're a paid API user and trying to access API not thru website
+      // Only paid users may access this API
       else {
         if (!isPaid) {
           // If they're not paid, isPaid returns error
@@ -297,6 +314,8 @@ module.exports = function(app) {
           return;
         }
       }
+      // FILE VALIDATION CHECKS
+      // Checks to make sure video was uploaded
       if (!req.file) {
         getres.status(503);
         getres.statusMessage = "No video";
@@ -314,6 +333,7 @@ module.exports = function(app) {
         deleteFailedVideoFromDB(req.file.unfiltered_video_id); // Delete the unfiltered photo entry in the DB, given its photo id
         return;
       }
+      // Checks to make sure filter id was passed
       if (!req.body.filter_id) {
         getres.status(504);
         getres.statusMessage = "No filter id";
@@ -342,7 +362,7 @@ module.exports = function(app) {
   });
 
   /**
-   * Performs filter upload. Only accessible to paid users.
+   * Performs filter upload. Only accessible to paid users via website.
    */
   var filterStorage = multer.diskStorage({
     destination: function(req, file, cb) {
@@ -486,9 +506,8 @@ module.exports = function(app) {
       }
       // Accessing through the API
       else {
-        // If they're a paid API user and trying to access API not thru website
+        // Only allow a paid API user to access API not thru website
         if (!isPaid) {
-          // If they're not paid, isPaid returns error
           getres.status(303);
           getres.statusMessage = "Unauthorized: Free User";
           getres.send("Please upgrade account to utilize this feature");
@@ -497,12 +516,15 @@ module.exports = function(app) {
         }
       }
     }
+    // FILE VALIDATION CHECKS
+    // Check to see if they uploaded a file
     if (!req.file) {
       getres.status(503);
       getres.statusMessage = "No photo";
       getres.send("Please upload a photo");
       deleteFromFS(config.uploadsPath + "/" + req.file.filename);
     }
+    // Check to see if they uploaded a PNG or JPG
     if (req.fileValidationError) {
       getres.status(502);
       getres.statusMessage = "Image must be JPG or PNG";
@@ -517,5 +539,4 @@ module.exports = function(app) {
     result = await db.param_query(queryText, values);
     getres.send("Upload complete!");
   });
-  
 };

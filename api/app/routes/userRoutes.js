@@ -1,3 +1,11 @@
+/**
+ * Imago Imaginis
+ * -----------------------------------------------------
+ * These are the routes that are called in order to do user functions with the database, such as login, account creation, and returning photos user owns.
+ * These are only accessible to any users of the website, and paid users via the API.
+ * These routes are protected from public API usage, unless the caller has a JWT that is verified to be a paid user.
+ * Some of these routes are only accessible to users who have been authenticated
+ */
 const db = require('../db');
 const multer = require('multer');
 const path = require('path');
@@ -61,8 +69,9 @@ var deleteFromFS = function(path) {
 
 module.exports = function(app) {
   /**
-   * Inserts an entry into the asp_users' table
-   * Takes in the request body's parameters
+   * Inserts an entry into the asp_users' table.
+   * Takes in the request body's parameters.
+   * This route is not accessible via API.
    */
   app.post('/user/create', (req, getres) => {
     // Verify if it's coming from website.
@@ -86,6 +95,7 @@ module.exports = function(app) {
       getres.send("Missing user information. Please provide all user information. Password is optional");
       return;
     }
+    // Make sure user does not pass in leading or trailing spaces
     var firstName = req.body.first_name.trim();
     var lastName = req.body.last_name.trim();
     var email = req.body.email.trim();
@@ -102,9 +112,9 @@ module.exports = function(app) {
       getres.send("Please enter a valid email.");
       return;
     }
-    const hash = crypto.createHash('sha256');
+    const hash = crypto.createHash('sha256'); 
     hash.update(password);
-    password = hash.digest('hex');
+    password = hash.digest('hex'); // Hash the user's password to store in the DB
     var date = new Date(Date.now()).toLocaleDateString();
     // Verify email is unique
     var queryText = "SELECT * FROM ASP_USERS WHERE LOWER(email) = LOWER($1);";
@@ -136,8 +146,10 @@ module.exports = function(app) {
   });
 
   /**
-   * Modifies an entry in the asp_users' table
-   * Takes in the request body's parameters
+   * Modifies an entry in the asp_users' table.
+   * Takes in the request body's parameters.
+   * This route is only accessible via API to paid users.
+   * This route is only accessible via the website if the user is logged in
    */
   app.post('/user/alter', async (req, getres) => {
     // This performs the JWT authorization
@@ -147,7 +159,7 @@ module.exports = function(app) {
     } else {
       var isPaid = await verifyPaid(user_id);
       if (req.headers.bus != undefined) {
-        // If the website is making the API call
+        // If the website is making the API call, allow it through
         if (req.headers.bus != "Q2cxNw==") {
           getres.status(201);
           getres.statusMessage = "Unauthorized API request";
@@ -159,14 +171,12 @@ module.exports = function(app) {
       else {
         // If they're a paid API user and trying to access API not thru website
         if (!isPaid) {
-          // If they're not paid, isPaid returns error
           getres.status(303);
           getres.statusMessage = "Unauthorized: Free User";
           getres.send("Please upgrade account to utilize this feature")
           return;
         }
       }
-      // var id = req.body.user_id;
       // Verify that they provided information to all the fields
       if (req.body.first_name == null || req.body.last_name == null || req.body.email == null) {
         getres.status(406);
@@ -174,6 +184,7 @@ module.exports = function(app) {
         getres.send("Missing user information. Please provide all user information. Password is optional");
         return;
       }
+      // Trim any trailing/leading spaces
       var firstName = req.body.first_name.trim();
       var lastName = req.body.last_name.trim();
       var email = req.body.email.trim();
@@ -203,7 +214,7 @@ module.exports = function(app) {
             getres.send("Email already registered to account");
           } else {
             // Email is unique
-            // If password is empty, leave it alone
+            // If password is passed as empty, leave it alone (don't update it)
             if (password == "" || password == null) {
               queryText = "UPDATE asp_users SET (first_name, last_name, email) = ($1, $2, $3) WHERE user_id = $4;";
               values = [firstName, lastName, email, user_id];
@@ -233,6 +244,7 @@ module.exports = function(app) {
    * Takes in the request query's parameters
    * Signs a JWT token and returns it to the user
    * If the user doesn't exist, return an error
+   * This route is only accessible via API to paid users, and via website for any users
    */
   app.get('/user/login', async (req, getres) => {
     var email = req.query.email;
@@ -256,7 +268,7 @@ module.exports = function(app) {
         return;
       }
     } else {
-      // Verify if paid user using EMAIL and PASSWORD credentials
+      // Verify if paid user using EMAIL and PASSWORD credentials, and let them continue to log in through API if they are indeed a paid user
       let queryText = "SELECT * FROM ASP_USERS LEFT JOIN paid_users ON asp_users.user_id = paid_users.paid_id WHERE email = $1 AND password = $2;";
       let values = [email, password];
       result = await db.param_query(queryText, values)
@@ -285,6 +297,7 @@ module.exports = function(app) {
           var payload = {
             user_id: res.rows[0].user_id,
           };
+          // Signs the JWT with a key and sets the JWT to expire within an hour
           var token = jwt.sign(payload, "thisisthekey", {
             expiresIn: '1h' // Sets the token to expire in an hour
           });
@@ -309,10 +322,12 @@ module.exports = function(app) {
   /**
    * Returns users that match a query string
    * Takes in the request query's parameters
+   * This route is only accessible via API to paid users.
+   * Accessible normally through website.
    */
   app.get('/user/search', async (req, getres) => {
     if (req.headers.bus != undefined) {
-      // If the website is making the API call
+      // If the website is making the API call, allow it through
       if (req.headers.bus != "Q2cxNw==") {
         getres.status(201);
         getres.statusMessage = "Unauthorized API request";
@@ -357,10 +372,12 @@ module.exports = function(app) {
   /**
    * Returns user info for user with id
    * Takes in the request query's parameters
+   * This route is only accessible via API to paid users.
+   * Accessible to all through website
    */
   app.get('/user/info', async (req, getres) => {
     if (req.headers.bus != undefined) {
-      // If the website is making the API call
+      // If the website is making the API call, allow it through
       if (req.headers.bus != "Q2cxNw==") {
         getres.status(201);
         getres.statusMessage = "Unauthorized API request";
@@ -405,10 +422,12 @@ module.exports = function(app) {
   /**
    * Returns user's unstyled photos for user with id
    * Takes in the request query's parameters
+   * This route is only accessible via API to paid users.
+   * Accessible to all through website
    */
   app.get('/user/photos/unstyled', async (req, getres) => {
     if (req.headers.bus != undefined) {
-      // If the website is making the API call
+      // If the website is making the API call, allow it through
       if (req.headers.bus != "Q2cxNw==") {
         getres.status(201);
         getres.statusMessage = "Unauthorized API request";
@@ -453,12 +472,12 @@ module.exports = function(app) {
   /**
    * Returns user's unstyled videos for user with id
    * Takes in the request query's parameters
+   * This route is only accessible via API to paid users.
+   * Accessible to all through website
    */
   app.get('/user/videos/unstyled', async (req, getres) => {
-    // Making sure paid API user or website is accessing the API
-    // This performs the JWT authorization
     if (req.headers.bus != undefined) {
-      // If the website is making the API call
+      // If the website is making the API call, allow it through
       if (req.headers.bus != "Q2cxNw==") {
         getres.status(201);
         getres.statusMessage = "Unauthorized API request";
@@ -501,9 +520,10 @@ module.exports = function(app) {
   });
 
   /**
-   * Creates a paid user with id
+   * Upgrades a user to a paid account
    * Takes in the request body's parameters
-   * TODO: How to hide from the public?
+   * This route is only accessible via API to paid users (but of course, why would they want to call this route again? They're already paid!)
+   * This route is only accessible via the website if the user is logged in
    */
   app.post('/user/paid', async (req, getres) => {
     // Making sure paid API user or website is accessing the API
@@ -513,7 +533,7 @@ module.exports = function(app) {
       return; // Authorization failed
     } else {
       if (req.headers.bus != undefined) {
-        // If the website is making the API call
+        // If the website is making the API call, allow it through
         if (req.headers.bus != "Q2cxNw==") {
           getres.status(201);
           getres.statusMessage = "Unauthorized API request";
@@ -531,15 +551,8 @@ module.exports = function(app) {
       }
     }
     stat.logStatRequest(user_id);
-    var id = req.body.user_id;
-    if (id == null) {
-      getres.status(406);
-      getres.statusMessage = "Missing info";
-      getres.send("Missing information. Refer to API documentation for all necessary information.");
-      return;
-    }
     var queryText = "SELECT * FROM Paid_Users WHERE paid_id = $1;";
-    let values = [id];
+    let values = [user_id];
     db.param_query(queryText, values)
       .then(res => {
         if (res == undefined) {
@@ -548,7 +561,7 @@ module.exports = function(app) {
         }
         if (res.rowCount === 0) {
           queryText = "INSERT INTO Paid_Users (paid_id) VALUES ($1);";
-          let values = [id];
+          let values = [user_id];
           db.param_query(queryText, values).then(res => {
             if (res != undefined) {
               getres.send("Paid user created");
@@ -566,6 +579,8 @@ module.exports = function(app) {
    * Set a photo to display or not on user profile on passed photo_id
    * Takes in the request body's parameters
    * Make sure the photo is owned by the person 
+   * This route is only accessible via API to paid users.
+   * This route is only accessible via the website if the user is logged in
    */
   app.post('/user/photos/set-display', async (req, getres) => {
     // This performs the JWT authorization
@@ -575,7 +590,7 @@ module.exports = function(app) {
     } else {
       var isPaid = await verifyPaid(user_id);
       if (req.headers.bus != undefined) {
-        // If the website is making the API call
+        // If the website is making the API call, allow it through
         if (req.headers.bus != "Q2cxNw==") {
           getres.status(201);
           getres.statusMessage = "Unauthorized API request";
@@ -635,6 +650,8 @@ module.exports = function(app) {
   /**
    * Set a video to display or not on user profile on passed video_id
    * Takes in the request body's parameters
+   * This route is only accessible via API to paid users.
+   * This route is only accessible via the website if the user is logged in
    */
   app.post('/user/videos/set-display', async (req, getres) => {
     // This performs the JWT authorization
@@ -644,7 +661,7 @@ module.exports = function(app) {
     } else {
       var isPaid = await verifyPaid(user_id);
       if (req.headers.bus != undefined) {
-        // If the website is making the API call
+        // If the website is making the API call, allow it through
         if (req.headers.bus != "Q2cxNw==") {
           getres.status(201);
           getres.statusMessage = "Unauthorized API request";
@@ -699,10 +716,12 @@ module.exports = function(app) {
   /**
    * Returns user's styled videos for user with id
    * Takes in the request query's parameters
+   * This route is only accessible via API to paid users.
+   * Accessible to all through website
    */
   app.get('/user/videos', async (req, getres) => {
     if (req.headers.bus != undefined) {
-      // If the website is making the API call
+      // If the website is making the API call, allow it through
       if (req.headers.bus != "Q2cxNw==") {
         getres.status(201);
         getres.statusMessage = "Unauthorized API request";
@@ -747,12 +766,12 @@ module.exports = function(app) {
   /**
    * Returns user's styled photos for user with id
    * Takes in the request query's parameters
+   * This route is only accessible via API to paid users.
+   * Accessible to all through website
    */
   app.get('/user/photos', async (req, getres) => {
-    // Making sure paid user or website is accessing the API
-    // This performs the JWT authorization
     if (req.headers.bus != undefined) {
-      // If the website is making the API call
+      // If the website is making the API call, allow it through
       if (req.headers.bus != "Q2cxNw==") {
         getres.status(201);
         getres.statusMessage = "Unauthorized API request";
@@ -796,6 +815,8 @@ module.exports = function(app) {
 
   /**
    * Deletes the photo id passed in that belongs to that user
+   * This route is only accessible via API to paid users.
+   * Accessible to all through website
    */
   app.post('/user/photos/delete', async (req, getres) => {
     // This performs the JWT authorization
@@ -805,7 +826,7 @@ module.exports = function(app) {
     } else {
       var isPaid = await verifyPaid(user_id);
       if (req.headers.bus != undefined) {
-        // If the website is making the API call
+        // If the website is making the API call, allow it through
         if (req.headers.bus != "Q2cxNw==") {
           getres.status(201);
           getres.statusMessage = "Unauthorized API request";
@@ -860,6 +881,8 @@ module.exports = function(app) {
 
   /**
    * Deletes the video id passed in that belongs to that user
+   * This route is only accessible via API to paid users.
+   * Accessible to all through website
    */
   app.post('/user/videos/delete', async (req, getres) => {
     // This performs the JWT authorization
@@ -869,7 +892,7 @@ module.exports = function(app) {
     } else {
       var isPaid = await verifyPaid(user_id);
       if (req.headers.bus != undefined) {
-        // If the website is making the API call
+        // If the website is making the API call, allow it through
         if (req.headers.bus != "Q2cxNw==") {
           getres.status(201);
           getres.statusMessage = "Unauthorized API request";
@@ -924,11 +947,12 @@ module.exports = function(app) {
 
   /**
    * Returns photos the user chooses to display on their profile
+   * This route is only accessible via API to paid users.
+   * Accessible to all through website
    */
   app.get('/user/photos/display', async (req, getres) => {
-    // This performs the JWT authorization
     if (req.headers.bus != undefined) {
-      // If the website is making the API call
+      // If the website is making the API call, allow it through
       if (req.headers.bus != "Q2cxNw==") {
         getres.status(201);
         getres.statusMessage = "Unauthorized API request";
@@ -973,11 +997,12 @@ module.exports = function(app) {
 
   /**
    * Returns videos the user chooses to display on their profile
+   * This route is only accessible via API to paid users.
+   * Accessible to all through website
    */
   app.get('/user/videos/display', async (req, getres) => {
-    // This performs the JWT authorization
     if (req.headers.bus != undefined) {
-      // If the website is making the API call
+      // If the website is making the API call, allow it through
       if (req.headers.bus != "Q2cxNw==") {
         getres.status(201);
         getres.statusMessage = "Unauthorized API request";
@@ -1021,13 +1046,15 @@ module.exports = function(app) {
 
   /**
    * Returns the number of photos the user has
+   * This route is only accessible via API to paid users.
+   * This route is only accessible via the website if the user is logged in
    */
   app.get('/user/photos/num', async (req, getres) => {
     var user_id = getUserIdFromJWT(req, getres);
     var isPaid = await verifyPaid(user_id);
     // This performs the JWT authorization
     if (req.headers.bus != undefined) {
-      // If the website is making the API call
+      // If the website is making the API call, allow it through
       if (req.headers.bus != "Q2cxNw==") {
         getres.status(201);
         getres.statusMessage = "Unauthorized API request";
@@ -1070,5 +1097,4 @@ module.exports = function(app) {
     }
     getres.send(result.rows[0]);
   });
-
 }
