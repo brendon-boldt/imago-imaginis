@@ -129,7 +129,7 @@ export class SystemStatsComponent {
     this.chartLabelsUploads = [];
     this.chartDataUploads[0].data = [];
     for(var i=0; i<this.pastMonthUploadCount.length; i++){
-      this.chartLabelsUploads.push(this.pastMonthUploadCount[i].timestamp);
+      this.chartLabelsUploads.push(this.pastMonthUploadCount[i].timestamp.substring(0, this.pastMonthUploadCount[i].timestamp.length - 14));
       this.chartDataUploads[0].data.push(this.pastMonthUploadCount[i].count);
     }
   }
@@ -147,7 +147,7 @@ export class SystemStatsComponent {
     this.chartLabelsUploads = [];
     this.chartDataUploads[0].data = [];
     for(var i=0; i<this.pastWeekUploadCount.length; i++){
-      this.chartLabelsUploads.push(this.pastWeekUploadCount[i].timestamp);
+      this.chartLabelsUploads.push(this.pastWeekUploadCount[i].timestamp.substring(0, this.pastWeekUploadCount[i].timestamp.length - 14));
       this.chartDataUploads[0].data.push(this.pastWeekUploadCount[i].count);
     }
   }
@@ -156,7 +156,7 @@ export class SystemStatsComponent {
     this.chartLabelsReqs = [];
     this.chartDataReqs[0].data = [];
     for(var i=0; i<this.pastMonthReqCount.length; i++){
-      this.chartLabelsReqs.push(this.pastMonthReqCount[i].timestamp);
+      this.chartLabelsReqs.push(this.pastMonthReqCount[i].timestamp.substring(0, this.pastMonthReqCount[i].timestamp.length - 14));
       this.chartDataReqs[0].data.push(this.pastMonthReqCount[i].count);
     }
   }
@@ -174,7 +174,7 @@ export class SystemStatsComponent {
     this.chartLabelsReqs = [];
     this.chartDataReqs[0].data = [];
     for(var i=0; i<this.pastWeekReqCount.length; i++){
-      this.chartLabelsReqs.push(this.pastWeekReqCount[i].timestamp);
+      this.chartLabelsReqs.push(this.pastWeekReqCount[i].timestamp.substring(0, this.pastWeekReqCount[i].timestamp.length - 14));
       this.chartDataReqs[0].data.push(this.pastWeekReqCount[i].count);
     }
   }
@@ -183,7 +183,7 @@ export class SystemStatsComponent {
     this.chartLabelsProcs = [];
     this.chartDataProcs[0].data = [];
     for(var i=0; i<this.pastYearProcTime.length; i++){
-      this.chartLabelsProcs.push(this.pastYearProcTime[i].creation_date);
+      this.chartLabelsProcs.push(this.pastYearProcTime[i].creation_date.substring(0, this.pastYearProcTime[i].creation_date.length - 14));
       this.chartDataProcs[0].data.push(this.pastYearProcTime[i].sum/1000);
     }
   }
@@ -192,7 +192,7 @@ export class SystemStatsComponent {
     this.chartLabelsProcs = [];
     this.chartDataProcs[0].data = [];
     for(var i=0; i<this.pastMonthProcTime.length; i++){
-      this.chartLabelsProcs.push(this.pastMonthProcTime[i].creation_date);
+      this.chartLabelsProcs.push(this.pastMonthProcTime[i].creation_date.substring(0, this.pastMonthProcTime[i].creation_date.length - 14));
       this.chartDataProcs[0].data.push(this.pastMonthProcTime[i].sum/1000);
     }
   }
@@ -201,7 +201,7 @@ export class SystemStatsComponent {
     this.chartLabelsProcs = [];
     this.chartDataProcs[0].data = [];
     for(var i=0; i<this.pastWeekProcTime.length; i++){
-      this.chartLabelsProcs.push(this.pastWeekProcTime[i].creation_date);
+      this.chartLabelsProcs.push(this.pastWeekProcTime[i].creation_date.substring(0, this.pastWeekProcTime[i].creation_date.length - 14));
       this.chartDataProcs[0].data.push(this.pastWeekProcTime[i].sum/1000);
     }
   }

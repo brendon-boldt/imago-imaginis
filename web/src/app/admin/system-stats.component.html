@@ -7,10 +7,7 @@
       <hr>
       <br>
       <div *ngIf="!dataReady">
-        <div style="float: none; margin: 0 auto;" class="loader"></div>
-        <!--
         <img src="assets/ii_logo_color.png" class="loadingImage"/>
-        -->
       </div>
       <div *ngIf="dataReady">
         <h3>Disk Usage</h3>
@@ -64,24 +61,6 @@
           </table>
         </div>
         <br><br>
-        <h3>Processing Times</h3>
-        <button class="btn btn-small graphbtn" (click)="this.displayWeekProcTimes();">Past Week</button>
-        <button class="btn btn-small graphbtn" (click)="this.displayMonthProcTimes();">Past Month</button>
-        <button class="btn btn-small graphbtn" (click)="this.displayYearProcTimes();">Past Year</button>
-        <br><br>
-        <div style="display: block;">
-          <canvas id="graph"
-            baseChart
-            [chartType]="'line'"
-            [datasets]="chartDataProcs"
-            [labels]="chartLabelsProcs"
-            [options]="chartOptions"
-            [legend]="true"
-            [colors]="chartColors"
-            (chartClick)="onChartClick($event)">
-          </canvas>
-        </div>
-        <br><br>
         <h3>Processing Videos</h3>
         <div class="table-responsive" style="overflow: auto; max-height: 300px;">
           <table style="float: none; margin: 0 auto;" id="statsTable" class="table-striped" height=4>
@@ -100,6 +79,24 @@
               </tr>
             </tbody>
           </table>
+        </div>
+        <br><br>
+        <h3>Processing Times</h3>
+        <button class="btn btn-small graphbtn" (click)="this.displayWeekProcTimes();">Past Week</button>
+        <button class="btn btn-small graphbtn" (click)="this.displayMonthProcTimes();">Past Month</button>
+        <button class="btn btn-small graphbtn" (click)="this.displayYearProcTimes();">Past Year</button>
+        <br><br>
+        <div style="display: block;">
+          <canvas id="graph"
+            baseChart
+            [chartType]="'line'"
+            [datasets]="chartDataProcs"
+            [labels]="chartLabelsProcs"
+            [options]="chartOptions"
+            [legend]="true"
+            [colors]="chartColors"
+            (chartClick)="onChartClick($event)">
+          </canvas>
         </div>
         <br><br>
         <h3>Past Uploads Count</h3>
@@ -143,7 +140,7 @@
           <table style="float: none; margin: 0 auto;" id="statsTable" class="table-striped" height=4>
             <thead>
               <tr>
-                <th>Video ID</th>
+                <th>Photo ID</th>
                 <th>User ID</th>
                 <th>Creation Date</th>
               </tr>
@@ -152,7 +149,7 @@
               <tr *ngFor="let photo of flaggedPhotos">
                 <td>{{photo.photo_id}}</td>
                 <td>{{photo.user_id}}</td>
-                <td>{{photo.creation_date}}</td>
+                <td>{{photo.creation_date.substring(0, photo.creation_date.length - 14)}}</td>
               </tr>
             </tbody>
           </table>
@@ -172,7 +169,7 @@
               <tr *ngFor="let video of flaggedVideos">
                 <td>{{video.video_id}}</td>
                 <td>{{video.user_id}}</td>
-                <td>{{video.creation_date}}</td>
+                <td>{{video.creation_date.substring(0, video.creation_date.length - 14)}}</td>
               </tr>
             </tbody>
           </table>

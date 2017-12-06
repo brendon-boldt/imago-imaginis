@@ -182,7 +182,7 @@ export class DBService {
      * @param id (user id)
      */
     getUnStyledPhotos(id: number): Promise<any> {
-      console.log("WEB: Performing POST of photo");
+      console.log("WEB: Performing GET of unstyled photos");
       let photos = this.url + '/user/photos/unstyled';
       let headers = new Headers();
       this.handleHeader(headers);
@@ -909,8 +909,14 @@ export class DBService {
       console.log(error);
       // JWT has expired, sign the user out
       if(error.status == 800){
-          sessionStorage.clear();
-          location.reload();
+        sessionStorage.clear();
+        location.reload();
+      }
+      // The API is currently not running, provide an alert to the user
+      if(error.status == 0){
+        alert("THE API CANNOT BE REACHED OR IS CURRENTLY NOT RUNNING.\nPLEASE CONTACT AN ADMINISTRATOR FOR FURTHER ASSISTANCE.");
+        sessionStorage.clear();
+        location.reload();
       }
       return error;
 	}

@@ -38,6 +38,11 @@ export class AuthService {
       this.isLoggedIn = false;
       return false;
     }
+    else if(sessionStorage.getItem('jwt') == "undefined"){
+      console.log("WEB: API NOT CONNECTED");
+      this.isLoggedIn = false;
+      return false;
+    }
     else{
       // Decode the JWT, set the user's info based on the JWT passed in
       // If the JWT has expired, throw an error

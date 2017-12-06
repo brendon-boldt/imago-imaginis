@@ -10,6 +10,7 @@ CSS used for the search page
 #searchTable th, td {
     padding: 15px;
     text-align: left;
+    cursor: pointer;
 }
 
 #searchTable tbody {

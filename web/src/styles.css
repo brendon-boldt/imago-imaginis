@@ -32,7 +32,7 @@ body {
 .loadingImage {
   background: rgba(0,0,0,0) !important;
   border: none !important;
-  height: 50%;
+  height: 80px;
   animation: spin 1s infinite ease-in-out;
   -webkit-animation: spin 1s infinite ease-in-out;
   animation-direction: reverse;

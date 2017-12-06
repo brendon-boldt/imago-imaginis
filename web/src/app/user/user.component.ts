@@ -83,7 +83,7 @@ export class UserComponent {
           this.firstName = this.user.firstName;
           this.lastName = this.user.lastName;
           this.email = this.user.email;
-          this.dateJoined = this.user.dateJoined;
+          this.dateJoined = this.user.dateJoined.substring(0, this.user.dateJoined.length - 14); // Cut off last 14 characters of date joined
           this.profilePhoto = this.user.profilePhoto;
           this.isPaid = this.user.isPaid;
           // Get the user's photos to display on profile
@@ -119,7 +119,7 @@ export class UserComponent {
             this.firstName = res[0].first_name;
             this.lastName = res[0].last_name;
             this.email = res[0].email;
-            this.dateJoined = res[0].date_joined;
+            this.dateJoined = res[0].date_joined.substring(0, res[0].date_joined.length - 14);
             if(res[0].profile_photo != null){ // Show placeholder if they do not have a profile picture
               this.profilePhoto = this.db.url + res[0].profile_photo;
             }

@@ -41,6 +41,9 @@ components, such as the home page and the profile page, while keeping the top he
 			<ng-template #login><a *ngIf="!this.auth.isLoggedIn" class="nav-link" routerLink="/login" routerLinkActive="active" style="cursor: pointer">Log In</a></ng-template>
 			<ng-template #logout><a *ngIf="this.auth.isLoggedIn" class="nav-link" (click)="this.logOut();" style="cursor: pointer">Log Out</a></ng-template>
 		</li>
+		<li class="nav-item">
+			<a class="nav-link" href="https://docs.google.com/document/d/1XMNdfbnHar8y7wJN8_L9fozBQRcjQH3FgX9lakAxBec/edit?usp=sharing" target="_blank">?</a>
+		</li>
 		</ul>
 	</div>
 </div>
