@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const db = require('./app/db');
 
+// Make sure that config.js is set up
 try {
     require('./config.js');
 } catch (e) {
@@ -26,6 +27,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(bodyParser.raw({limit: '50mb'}));
 
+// As of now, the style server only makes requests and does take any requests
 /*
 require('./app/routes')(app);
 
@@ -34,5 +36,6 @@ app.listen(port, () => {
 })
 */
 
+// Start polling the database for things needing to be styled
 db.startWatching();
 

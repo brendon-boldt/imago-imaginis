@@ -2,6 +2,11 @@
 * Start Bootstrap - Createive v4.0.0-beta (https://startbootstrap.com/template-overviews/creative)
 * Copyright 2013-2017 Start Bootstrap
 * Licensed under MIT (https://github.com/BlackrockDigital/startbootstrap-creative/blob/master/LICENSE)
+* -----------------------------------------------------------------------------
+* Imago Imaginis 
+* ----------------------------
+* Modified/Repurposed for 2017 Marist Capping Project ASP Platform
+* This is the general CSS for the web applcation
 */
 body,
 html {
@@ -88,7 +93,7 @@ body {
 #mainNav {
   border-color: rgba(34, 34, 34, 0.05);
   /*background-color: rgba(255,255,255,.4);*/
-  background-color: #00000080;
+  background-color: rgba(0,0,0,0.5);
   font-family: 'Open Sans', 'Helvetica Neue', Arial, sans-serif;
   -webkit-transition: all 0.2s;
   -moz-transition: all 0.2s;
@@ -440,7 +445,7 @@ margin: 50px auto 0; }
 .footer {
   display: flex;
   align-items: center;
-  background-color: #000000b0;  /* brendon */
+  background-color: rgba(0,0,0,0.75);  /* brendon */
   color: #ddd;
   text-align: center;
   min-height: 50px; }

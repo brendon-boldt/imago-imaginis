@@ -1,18 +1,21 @@
 /**
- * This is the TypeScript backend for the upload component.
- * Here, we reference upload.component.html as the HTML for this component, as well as the app's css
+ * Imago Imaginis
+ * -------------------------------------------
+ * Backend for the user settings component page.
+ * This ties in the HTML template and any CSS that goes along with it.
+ * Also controls page functionality and imports data from Angular services.
  */
 import { Component, ViewChild } from '@angular/core';
 import { RouterModule, Routes, Router } from '@angular/router';
 
-// Importing database service so we can check to see if the user login information exists
+// Importing services in order to receive data and interact with other services 
 import { DBService } from '../services/db.service';
 import { UserService } from '../services/user.service';
 
 // Import the modal component
 import { ModalComponent } from '../modal/app-modal.component';
 
-// Import the validator
+// Import the validator. Used to validate credit card number
 import validator from 'validator';
 
 @Component({
@@ -23,26 +26,26 @@ import validator from 'validator';
 export class UserSettingsComponent {
   @ViewChild('modal') modal;
   @ViewChild('modalUpgrade') modalUpgrade;
-  firstName: string;
-  lastName: string;
-  email: string;
-  password: string;
-  fileToUpload: any;
-  modalText: string;
-  cardInfo: string = "";
-  isValidCard: boolean = true;
-  form: any = {};
-  dataReady = false;
+  firstName: string; // first name of user
+  lastName: string; // last name of user
+  email: string; // email of user 
+  password: string; // password of user
+  fileToUpload: any; // file user uploaded as profile picture
+  modalText: string; // text to be displayed in the modal
+  cardInfo: string = ""; // the card information passed to the user
+  isValidCard: boolean = true; // flag for valid card
+  form: any = {}; // holds information from form
+  dataReady = false; // flag to let Angular know to load the page
   constructor(private router: Router, private db: DBService, private user: UserService){
     // Set form info
     this.user.refreshInfo().then(() => {
-        this.firstName = this.user.firstName;
-        this.lastName = this.user.lastName;
-        this.email = this.user.email;
-        this.form.firstName = this.user.firstName;
-        this.form.lastName = this.user.lastName;
-        this.form.email = this.user.email;
-        this.dataReady = true;
+      this.firstName = this.user.firstName;
+      this.lastName = this.user.lastName;
+      this.email = this.user.email;
+      this.form.firstName = this.user.firstName;
+      this.form.lastName = this.user.lastName;
+      this.form.email = this.user.email;
+      this.dataReady = true;
     });
   }
 
@@ -91,7 +94,7 @@ export class UserSettingsComponent {
           window.scrollTo(0, 0)
           this.modal.show();
         }
-      } // Relog the user in so JWT is updated
+      }
     )
   }
   
@@ -101,7 +104,6 @@ export class UserSettingsComponent {
   save(): void {
     console.log("WEB: Saving user settings");
     this.db.saveUserSettings(this.user.userId, this.form.firstName, this.form.lastName, this.form.email, this.password).then(res => {
-      console.log(res.status)
       if(res.status == 401){
         // Email already exists
         this.modalText = "Email already registered. Please try again."
@@ -115,22 +117,29 @@ export class UserSettingsComponent {
         this.modal.show();
       }
       else{
+        // User setting modification was successful
         this.modalText = "User Settings Saved!";
         this.user.refreshInfo();
         // Scroll user to top of page
         window.scrollTo(0, 0)
         this.modal.show();
       }
-      // Relog the user in so JWT is updated
     })
   }
   /**
    * Called when file is entered into upload
+   * Verify that the file they upload is indeed a photo
    */
   fileChangeEvent(fileInput: any): void {
     this.fileToUpload = fileInput.target.files[0];
-    console.log(this.fileToUpload);
-    this.uploadProfilePhoto();
+    // Verify their upload file type. Only allow .jpg or .png
+    if(this.fileToUpload.type == "image/jpeg" || this.fileToUpload.type == "image/png"){
+      this.uploadProfilePhoto();
+    }
+    else{
+      this.modalText = "Error: Filetypes accepted: JPG or PNG.";
+      this.modal.show();
+    }
   }
   /**
    * Submits the form when pressing the enter key
@@ -146,10 +155,7 @@ export class UserSettingsComponent {
   uploadProfilePhoto(): void {
     // Uploading photo with no style
     this.db.uploadProfilePhoto(this.user.userId, this.fileToUpload).then(result => {
-      // Post shouldn't return anything
-      console.log(result);
-      // this.user.getProfilePhoto();
-      // Get the user's updated information
+      // Refresh the user's information
       this.user.refreshInfo();
       this.modalText = "Profile Picture Updated!";
       window.scrollTo(0, 0);

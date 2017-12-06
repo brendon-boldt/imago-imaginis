@@ -1,6 +1,7 @@
-<!--This is the upload component, which is displayed underneath the app component.
-Allows for the user to upload photos to the platform.
-It is routed to when the user clicks on a router link-->
+<!-- Imagino Imaginis
+Angular HTML template for the upload page
+Allows the user to upload a photo/video
+Plesae refer to the official Angular documentation for more information on Angular templating -->
 <header class="masthead">
 <div class="header-content">
 	<div class="header-content-inner">
@@ -21,7 +22,10 @@ It is routed to when the user clicks on a router link-->
 	</div>
 	</div>
 	<div *ngIf="loadingImage">
+    <!--
 		<div style="float: none; margin: 0 auto;" class="loader"></div>
+    -->
+    <img src="assets/ii_logo_color.png" class="loadingImage"/>
 	</div>
 	<div style="height: 200px"></div>
 	<app-modal #modal [clickOutsideToHide] = "false">
@@ -32,7 +36,6 @@ It is routed to when the user clicks on a router link-->
 			{{modalText}}
 		</div>
 		<div class="app-modal-footer">
-			<!-- <button type="button" class="btn btn-default" (click)="modal.hide();">Close</button> -->
 		</div>
 	</app-modal>
 	<app-modal #typemodal [clickOutsideToHide] = "true">

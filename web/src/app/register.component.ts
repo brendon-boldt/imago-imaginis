@@ -1,14 +1,19 @@
 /**
- * This is the TypeScript backend for the upload component.
- * Here, we reference upload.component.html as the HTML for this component, as well as the app's css
+ * Imago Imaginis
+ * -------------------------------------------
+ * Backend for the register component page.
+ * This ties in the HTML template and any CSS that goes along with it.
+ * Also controls page functionality and imports data from Angular services.
  */
 import { Component, ViewChild } from '@angular/core';
 import { RouterModule, Routes, Router } from '@angular/router';
 
+// Import services in order to import data and interact with other parts of application
 import { UserService } from './services/user.service';
 import { DBService } from './services/db.service';
 import { AuthService } from './services/auth.service';
 
+// Import the modal component so we can display modals
 import { ModalComponent } from './modal/app-modal.component';
 
 @Component({
@@ -17,15 +22,15 @@ import { ModalComponent } from './modal/app-modal.component';
   styleUrls: ['./css/app.component.css']
 })
 export class RegisterComponent {
-  @ViewChild('modal') modal;
-  age: any;
-  errorText: String;
+  @ViewChild('modal') modal; // modal to display on page
+  age: any; // age gate
+  errorText: String; // text to display in the modal showing that the user misentered information
+  form: any = {}; // object to hold form data
+  // Images to display on the page
+  keyboard: String = "../assets/keyboard.jpg";
+  upload: String = "../assets/upload.jpg";
+  style: String = "../assets/style.jpg";
   constructor(private router: Router, private user: UserService, private db: DBService, private auth: AuthService){}
-  public keyboard: String = "../assets/keyboard.jpg";
-  public upload: String = "../assets/upload.jpg";
-  public style: String = "../assets/style.jpg";
-
-  form: any = {};
 
   /**
    * Registers the user
@@ -34,7 +39,6 @@ export class RegisterComponent {
     // Create a new user entry in the database
     if(this.age){
       this.db.createUser(this.form.firstName, this.form.lastName, this.form.email, this.form.password).then(result => {
-        console.log(result);
         if(result.status == 401){
           this.errorText = "Sorry, this email is already registered.";
           this.modal.show();

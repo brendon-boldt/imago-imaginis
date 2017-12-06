@@ -1,6 +1,8 @@
 /**
- * This TypeScript file is used to bind all of the different components, modules, and services together.
- * This is so that Angular knows how to put everything together properly.
+ * Imagino Imaginis
+ * ---------------------------------------------------------------------------
+ * Binds all of the different user components, modules, and services together.
+ * This is so that Angular framework knows how to put everything together properly.
  */
 //Imports for the modules
 import { BrowserModule } from '@angular/platform-browser';
@@ -16,14 +18,13 @@ import { AppComponent } from './app.component';
 import { NotFoundComponent } from './notFound.component';
 import { HomeComponent } from './home.component';
 import { LoginComponent } from './login.component';
-import { ReportComponent } from './report.component';
 import { RegisterComponent } from './register.component';
 import { SearchComponent } from './search.component';
 
 // References to custom directives
 import { FocusDirective } from './directives/focus.directive';
 
-//References to all the services in the application
+// References to the services used in the app module
 import { DBService } from './services/db.service';
 import { UserService } from './services/user.service';
 import { AuthService } from './services/auth.service';
@@ -37,7 +38,6 @@ import { LibraryService } from './services/library.service';
     NotFoundComponent,
     HomeComponent,
     LoginComponent,
-    ReportComponent,
     RegisterComponent,
     SearchComponent,
     FocusDirective

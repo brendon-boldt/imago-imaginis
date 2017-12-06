@@ -2,6 +2,11 @@
 
 var config = {};
 
+// This token should be identical to the one in the stylizer config.js
+config.styleApiToken = '';
+
+// Paths to where things are stored in the local file stystem
+// Use `bash create_file_tree.sh ~/files` to create a file system tree
 config.contentPath = ''; // directory to where uploaded images are stored (same as uploadsPath)
 config.stylePath = ''; // directory where filters for styling are stored
 config.outputPath = ''; // directory where styled images are output to

@@ -1,11 +1,14 @@
-<!-- This is the main component of the web application.
+<!-- Imagino Imaginis
+Angular HTML template for the main app component page
+Please refer to the official Angular documentation for more information on Angular templating
+This is the main component of the web application.
 This component is for the top section of the web application (e.g. the header).
 Since this part stays mostly constant in site navigation, we want to keep this persistent across
 different components. Therefore, we have a router outlet at the end which will display different
 components, such as the home page and the profile page, while keeping the top header/app component. -->
 <nav class="navbar navbar-expand-lg navbar-light fixed-top" role="navigation" id="mainNav">
 <div class="container-fluid">
-	<a class="navbar-brand" routerLink="/home"><img src="../../assets/ii_logo_black.png" style="max-height: 35px; background-color: rgba(135, 212, 250, 0.85); border: none; margin-right: 2%; box-shadow: 0 0 10px white;" alt="Mountain View">{{title}} Imago Imaginis</a> <!-- Two-way data binding -->
+	<a class="navbar-brand" routerLink="/home"><img src="../../assets/ii_logo_black.png" style="max-height: 35px; background-color: rgba(135, 212, 250, 0.85); border: none; margin-right: 2%; box-shadow: 0 0 10px white;" alt="Mountain View">{{title}}</a>
 	<button class="navbar-toggler navbar-toggler-right toggle-button" type="button" data-toggle="collapse" data-target="#navbarResponsive" aria-controls="navbarResponsive" aria-expanded="false" aria-label="Toggle navigation">
 		<span class="navbar-toggler-icon"></span>
 	</button>

@@ -1,6 +1,8 @@
 /**
- * This TypeScript file is used to bind all of the different components, modules, and services together.
- * This is so that Angular knows how to put everything together properly.
+ * Imagino Imaginis
+ * ---------------------------------------------------------------------------
+ * Binds all of the different user components, modules, and services together.
+ * This is so that Angular framework knows how to put everything together properly.
  */
 // Imports for the modules
 import { BrowserModule } from '@angular/platform-browser';
@@ -9,7 +11,7 @@ import { HttpModule } from '@angular/http'; // This module allows us to make HTT
 import { FormsModule } from '@angular/forms'; // This module allows us to have two-way data binding in forms
 import { UserRoutingModule } from './user-routing.module';
 
-// References to all the components in the application
+// References to all the components in the application to be used in the user module
 import { UserComponent } from './user.component';
 import { UserSettingsComponent } from './user-settings.component';
 import { UploadComponent } from './upload.component';
@@ -19,7 +21,6 @@ import { ModalComponent } from '../modal/app-modal.component';
 import { PictureModalComponent } from '../modal/picture-modal.component';
 
 // References to all the services in the application
-// Are these services needed?
 import { DBService } from '../services/db.service';
 import { UserService } from '../services/user.service';
 import { AuthService } from '../services/auth.service';

@@ -1,7 +1,11 @@
 /**
- * This is the TypeScript backend for the upload component.
- * Here, we reference upload.component.html as the HTML for this component, as well as the app's css
+ * Imago Imaginis
+ * -------------------------------------------
+ * Backend for the not found component page.
+ * This ties in the HTML template and any CSS that goes along with it.
+ * Also controls page functionality and imports data from Angular services.
  */
+
 import { Component } from '@angular/core';
 import { RouterModule, Routes, Router } from '@angular/router';
 
@@ -12,6 +16,9 @@ import { RouterModule, Routes, Router } from '@angular/router';
 })
 export class NotFoundComponent {
   constructor(private router: Router){}
+  /**
+   * Returns the user to the home page when they click the return home button
+   */
   returnHome = function(){
     this.router.navigate(['home']);
   }

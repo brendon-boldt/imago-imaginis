@@ -1,3 +1,7 @@
+/*
+Imago Imaginis
+Grand overarching CSS for frontend
+*/
 /* You can add global styles to this file, and also import other style files */
 body {
 	background-color: #CCCCCC;
@@ -23,4 +27,18 @@ body {
 
 .btn {
   cursor: pointer;
+}
+
+.loadingImage {
+  background: rgba(0,0,0,0) !important;
+  border: none !important;
+  height: 50%;
+  animation: spin 1s infinite ease-in-out;
+  -webkit-animation: spin 1s infinite ease-in-out;
+  animation-direction: reverse;
+
+}
+
+.process {
+  text-shadow: 0 0 0.5em black;
 }

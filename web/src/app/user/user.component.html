@@ -1,109 +1,119 @@
-<!--
-	This is the profile component, which is displayed underneath the app component.
-	Displays various information relating to the user's profile, including pictures they choose
-	to store and display.
-	It is routed to when the user clicks on a router link
--->
+<!-- Imagino Imaginis
+Angular HTML template for the user profile page
+Displays various information relating to the user's profile, including pictures they choose to store and display.
+Please refer to the official Angular documentation for more information on Angular templating -->
 <header class="masthead">
-    <div class="header-content">
-        <div class="header-content-inner">
-            <div *ngIf="!dataReady">
-                <div style="float: none; margin: 0 auto;" class="loader"></div>
+  <div class="header-content">
+    <div class="header-content-inner">
+      <div *ngIf="!dataReady">
+        <!-- <div style="float: none; margin: 0 auto;" class="loader"></div> -->
+        <img src="assets/ii_logo_color.png" class="loadingImage"/>
+      </div>
+      <div *ngIf="dataReady">
+        <h1 id="homeHeading">{{this.firstName}} {{this.lastName}}</h1>
+        <hr>
+        <div class="container center-text">
+          <div class="row">
+            <div class="col-md-6">
+              <br>
+              <img [src]="this.profilePhoto" class="img-border" alt="profile picture" style="width: 200px; height: auto">
+              <br>
+              <br>
+              <div id="bginfo" class="justify-content-center">
+                <p *ngIf="this.isPaid" class="lead">
+                  <strong>Paid User</strong>
+                </p>
+                <hr *ngIf="this.isPaid" style="margin-top: 0px;">
+                <p class="lead">
+                  <strong>First Name:</strong>
+                  <br>{{this.firstName}}</p>
+                <p class="lead">
+                  <strong>Last Name:</strong>
+                  <br>{{this.lastName}}</p>
+                <p class="lead">
+                  <strong>Email:</strong>
+                  <br>{{this.email}}</p>
+                <p class="lead">
+                  <strong>Date Joined:</strong>
+                  <br>{{this.dateJoined}}</p>
+              </div>
             </div>
-            <div *ngIf="dataReady">
-			<h1 id="homeHeading">{{this.firstName}} {{this.lastName}}</h1>
-			<hr>
-            <div class="container center-text">
-                <div class="row">
-                    <div class="col-md-6">
-                        <br>
-                        <img [src]="this.profilePhoto" class="img-border" alt="profile picture" style="width: 200px; height: auto">
-                        <br><br>
-                        <div id="bginfo" class="justify-content-center">
-                            <p *ngIf="this.isPaid" class="lead"><strong>Paid User</strong></p>
-                            <hr *ngIf="this.isPaid" style="margin-top: 0px;">
-                            <p class="lead" ><strong>First Name:</strong><br>{{this.firstName}}</p>
-                            <p class="lead"><strong>Last Name:</strong><br>{{this.lastName}}</p>
-                            <p class="lead"><strong>Email:</strong><br>{{this.email}}</p>
-                            <p class="lead"><strong>Date Joined:</strong><br>{{this.dateJoined}}</p>
-                        </div>
-                    </div>
-                    <div class="col-md-5">
-                        <label id="favimg">Favorite Images</label>
-                        <hr>
-                        <div id="divMain" class="library-container">
-                            <div class="container-one">
-                                <div *ngFor="let photo of photos">
-                                    <img *ngIf="photo.photo_id != null" [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)">
-                                    <video *ngIf="photo.video_id != null" height="250" id="video" (click)="this.showPicture(photo)" class="image">
-                                        <source [src]="this.db.url + photo.path" type="video/mp4">
-                                        Your browser does not support the video tag.
-                                    </video>
-                                    <br><br>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <br style="clear: left;" />
-                </div>
-            </div>
-            <app-modal #reportmodal [clickOutsideToHide] = "true">
-                <div class="app-modal-header">
-                    <!--Error-->&nbsp;
-                </div>
-                <div class="app-modal-body preview">
-                    <!-- <img [src]="this.db.url + this.modalPhoto.path" id="modal-img"> -->
-                    <img *ngIf="this.modalPhoto.photo_id != null" [src]="this.db.url + this.modalPhoto.path" class="image" id="modal-img report">
-                    <video *ngIf="this.modalPhoto.video_id != null" controls id="video" style="margin: auto" id="report">
-                        <source [src]="this.db.url + this.modalPhoto.path" type="video/mp4">
-                        Your browser does not support the video tag.
+            <div class="col-md-5">
+              <label id="favimg">Favorite Images</label>
+              <hr>
+              <div id="divMain" class="library-container">
+                <div class="container-one">
+                  <div *ngFor="let photo of photos">
+                    <img *ngIf="photo.photo_id != null" [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)">
+                    <video *ngIf="photo.video_id != null" height="250" id="video" (click)="this.showPicture(photo)" class="image">
+                      <source [src]="this.db.url + photo.path" type="video/mp4"> Your browser does not support the video tag.
                     </video>
-                    <hr>
-                    <h3>Report Content</h3>
-                    <label>Flag images that have offensive content</label>
                     <br>
-                    <span>
-                    <form action="" #reportForm="ngForm">
-                      <input type="radio" name="reasons" value="Nudity" [(ngModel)]="form.reasons" required> Nudity<br>
-                      <input type="radio" name="reasons" value="Offensive content" [(ngModel)]="form.reasons"> Offensive content<br>
-                      <input type="radio" name="reasons" value="Other" [(ngModel)]="form.reasons"> Other<br>
-                    </form> 
-                    </span><br>
-                    <button type="submit" [disabled]="!reportForm.form.valid" class="btn btn-warning btn-lg" (click)="reportmodal.hide(); this.executeReport(); confirmmodal.show();">Report</button>
+                    <br>
+                  </div>
                 </div>
-                <div class="app-modal-footer">
-                    <button type="button" class="btn btn-default" (click)="reportmodal.hide();">Close</button>
-                </div>
-            </app-modal>
-            <app-modal #confirmmodal [clickOutsideToHide] = "true">
-                <div class="app-modal-header">
-                        <!--Error-->&nbsp;
-                    </div>
-                <div class="app-modal-body preview">
-                    Image was reported!
-                </div>
-                <div class="app-modal-footer">
-                    <button type="button" class="btn btn-default" (click)="confirmmodal.hide();">Close</button>
-                </div>
-            </app-modal>
-            <picture-modal #modal [clickOutsideToHide] = "true">
-                <div class="app-modal-header">
-                    <!--Error-->&nbsp;
-                </div>
-                <div class="app-modal-body preview">
-                    <!-- <img [src]="this.db.url + this.modalPhoto.path" id="modal-img"> -->
-                    <img *ngIf="this.modalPhoto.photo_id != null" [src]="this.db.url + this.modalPhoto.path" class="image" id="modal-img">
-                    <video *ngIf="this.modalPhoto.video_id != null" controls id="video" style="margin: auto">
-                        <source [src]="this.db.url + this.modalPhoto.path" type="video/mp4">
-                        Your browser does not support the video tag.
-                    </video>
-                </div>
-                <div class="app-modal-footer">
-                    <button *ngIf="this.userId != this.user.userId && this.auth.isLoggedIn != false" type="button" class="btn btn-warning" (click)="modal.hide(); reportmodal.show()">Report</button>
-                    <button type="button" class="btn btn-default" (click)="modal.hide();">Close</button>
-                </div>
-            </picture-modal>
+              </div>
+            </div>
+            <br style="clear: left;" />
+          </div>
         </div>
-        </div>
+        <app-modal #reportmodal [clickOutsideToHide]="true">
+          <div class="app-modal-header">
+            <!--Error-->&nbsp;
+          </div>
+          <div class="app-modal-body preview">
+            <img *ngIf="this.modalPhoto.photo_id != null" [src]="this.db.url + this.modalPhoto.path" class="image" id="modal-img report">
+            <video *ngIf="this.modalPhoto.video_id != null" controls id="video" style="margin: auto" id="report">
+              <source [src]="this.db.url + this.modalPhoto.path" type="video/mp4"> Your browser does not support the video tag.
+            </video>
+            <hr>
+            <h3>Report Content</h3>
+            <label>Flag images that have offensive content</label>
+            <br>
+            <span>
+              <form action="" #reportForm="ngForm">
+                <input type="radio" name="reasons" value="Nudity" [(ngModel)]="form.reasons" required> Nudity
+                <br>
+                <input type="radio" name="reasons" value="Offensive content" [(ngModel)]="form.reasons"> Offensive content
+                <br>
+                <input type="radio" name="reasons" value="Other" [(ngModel)]="form.reasons"> Other
+                <br>
+              </form>
+            </span>
+            <br>
+            <button type="submit" [disabled]="!reportForm.form.valid" class="btn btn-warning btn-lg" (click)="reportmodal.hide(); this.executeReport(); confirmmodal.show();">Report</button>
+          </div>
+          <div class="app-modal-footer">
+            <button type="button" class="btn btn-default" (click)="reportmodal.hide();">Close</button>
+          </div>
+        </app-modal>
+        <app-modal #confirmmodal [clickOutsideToHide]="true">
+          <div class="app-modal-header">
+            <!--Error-->&nbsp;
+          </div>
+          <div class="app-modal-body preview">
+            Image was reported!
+          </div>
+          <div class="app-modal-footer">
+            <button type="button" class="btn btn-default" (click)="confirmmodal.hide();">Close</button>
+          </div>
+        </app-modal>
+        <picture-modal #modal [clickOutsideToHide]="true">
+          <div class="app-modal-header">
+            <!--Error-->&nbsp;
+          </div>
+          <div class="app-modal-body preview">
+            <img *ngIf="this.modalPhoto.photo_id != null" [src]="this.db.url + this.modalPhoto.path" class="image" id="modal-img">
+            <video *ngIf="this.modalPhoto.video_id != null" controls id="video" style="margin: auto">
+              <source [src]="this.db.url + this.modalPhoto.path" type="video/mp4"> Your browser does not support the video tag.
+            </video>
+          </div>
+          <div class="app-modal-footer">
+            <button *ngIf="this.userId != this.user.userId && this.auth.isLoggedIn != false" type="button" class="btn btn-warning" (click)="modal.hide(); reportmodal.show()">Report</button>
+            <button type="button" class="btn btn-default" (click)="modal.hide();">Close</button>
+          </div>
+        </picture-modal>
+      </div>
     </div>
+  </div>
 </header>

@@ -2,17 +2,32 @@
 
 var config = {};
 
+// Create a securtiy token from a password using `echo -n "password" | sha256sum`
+// Ensure this token is the same as the one in `api/config.js`
 config.styleApiToken = '';
 
+// Paths to torch (th) and the stylizer repo
 config.thPath = '';
 config.stylizerPath = '';
+
+// The ID number of the GPU to be used (-1 for CPU)
 config.gpu = -1;
+
+// Sizing configuration (content size of 512 will mean that smallest output
+// dimenstion will be 512px
 config.contentSize = 512;
 config.styleSize = 512;
+
+// Sizing configuration for videos (e.g., 720 == 1280x720, 16:9 aspect ratio)
 config.contentSizeVideo = 256;
 config.styleSizeVideo = 256;
+
+// Maximum number of runs to be styled at once
+// 1 is recommended until better load-balancing is implemented
 config.maxRuns = 1;
 
+// Paths to where things are stored in the local file stystem
+// Use `bash create_file_tree.sh ~/styleFiles` to create a file system tree
 config.dbUrl = ''; // the url for the API
 config.stylePath = ''; // path to where filters are stored
 config.outputPath = ''; // path to where styled images are output

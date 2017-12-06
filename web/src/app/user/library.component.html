@@ -1,213 +1,214 @@
+<!-- Imagino Imaginis
+Angular HTML template for the library page
+Displays to the user all the photos/videos that the user has uploaded to the platform
+Please refer to the official Angular documentation for more information on Angular templating -->
 <header class="masthead">
-   <div class="header-content">
-      <div class="header-content-inner">
-         <h1 id="homeHeading">Library</h1>
-         <hr>
-         <div *ngIf="!dataReady">
-            <div style="float: none; margin: 0 auto;" class="loader"></div>
-            </div>
-         <div *ngIf="dataReady">
-         <p *ngIf="this.photoArrOne.length == 0">You have no stylized photos</p>
-         <p *ngIf="this.photoArrOne.length != 0">These are the photos you have stylized:</p>
-         <div id="divMain" class="library-container d-flex justify-content-center scrollbar scrollbar-primary">
-            <div class="container-one">
-                <div *ngFor="let photo of photoArrOne">
-                    <div class="card">
-                        <div id="photo" *ngIf="photo.unfiltered_photo_id != null">
-                            <div id="text" (click)="this.showPicture(photo)">
-                                <p class="process">Processing</p>
-                                <div style="float: none; margin: 0 auto;" class="loader"></div>
-                            </div>
-                            <div id="picture">
-                                <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)">
-                            </div>
-                        </div>
-                        <div id="photo" *ngIf="photo.unfiltered_video_id != null">
-                            <div id="text" (click)="this.showPicture(photo)">
-                                <p class="process">Processing</p>
-                                <div style="float: none; margin: 0 auto;" class="loader"></div>
-                            </div>
-                            <div id="picture">
-                                <video id="video">
-                                    <source [src]="this.db.url + photo.path" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
-                            </div>
-                        </div>
-                        <div *ngIf="photo.photo_id != null" id="photo">
-                            <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)">
-                        </div>
-                        <div *ngIf="photo.video_id != null" id="photo">
-                            <video id="video" (click)="this.showPicture(photo)">
-                                <source [src]="this.db.url + photo.path" type="video/mp4">
-                                Your browser does not support the video tag.
-                            </video>
-                        </div>
-                    </div>
-                    <br>
+  <div class="header-content">
+    <div class="header-content-inner">
+      <h1 id="homeHeading">Library</h1>
+      <hr>
+      <div *ngIf="!dataReady">
+        <div style="float: none; margin: 0 auto;" class="loader"></div>
+      </div>
+      <div *ngIf="dataReady">
+        <p *ngIf="this.photoArrOne.length == 0">You have no stylized photos</p>
+        <p *ngIf="this.photoArrOne.length != 0">These are the photos you have stylized:</p>
+        <div id="divMain" class="library-container d-flex justify-content-center scrollbar scrollbar-primary">
+          <div class="container-one">
+            <div *ngFor="let photo of photoArrOne">
+              <div class="card">
+                <div id="photo" *ngIf="photo.unfiltered_photo_id != null">
+                  <div id="text" (click)="this.showPicture(photo)">
+                    <p class="process">Processing</p>
+                    <!-- <div style="float: none; margin: 0 auto;" class="loader"></div> -->
+                    <img src="assets/ii_logo_color.png" class="loadingImage"/>
+                  </div>
+                  <div id="picture">
+                    <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)">
+                  </div>
                 </div>
-            </div>
-            <div class="container-two">
-                <div *ngFor="let photo of photoArrTwo">
-                    <div class="card">
-                        <div id="photo" *ngIf="photo.unfiltered_photo_id != null">
-                            <div id="text" (click)="this.showPicture(photo)">
-                                <p class="process">Processing</p>
-                                <div style="float: none; margin: 0 auto;" class="loader"></div>
-                            </div>
-                            <div id="picture">
-                                <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)">
-                            </div>
-                        </div>
-                        <div id="photo" *ngIf="photo.unfiltered_video_id != null">
-                            <div id="text" (click)="this.showPicture(photo)">
-                                <p class="process">Processing</p>
-                                <div style="float: none; margin: 0 auto;" class="loader"></div>
-                            </div>
-                            <div id="picture">
-                                <!-- <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)"> -->
-                                <video id="video">
-                                    <source [src]="this.db.url + photo.path" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
-                            </div>
-                        </div>
-                        <div *ngIf="photo.photo_id != null" id="photo">
-                            <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)">
-                        </div>
-                        <div *ngIf="photo.video_id != null" id="photo">
-                            <video id="video" (click)="this.showPicture(photo)">
-                                <source [src]="this.db.url + photo.path" type="video/mp4">
-                                Your browser does not support the video tag.
-                            </video>
-                        </div>
-                    </div>
-                    <br>
+                <div id="photo" *ngIf="photo.unfiltered_video_id != null">
+                  <div id="text" (click)="this.showPicture(photo)">
+                    <p class="process">Processing</p>
+                    <!-- <div style="float: none; margin: 0 auto;" class="loader"></div> -->
+                    <img src="assets/ii_logo_color.png" class="loadingImage"/>
+                  </div>
+                  <div id="picture">
+                    <video id="video">
+                      <source [src]="this.db.url + photo.path" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                  </div>
                 </div>
-            </div>
-            <div class="container-three">
-                <div *ngFor="let photo of photoArrThree">
-                    <div class="card">
-                        <div id="photo" *ngIf="photo.unfiltered_photo_id != null">
-                            <div id="text" (click)="this.showPicture(photo)">
-                                <p class="process">Processing</p>
-                                <div style="float: none; margin: 0 auto;" class="loader"></div>
-                            </div>
-                            <div id="picture">
-                                <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)">
-                            </div>
-                        </div>
-                        <div id="photo" *ngIf="photo.unfiltered_video_id != null">
-                            <div id="text" (click)="this.showPicture(photo)">
-                                <p class="process">Processing</p>
-                                <div style="float: none; margin: 0 auto;" class="loader"></div>
-                            </div>
-                            <div id="picture">
-                                <!-- <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)"> -->
-                                <video id="video">
-                                    <source [src]="this.db.url + photo.path" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
-                            </div>
-                        </div>
-                        <div *ngIf="photo.photo_id != null" id="photo">
-                            <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)">
-                        </div>
-                        <div *ngIf="photo.video_id != null" id="photo">
-                            <video id="video" (click)="this.showPicture(photo)">
-                                <source [src]="this.db.url + photo.path" type="video/mp4">
-                                Your browser does not support the video tag.
-                            </video>
-                        </div>
-                    </div>
-                    <br>
+                <div *ngIf="photo.photo_id != null" id="photo">
+                  <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)">
                 </div>
+                <div *ngIf="photo.video_id != null" id="photo">
+                  <video id="video" (click)="this.showPicture(photo)">
+                    <source [src]="this.db.url + photo.path" type="video/mp4">
+                      Your browser does not support the video tag.
+                  </video>
+                 </div>
+              </div>
+              <br>
             </div>
-            <div class="container-four">
-                <div *ngFor="let photo of photoArrFour">
-                    <div class="card">
-                        <div id="photo" *ngIf="photo.unfiltered_photo_id != null">
-                            <div id="text" (click)="this.showPicture(photo)">
-                                <p class="process">Processing</p>
-                                <div style="float: none; margin: 0 auto;" class="loader"></div>
-                            </div>
-                            <div id="picture">
-                                <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)">
-                            </div>
-                        </div>
-                        <div id="photo" *ngIf="photo.unfiltered_video_id != null">
-                            <div id="text" (click)="this.showPicture(photo)">
-                                <p class="process">Processing</p>
-                                <div style="float: none; margin: 0 auto;" class="loader"></div>
-                            </div>
-                            <div id="picture">
-                                <!-- <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)"> -->
-                                <video id="video">
-                                    <source [src]="this.db.url + photo.path" type="video/mp4">
-                                    Your browser does not support the video tag.
-                                </video>
-                            </div>
-                        </div>
-                        <div *ngIf="photo.photo_id != null" id="photo">
-                            <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)">
-                        </div>
-                        <div *ngIf="photo.video_id != null" id="photo">
-                            <video id="video" (click)="this.showPicture(photo)">
-                                <source [src]="this.db.url + photo.path" type="video/mp4">
-                                Your browser does not support the video tag.
-                            </video>
-                        </div>
-                    </div>
-                    <br>
+          </div>
+          <div class="container-two">
+            <div *ngFor="let photo of photoArrTwo">
+              <div class="card">
+                <div id="photo" *ngIf="photo.unfiltered_photo_id != null">
+                  <div id="text" (click)="this.showPicture(photo)">
+                    <p class="process">Processing</p>
+                    <!-- <div style="float: none; margin: 0 auto;" class="loader"></div> -->
+                    <img src="assets/ii_logo_color.png" class="loadingImage"/>
+                  </div>
+                  <div id="picture">
+                    <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)">
+                  </div>
                 </div>
+                <div id="photo" *ngIf="photo.unfiltered_video_id != null">
+                  <div id="text" (click)="this.showPicture(photo)">
+                    <p class="process">Processing</p>
+                    <!-- <div style="float: none; margin: 0 auto;" class="loader"></div> -->
+                    <img src="assets/ii_logo_color.png" class="loadingImage"/>
+                  </div>
+                  <div id="picture">
+                    <video id="video">
+                      <source [src]="this.db.url + photo.path" type="video/mp4">
+                        Your browser does not support the video tag.
+                    </video>
+                  </div>
+                </div>
+                <div *ngIf="photo.photo_id != null" id="photo">
+                  <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)">
+                </div>
+                <div *ngIf="photo.video_id != null" id="photo">
+                  <video id="video" (click)="this.showPicture(photo)">
+                    <source [src]="this.db.url + photo.path" type="video/mp4">
+                      Your browser does not support the video tag.
+                  </video>
+                </div>
+              </div>
+              <br>
             </div>
+          </div>
+          <div class="container-three">
+            <div *ngFor="let photo of photoArrThree">
+              <div class="card">
+                <div id="photo" *ngIf="photo.unfiltered_photo_id != null">
+                  <div id="text" (click)="this.showPicture(photo)">
+                    <p class="process">Processing</p>
+                    <!-- <div style="float: none; margin: 0 auto;" class="loader"></div> -->
+                    <img src="assets/ii_logo_color.png" class="loadingImage"/>
+                  </div>
+                  <div id="picture">
+                    <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)">
+                  </div>
+                </div>
+                <div id="photo" *ngIf="photo.unfiltered_video_id != null">
+                  <div id="text" (click)="this.showPicture(photo)">
+                    <p class="process">Processing</p>
+                    <!-- <div style="float: none; margin: 0 auto;" class="loader"></div> -->
+                    <img src="assets/ii_logo_color.png" class="loadingImage"/>
+                  </div>
+                  <div id="picture">
+                    <video id="video">
+                      <source [src]="this.db.url + photo.path" type="video/mp4"> Your browser does not support the video tag.
+                    </video>
+                  </div>
+                </div>
+                <div *ngIf="photo.photo_id != null" id="photo">
+                  <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)">
+                </div>
+                <div *ngIf="photo.video_id != null" id="photo">
+                  <video id="video" (click)="this.showPicture(photo)">
+                    <source [src]="this.db.url + photo.path" type="video/mp4"> Your browser does not support the video tag.
+                  </video>
+                </div>
+              </div>
+              <br>
+            </div>
+          </div>
+          <div class="container-four">
+            <div *ngFor="let photo of photoArrFour">
+              <div class="card">
+                <div id="photo" *ngIf="photo.unfiltered_photo_id != null">
+                  <div id="text" (click)="this.showPicture(photo)">
+                    <p class="process">Processing</p>
+                    <!-- <div style="float: none; margin: 0 auto;" class="loader"></div> -->
+                    <img src="assets/ii_logo_color.png" class="loadingImage"/>
+                  </div>
+                  <div id="picture">
+                    <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)">
+                  </div>
+                </div>
+                <div id="photo" *ngIf="photo.unfiltered_video_id != null">
+                  <div id="text" (click)="this.showPicture(photo)">
+                    <p class="process">Processing</p>
+                    <!-- <div style="float: none; margin: 0 auto;" class="loader"></div> -->
+                    <img src="assets/ii_logo_color.png" class="loadingImage"/>
+                  </div>
+                  <div id="picture">
+                    <video id="video">
+                      <source [src]="this.db.url + photo.path" type="video/mp4"> Your browser does not support the video tag.
+                    </video>
+                  </div>
+                </div>
+                <div *ngIf="photo.photo_id != null" id="photo">
+                  <img [src]="this.db.url + photo.path" class="image" (click)="this.showPicture(photo)">
+                </div>
+                <div *ngIf="photo.video_id != null" id="photo">
+                  <video id="video" (click)="this.showPicture(photo)">
+                    <source [src]="this.db.url + photo.path" type="video/mp4"> Your browser does not support the video tag.
+                  </video>
+                </div>
+              </div>
+              <br>
+            </div>
+          </div>
         </div>
-        <br><br>
+        <br>
+        <br>
         <!-- If the photo is unstyled, then display in the modal that it is not -->
         <picture-modal #modal [clickOutsideToHide]="true">
-            <div class="app-modal-header">
-                <!--Error-->&nbsp;
-                <h3 *ngIf="this.modalPhoto.unfiltered_photo_id != null || this.modalPhoto.unfiltered_video_id != null">
-                    STYLING IN PROGRESS
-                </h3>
-            </div>
-            <div class="app-modal-body preview">
-                <img *ngIf="this.modalPhoto.unfiltered_photo_id != null || this.modalPhoto.photo_id != null" [src]="this.db.url + this.modalPhoto.path" id="modal-img">
-                <video *ngIf="this.rerender == false && (this.modalPhoto.unfiltered_video_id != null || this.modalPhoto.video_id != null)" preload="auto" controls style="margin: auto">
-                    <source *ngIf="this.modalPhoto.unfiltered_video_id != null || this.modalPhoto.video_id != null" [src]="this.db.url + this.modalPhoto.path" type="video/mp4">
-                    Your browser does not support the video tag.
-                </video>
-            </div>
-            <div class="app-modal-footer">
-                <!-- <div *ngIf="this.modalPhoto.photo_id != null">
-                    <button *ngIf="this.modalPhoto.unfiltered_photo_id == null" type="button" class="btn btn-danger" (click)="this.deletePhoto();">Delete</button>
-                    <button *ngIf="this.modalPhoto.unfiltered_photo_id == null" type="button" class="btn btn-info" [style.background-color]="this.buttonDisplay" (click)="this.displayPictureProfile();">Display on Profile</button>
-                    <button type="button" class="btn btn-default" (click)="modal.hide();">Close</button>
-                </div> -->
-                <div *ngIf="this.modalPhoto.photo_id != null && this.modalPhoto.unfiltered_photo_id == null;then photostyled else photounstyled"></div>
-                <ng-template #photostyled>
-                    <a id="twitter-button" class="btn btn-info" 
-					href="https://twitter.com/intent/tweet?url=http://imagino.reev.us
-					&text=Check out this awesome image%0A{{this.db.url}}{{this.modalPhoto['path']}}%0AMade with ">
-                    <img id="twitter-icon" src="../../assets/twitter-icon.png" style="max-height: 25px;" alt="Twitter Icon">
-                    Tweet</a>
-                    <button type="button" class="btn btn-danger" (click)="this.deletePhoto();">Delete</button>
-                    <button type="button" class="btn btn-info" [style.background-color]="this.buttonDisplay" (click)="this.displayPictureProfile();">Display on Profile</button>
-                </ng-template>
-                <div *ngIf="this.modalPhoto.video_id != null && this.modalPhoto.unfiltered_video_id == null;then videostyled else videounstyled"></div>
-                <ng-template #videostyled>
-                    <a id="twitter-button" class="btn btn-info" 
-                    href="https://twitter.com/intent/tweet?url=http://imagino.reev.us
-                    &text=Check out this awesome image%0A{{this.db.url}}{{this.modalPhoto['path']}}%0AMade with ">
-                    <img id="twitter-icon" src="../../assets/twitter-icon.png" style="max-height: 25px;" alt="Twitter Icon">
-                    Tweet</a>
-                    <button type="button" class="btn btn-danger" (click)="this.deleteVideo();">Delete</button>
-                    <button type="button" class="btn btn-info" [style.background-color]="this.buttonDisplay" (click)="this.displayVideoProfile();">Display on Profile</button>
-                </ng-template>
-                <button type="button" class="btn btn-default" (click)="modal.hide();">Close</button>
-            </div>
+          <div class="app-modal-header">
+            <!--Error-->&nbsp;
+            <h3 *ngIf="this.modalPhoto.unfiltered_photo_id != null || this.modalPhoto.unfiltered_video_id != null">
+              STYLING IN PROGRESS
+            </h3>
+          </div>
+          <div class="app-modal-body preview">
+            <img *ngIf="this.modalPhoto.unfiltered_photo_id != null || this.modalPhoto.photo_id != null" [src]="this.db.url + this.modalPhoto.path"
+              id="modal-img">
+            <video *ngIf="this.rerender == false && (this.modalPhoto.unfiltered_video_id != null || this.modalPhoto.video_id != null)"
+              preload="auto" controls style="margin: auto">
+              <source *ngIf="this.modalPhoto.unfiltered_video_id != null || this.modalPhoto.video_id != null" [src]="this.db.url + this.modalPhoto.path"
+                type="video/mp4"> Your browser does not support the video tag.
+            </video>
+          </div>
+          <div class="app-modal-footer">
+            <div *ngIf="this.modalPhoto.photo_id != null && this.modalPhoto.unfiltered_photo_id == null;then photostyled else photounstyled"></div>
+            <ng-template #photostyled>
+              <a id="twitter-button" class="btn btn-info" href="https://twitter.com/intent/tweet?url=http://imagino.reev.us
+        &text=Check out this awesome image%0A{{this.db.url}}{{this.modalPhoto['path']}}%0AMade with ">
+                <img id="twitter-icon" src="../../assets/twitter-icon.png" style="max-height: 25px;" alt="Twitter Icon"> Tweet
+              </a>
+              <button type="button" class="btn btn-danger" (click)="this.deletePhoto();">Delete</button>
+              <button type="button" class="btn btn-info" [style.background-color]="this.buttonDisplay" (click)="this.displayPictureProfile();">Display on Profile</button>
+            </ng-template>
+            <div *ngIf="this.modalPhoto.video_id != null && this.modalPhoto.unfiltered_video_id == null;then videostyled else videounstyled"></div>
+            <ng-template #videostyled>
+              <a id="twitter-button" class="btn btn-info" href="https://twitter.com/intent/tweet?url=http://imagino.reev.us
+        &text=Check out this awesome image%0A{{this.db.url}}{{this.modalPhoto['path']}}%0AMade with ">
+                <img id="twitter-icon" src="../../assets/twitter-icon.png" style="max-height: 25px;" alt="Twitter Icon"> Tweet
+              </a>
+              <button type="button" class="btn btn-danger" (click)="this.deleteVideo();">Delete</button>
+              <button type="button" class="btn btn-info" [style.background-color]="this.buttonDisplay" (click)="this.displayVideoProfile();">Display on Profile</button>
+            </ng-template>
+            <button type="button" class="btn btn-default" (click)="modal.hide();">Close</button>
+          </div>
         </picture-modal>
       </div>
     </div>
-   </div>
+  </div>
 </header>

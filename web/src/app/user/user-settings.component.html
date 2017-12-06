@@ -1,11 +1,15 @@
-<!--This is the login component, which is displayed underneath the app component.
-  Allows for the user to login to the platform.
-It is routed to when the user clicks on a router link-->
+<!-- Imagino Imaginis
+Angular HTML template for the user settings page
+Allows the user to view and edit their information
+Please refer to the official Angular documentation for more information on Angular templating -->
 <header class="masthead">
 	<div class="header-content">
 	<div class="header-content-inner">
 		<div *ngIf="!dataReady">
 			<div style="float: none; margin: 0 auto;" class="loader"></div>
+      <!--
+      <img src="assets/ii_logo_color.png" class="loadingImage"/>
+      -->
 		</div>
 		<div *ngIf="dataReady">
 		<h1 id="homeHeading">Settings</h1>
@@ -76,10 +80,8 @@ It is routed to when the user clicks on a router link-->
 				Increased Styled Photo Storage<br>
 				Style Videos<br>
 				Use your own style<br><br>
-				<!-- Put credit card info here -->
 				<form class="form-horizontal" role="form" data-toggle="validator" (keyup)="onKey($event)">
 					<div class="form-group">
-						<!-- <label class="control-label" name="card-info">Credit Card:</label> -->
 						<input type="text" class="form-control" style="background-color: lightgrey;" name="card-info" placeholder="Credit Card Number" [(ngModel)]="this.cardInfo" required>
 					</div>
 					<div [hidden]="this.isValidCard" class="alert alert-danger">
