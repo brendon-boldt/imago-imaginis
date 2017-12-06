@@ -4,14 +4,10 @@ const styleRoutes = require('./styleRoutes.js');
 const uploadRoutes = require('./uploadRoutes.js');
 const adminRoutes = require('./adminRoutes.js');
 
-module.exports = function(app){
-    webRoutes(app);
-    userRoutes(app);
-    styleRoutes(app);
-    uploadRoutes(app);
-    adminRoutes(app);
+module.exports = function(app) {
+  webRoutes(app);
+  userRoutes(app);
+  styleRoutes(app);
+  uploadRoutes(app);
+  adminRoutes(app);
 }
-
-// module.exports = (app) => {
-//     app.use('/routes', routes);
-// }

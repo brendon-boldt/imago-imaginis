@@ -2,33 +2,28 @@ const db = require('../db');
 const path = require('path');
 const fs = require('fs');
 const formDataModule = require('form-data');
-const watermark = require('image-watermark'); 
+const watermark = require('image-watermark');
 let options = {
-  'text' : 'ImagoImaginis',
-  'override-image' : true,
+  'text': 'ImagoImaginis',
+  'override-image': true,
 }
-
 
 const config = require('../../config.js');
 
 /**
  * If the user is not a paid user, a watermark should be applied
  */
-let shouldWatermark = async function(resource_id, type){
+let shouldWatermark = async function(resource_id, type) {
   if (type !== 'image') {
     return false;
   }
   let queryText = 'SELECT * FROM ASP_USERS LEFT JOIN paid_users ON asp_users.user_id = paid_users.paid_id LEFT JOIN user_photo ON (user_photo.user_id = paid_users.paid_id) WHERE photo_id = $1';
   let values = [resource_id];
-  result = await db.param_query(queryText, values)
-  console.log(result.rows[0])
-  console.log(result.rows);
-  if(result.rows.length !== 0){
-    console.log("VERIFY: Paid user, NO WATERMARK");
+  result = await db.param_query(queryText, values);
+  if (result.rows.length !== 0) {
     return false;
-  } else{
+  } else {
     // They are a free user
-    console.log("VERIFY: Free user, WATERMARK");
     return true;
   }
 }
@@ -49,7 +44,6 @@ let verificationFailed = function(res) {
   res.send("Unauthorized style request");
 }
 
-
 module.exports = function(app) {
 
   /**
@@ -68,14 +62,13 @@ module.exports = function(app) {
       db.query(refreshPhotos);
     } else if (req.params.type === "videos") {
       db.query(refreshVideos);
-    } else if (req.params.type === "both") { 
+    } else if (req.params.type === "both") {
       db.query(refreshPhotos);
       db.query(refreshVideos);
     }
 
     getres.send();
   });
-
 
   /**
    * Insert an image or video that has been styled
@@ -86,7 +79,6 @@ module.exports = function(app) {
       return;
     }
 
-    console.log("Upload of type: " + req.params.type);
     // The query will need to be different for an image or video
     let outputPath, bridgeTable, resultTable, resource_id_name;
     if (req.params.type === 'image') {
@@ -101,21 +93,22 @@ module.exports = function(app) {
       resource_id_name = 'video_id';
     }
 
-    let filepath = `${outputPath}/output-${req.query.resource_id}.${req.query.fileType}`; 
-    console.log(`Writing file: ${filepath}`);
+    let filepath = `${outputPath}/output-${req.query.resource_id}.${req.query.fileType}`;
     fs.writeFile(filepath, req.body, async (err) => {
       if (err) {
-        throw err;    
+        throw err;
       }
       //execFile('rm', [config.contentPath+`/upload-${uf_resource_id]);
-      getres.json({'status': 0});
+      getres.json({
+        'status': 0
+      });
       try {
         // If the user is a free user, watermark the styled image
         if (await shouldWatermark(req.query.resource_id, req.params.type)) {
           await watermark.embedWatermark(filepath, options);
         }
+      } catch (e) {
       }
-      catch(e){ console.log(e); }
     });
 
     let resource_id = parseInt(req.query.resource_id);
@@ -123,12 +116,12 @@ module.exports = function(app) {
     let resourceQuery = `UPDATE ${resultTable} SET (path, process_time)=($1,$2) WHERE ${resource_id_name} = $3`;
     let resourceParams = [filepath, req.query.process_time, resource_id];
     // Update the path and the processing time of the photo/video entry in the DB
-    db.param_query(resourceQuery, resourceParams); 
+    db.param_query(resourceQuery, resourceParams);
 
     let bridgeQuery = `UPDATE ${bridgeTable} SET status='done' WHERE ${resource_id_name}=$1 AND user_id=$2`;
     let bridgeParams = [resource_id, user_id];
     // Update the corresponding run information in the DB
-    db.param_query(bridgeQuery, bridgeParams); 
+    db.param_query(bridgeQuery, bridgeParams);
     return 0;
   });
 
@@ -162,11 +155,10 @@ module.exports = function(app) {
       // If the style server is retrieving a content image/video, set the
       // status of that run to 'processing' so that it will not be restyled
       let processingQuery = `UPDATE ${bridgeTable} SET status='processing' WHERE ${unfilteredId}=${req.body.resource_id}`;
-      db.query(processingQuery); 
+      db.query(processingQuery);
     } else {
       filepath = `${config.stylePath}/filter-${req.body.resource_id}.${req.body.fileType}`;
     }
-    console.log('Sending: ' + filepath);
     res.sendFile(filepath);
   });
 
@@ -183,10 +175,8 @@ module.exports = function(app) {
     let queryText =
       `SELECT * FROM user_photo WHERE user_id=${user_id} AND photo_id=${photo_id}`;
 
-    console.log("QUERYING: " + queryText);
     db.query(queryText)
       .then(res => {
-        console.log(res.rows);
         getres.send(res.rows);
       })
       .catch(e => console.error(e.stack));
@@ -211,7 +201,6 @@ module.exports = function(app) {
 
     db.query(queryText)
       .then(res => {
-        console.log(res.rows);
         getres.send(res.rows);
       })
       .catch(e => console.error(e.stack));
@@ -219,6 +208,4 @@ module.exports = function(app) {
     return 0;
   });
 
-
 };
-
