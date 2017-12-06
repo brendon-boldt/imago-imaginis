@@ -11,7 +11,3 @@ module.exports = function(app){
     uploadRoutes(app);
     adminRoutes(app);
 }
-
-// module.exports = (app) => {
-//     app.use('/routes', routes);
-// }

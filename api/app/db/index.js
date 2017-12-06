@@ -22,31 +22,20 @@ pool.connect((err, client, release) => {
       return console.error('Error executing query', err.stack)
     }
     console.log("Connected to DB!");
-    console.log(result.rows)
-  })
-})
+  });
+});
 
 module.exports = {
-    // query: (text, params, callback) => {
-    //     return pool.query(text, params, callback)
-    // }
-    param_query: function(text, params) {
-        // const query = {
-        //     text: text,
-        //     values: params
-        // }
-        console.log("Params: " +params);
-        console.log("Performing a query");
-        return pool.query(text, params);
-    },
-    // no_param_query: function(text){
-    //     return pool.query(text);
-    // },
-    query: function(text){
-        return pool.query(text);
-    },
-    test: function(text) {
-        return console.log(text);
-    }
+  param_query: function(text, params) {
+    console.log("Params: " +params);
+    console.log("Performing a query");
+    return pool.query(text, params);
+  },
+  query: function(text){
+    return pool.query(text);
+  },
+  test: function(text) {
+    return console.log(text);
+  }
 }
 
