@@ -23,7 +23,7 @@ Please refer to the official Angular documentation for more information on Angul
 			</div>
 			<br>
 			<!--Table results go here-->
-			<div *ngIf="showSearch" class="table-responsive" style="overflow: auto; max-height: 400px;">
+			<div *ngIf="showSearch" class="table-responsive scrollbar scrollbar-primary" style="overflow: auto; max-height: 400px;">
 				<table style="float: none; margin: 0 auto;" id="searchTable" class="table-striped table-hover" height=4>
 					<thead>
 						<tr>
@@ -39,7 +39,7 @@ Please refer to the official Angular documentation for more information on Angul
 							<td>{{user.email}}</td>
 							<td>{{user.first_name}}</td>
 							<td>{{user.last_name}}</td>
-							<td>{{user.date_joined}}</td>
+							<td>{{user.date_joined.substring(0, user.date_joined.length - 14)}}</td>
 							<td>{{user.status}}</td>
 						</tr>
 					</tbody>

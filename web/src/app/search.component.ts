@@ -16,7 +16,7 @@ import { DBService } from './services/db.service';
 @Component({
   selector: 'search',
   templateUrl: './search.component.html',
-  styleUrls: ['./css/app.component.css', './css/search.component.css']
+  styleUrls: ['./css/app.component.css', './css/search.component.css', './css/scrollbar.css']
 })
 export class SearchComponent {
   showSearch: boolean; // flag to display the results of the search
