@@ -1,19 +1,19 @@
-// File containing deployment specific configuration info
+// File containing deployment specific configuration info for the API
 
 var config = {};
 
-config.contentPath = '';
-config.stylePath = '';
-config.outputPath = '';
-config.contentPathVideo = '';
-config.outputPathVideo = '';
-config.uploadsPath = '';
-config.videoUploadsPath = '';
-config.serve = '';
-config.dbUserName = '';
-config.dbPassword = '';
-config.dbIP = '';
-config.dbName = '';
-config.dbPort = '';
+config.contentPath = ''; // directory to where uploaded images are stored (same as uploadsPath)
+config.stylePath = ''; // directory where filters for styling are stored
+config.outputPath = ''; // directory where styled images are output to
+config.contentPathVideo = ''; // directory where uploaded videos are stored (same as videoUploadsPath)
+config.outputPathVideo = ''; // directory where styled videos are output to
+config.uploadsPath = ''; // directory where uploaded photos are stored
+config.videoUploadsPath = ''; // directory where uploaded videos are stored
+config.serve = ''; // static directory for express to serve out of: '../../../../
+config.dbUserName = ''; // username for db user
+config.dbPassword = ''; // password for db user
+config.dbIP = ''; // the address of the database: https://imagino.reev.us
+config.dbName = ''; // name of the database: aspdb
+config.dbPort = ''; // port of the database: 5432
 
 module.exports = config;

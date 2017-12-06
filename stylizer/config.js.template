@@ -1,4 +1,4 @@
-// File containing deployment specific configuration info
+// File containing deployment specific configuration info for the stylizer
 
 var config = {};
 
@@ -13,11 +13,11 @@ config.contentSizeVideo = 256;
 config.styleSizeVideo = 256;
 config.maxRuns = 1;
 
-config.dbUrl = '';
-config.stylePath = '';
-config.outputPath = '';
-config.contentPath = '';
-config.outputPathVideo = '';
-config.contentPathVideo = '';
+config.dbUrl = ''; // the url for the API
+config.stylePath = ''; // path to where filters are stored
+config.outputPath = ''; // path to where styled images are output
+config.contentPath = ''; // path to where images are uploaded
+config.outputPathVideo = ''; // path to where styled videos are output
+config.contentPathVideo = ''; // path to where videos are uploaded
 
 module.exports = config;
