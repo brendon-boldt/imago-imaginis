@@ -2,6 +2,7 @@
  * Imago Imaginis 
  * ----------------------------
  * Angular Service that pulls data from the database via HTTP calls
+ * This is where the website interacts with the API.
  * WARNING: This is a very long file
  */
 import { Injectable } from '@angular/core';

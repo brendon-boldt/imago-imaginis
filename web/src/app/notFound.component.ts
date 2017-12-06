@@ -2,6 +2,7 @@
  * Imago Imaginis
  * -------------------------------------------
  * Backend for the not found component page.
+ * Displays when the user tries to load a page that doesn't exist in the web application
  * This ties in the HTML template and any CSS that goes along with it.
  * Also controls page functionality and imports data from Angular services.
  */

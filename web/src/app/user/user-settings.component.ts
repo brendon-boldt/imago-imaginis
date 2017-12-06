@@ -2,6 +2,9 @@
  * Imago Imaginis
  * -------------------------------------------
  * Backend for the user settings component page.
+ * This allows the user to view and edit their information.
+ * They can also upgrade their account. NOTE: Payment processing is NOT implemented. Credit card information is not sent anywhere.
+ * Only users may access this page.
  * This ties in the HTML template and any CSS that goes along with it.
  * Also controls page functionality and imports data from Angular services.
  */
@@ -114,6 +117,10 @@ export class UserSettingsComponent {
         // Invalid email
         this.modalText = "Please enter a valid email."
         window.scrollTo(0,0);
+        this.modal.show();
+      }
+      else if(res.status == 406){
+        this.modalText = "Please enter valid information into the fields.";
         this.modal.show();
       }
       else{

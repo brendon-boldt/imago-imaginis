@@ -29,7 +29,9 @@ var verifyAdmin = async function(user_id) {
   return true;
 }
 
-// Verifies if JWT is good
+/**
+ * Verifies if the JWT is valid
+ */
 var getUserIdFromJWT = function(req, getres) {
   var token;
   // JWT is passed either in query or in body

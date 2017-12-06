@@ -1,6 +1,7 @@
 <!-- Imagino Imaginis
 Angular HTML template for the user profile page
-Displays various information relating to the user's profile, including pictures they choose to store and display.
+Displays various information relating to the user's profile, including pictures they choose to display.
+Only users may access this page.
 Please refer to the official Angular documentation for more information on Angular templating -->
 <header class="masthead">
   <div class="header-content">
@@ -20,7 +21,7 @@ Please refer to the official Angular documentation for more information on Angul
               <br>
               <div id="bginfo" class="justify-content-center">
                 <p *ngIf="this.isPaid" class="lead">
-                  <strong>Paid User</strong>
+                  <strong>★Paid User★</strong>
                 </p>
                 <hr *ngIf="this.isPaid" style="margin-top: 0px;">
                 <p class="lead">

@@ -2,6 +2,8 @@
  * Imago Imaginis
  * -------------------------------------------
  * Backend for the style selection component page.
+ * Allows a user to select a style to style their image with on their uploaded photo/video
+ * Only users may access this page.
  * This ties in the HTML template and any CSS that goes along with it.
  * Also controls page functionality and imports data from Angular services.
  */

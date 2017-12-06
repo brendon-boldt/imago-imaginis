@@ -1,6 +1,7 @@
 <!-- Imagino Imaginis
 Angular HTML template for the library page
 Displays to the user all the photos/videos that the user has uploaded to the platform
+Only users may access this page.
 Please refer to the official Angular documentation for more information on Angular templating -->
 <header class="masthead">
   <div class="header-content">
@@ -181,8 +182,8 @@ Please refer to the official Angular documentation for more information on Angul
           <div class="app-modal-footer">
             <div *ngIf="this.modalPhoto.photo_id != null && this.modalPhoto.unfiltered_photo_id == null;then photostyled else photounstyled"></div>
             <ng-template #photostyled>
-              <a id="twitter-button" class="btn btn-info" href="https://twitter.com/intent/tweet?url=http://imagino.reev.us
-        &text=Check out this awesome image%0A{{this.db.url}}{{this.modalPhoto['path']}}%0AMade with ">
+              <a id="twitter-button" class="btn btn-info" target="_blank" href="https://twitter.com/intent/tweet?url=http://imagino.reev.us
+        &text=Check out this awesome image%0A{{this.db.url}}{{this.modalPhoto['path']}}%0AMade with Imago Imaginis">
                 <img id="twitter-icon" src="../../assets/twitter-icon.png" style="max-height: 25px;" alt="Twitter Icon"> Tweet
               </a>
               <button type="button" class="btn btn-danger" (click)="this.deletePhoto();">Delete</button>
@@ -190,8 +191,8 @@ Please refer to the official Angular documentation for more information on Angul
             </ng-template>
             <div *ngIf="this.modalPhoto.video_id != null && this.modalPhoto.unfiltered_video_id == null;then videostyled else videounstyled"></div>
             <ng-template #videostyled>
-              <a id="twitter-button" class="btn btn-info" href="https://twitter.com/intent/tweet?url=http://imagino.reev.us
-        &text=Check out this awesome image%0A{{this.db.url}}{{this.modalPhoto['path']}}%0AMade with ">
+              <a id="twitter-button" class="btn btn-info" target="_blank" href="https://twitter.com/intent/tweet?url=http://imagino.reev.us
+        &text=Check out this awesome image%0A{{this.db.url}}{{this.modalPhoto['path']}}%0AMade with Imago Imaginis">
                 <img id="twitter-icon" src="../../assets/twitter-icon.png" style="max-height: 25px;" alt="Twitter Icon"> Tweet
               </a>
               <button type="button" class="btn btn-danger" (click)="this.deleteVideo();">Delete</button>

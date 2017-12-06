@@ -2,6 +2,7 @@
  * Imago Imaginis
  * -------------------------------------------
  * Backend for the login component page.
+ * Allows user to enter credentials, or allows them to create a new account
  * This ties in the HTML template and any CSS that goes along with it.
  * Also controls page functionality and imports data from Angular services.
  */

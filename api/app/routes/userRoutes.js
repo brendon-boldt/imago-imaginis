@@ -978,7 +978,6 @@ module.exports = function(app) {
       }
     }
     stat.logStatRequest(0);
-    var id = req.query.id;
     var id = req.query.user_id;
     if (id == null) {
       getres.status(406);

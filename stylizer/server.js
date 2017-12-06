@@ -1,3 +1,9 @@
+/**
+ * Imagino Imaginis
+ * ----------------------------------------------------------------
+ * This is the stylizer server.
+ * It communicates with the main API and makes appropriate calls to the stylizer to process new images.
+ */
 const express = require('express');
 const bodyParser = require('body-parser');
 const db = require('./app/db');

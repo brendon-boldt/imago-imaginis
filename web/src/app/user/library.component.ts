@@ -2,6 +2,8 @@
  * Imago Imaginis
  * -------------------------------------------
  * Backend for the library component page.
+ * Displays to the user all the photos/videos that the user has uploaded to the platform.
+ * Only users may access this page.
  * This ties in the HTML template and any CSS that goes along with it.
  * Also controls page functionality and imports data from Angular services.
  */

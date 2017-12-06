@@ -2,6 +2,8 @@
  * Imago Imaginis
  * -------------------------------------------
  * Backend for the system stats page.
+ * Displays system stats to the user.
+ * Only admins may access this page.
  * This ties in the HTML template and any CSS that goes along with it.
  * Also controls page functionality and imports data from Angular services.
  */

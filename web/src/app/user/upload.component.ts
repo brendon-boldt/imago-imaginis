@@ -2,6 +2,8 @@
  * Imago Imaginis
  * -------------------------------------------
  * Backend for the upload component page.
+ * Allows the user to upload a photo/video.
+ * Only users may access this page.
  * This ties in the HTML template and any CSS that goes along with it.
  * Also controls page functionality and imports data from Angular services.
  */

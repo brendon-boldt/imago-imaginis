@@ -2,6 +2,8 @@
  * Imago Imaginis
  * -------------------------------------------
  * Backend for the register component page.
+ * Allows the user to enter their information in order to create an account for the website.
+ * User must enter all information and check the age gate in order to register
  * This ties in the HTML template and any CSS that goes along with it.
  * Also controls page functionality and imports data from Angular services.
  */
@@ -45,6 +47,10 @@ export class RegisterComponent {
         }
         else if(result.status == 408){
           this.errorText = "Please enter a valid email.";
+          this.modal.show();
+        }
+        else if(result.status == 406){
+          this.errorText = "Please enter valid information into the fields.";
           this.modal.show();
         }
         else{

@@ -2,6 +2,11 @@
  * Imago Imaginis
  * -------------------------------------------
  * Backend for the app component page.
+ * This is the main component of the web application.
+ * This component is for the top section of the web application (e.g. the header).
+ * Since this part stays mostly constant in site navigation, we want to keep this persistent across
+ * different components. Therefore, we have a router outlet at the end which will display different
+ * components, such as the home page and the profile page, while keeping the top header/app component.
  * This ties in the HTML template and any CSS that goes along with it.
  * Also controls page functionality and imports data from Angular services.
  */

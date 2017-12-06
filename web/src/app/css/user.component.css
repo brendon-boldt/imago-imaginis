@@ -32,7 +32,8 @@ CSS for the user profile page
 
 .image {
 	padding: 5px 5px 5px 5px; 
-	max-width: 250px;
+    max-width: 250px;
+    cursor: pointer;
 }
 
 @media screen and (min-width:1000px) {

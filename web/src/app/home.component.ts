@@ -2,6 +2,7 @@
  * Imago Imaginis
  * -------------------------------------------
  * Backend for the home component page.
+ * Displays general information about the site and a button to direct them to either the upload page or the login page
  * This ties in the HTML template and any CSS that goes along with it.
  * Also controls page functionality and imports data from Angular services.
  */

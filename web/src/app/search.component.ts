@@ -2,6 +2,7 @@
  * Imago Imaginis
  * -------------------------------------------
  * Backend for the search component page.
+ * Allows the user to search for other users.
  * This ties in the HTML template and any CSS that goes along with it.
  * Also controls page functionality and imports data from Angular services.
  */
