@@ -189,7 +189,7 @@ module.exports = function(app) {
       var lastName = req.body.last_name.trim();
       var email = req.body.email.trim();
       var password = req.body.password;
-      if (req.body.first_name == "" || lastName == "" || email == "") {
+      if (firstName == "" || lastName == "" || email == "") {
         getres.status(406);
         getres.statusMessage = "Missing info";
         getres.send("Missing user information. Please provide all user information. Password is optional");
