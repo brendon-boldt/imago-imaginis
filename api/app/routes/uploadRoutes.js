@@ -121,9 +121,6 @@ module.exports = function(app) {
   });
   app.post('/upload/photo', multer({
     storage: photoStorage,
-    limits: {
-      fileSize: MAX_PHOTO_UPLOAD_SIZE
-    },
     fileFilter: function(req, file, cb) {
       if (!(file.mimetype == 'image/png' || file.mimetype == 'image/jpeg')) {
         req.fileValidationError = 'goes wrong on the mimetype';
